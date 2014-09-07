@@ -1,0 +1,21 @@
+{
+	"name": "ParticleEditor",
+	"version": "0.0.1",
+	"main": [
+		"src/Editor.js",
+		"src/main.js",
+		"src/main.less"
+	],
+	"libraries": [
+		"components/normalize.css/normalize.css",
+		"components/preloadjs/lib/preloadjs.min.js",
+		"components/pixi.js/bin/pixi.dev.js",
+		"components/cloudkid-namespace/namespace.js",
+		"components/cloudkid-debug/dist/cloudkid-debug.js",
+		"components/cloudkid-framework/dist/cloudkid-framework.js",
+		"components/cloudkid-tasks/dist/cloudkid-tasks.js",
+		"components/cloudkid-pixi-display/dist/cloudkid-pixi-display.js",
+		"components/cloudkid-particles/dist/cloudkid-particles.js"
+	]
+}
+

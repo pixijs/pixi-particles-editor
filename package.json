@@ -1,0 +1,9 @@
+{
+  "private": true,
+  "dependencies": {
+    "grunt": "~0.4.5",
+    "grunt-game-builder": "*",
+    "grunt-gh-pages": "~0.9.1",
+    "load-grunt-config": "~0.13.1"
+  }
+}
