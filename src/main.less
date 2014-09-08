@@ -7,52 +7,47 @@ button,
 input,
 select,
 textarea {
-    color: #222;
-}
-
-body {
-    font-size: 1em;
-    line-height: 1.4;
+	color: #222;
 }
 
 ::-moz-selection {
-    background: #b3d4fc;
-    text-shadow: none;
+	background: #b3d4fc;
+	text-shadow: none;
 }
 
 ::selection {
-    background: #b3d4fc;
-    text-shadow: none;
+	background: #b3d4fc;
+	text-shadow: none;
 }
 
 hr {
-    display: block;
-    height: 1px;
-    border: 0;
-    border-top: 1px solid #ccc;
-    margin: 1em 0;
-    padding: 0;
+	display: block;
+	height: 1px;
+	border: 0;
+	border-top: 1px solid #ccc;
+	margin: 1em 0;
+	padding: 0;
 }
 
 img {
-    vertical-align: middle;
+	vertical-align: middle;
 }
 
 fieldset {
-    border: 0;
-    margin: 0;
-    padding: 0;
+	border: 0;
+	margin: 0;
+	padding: 0;
 }
 
 textarea {
-    resize: vertical;
+	resize: vertical;
 }
 
 .chromeframe {
-    margin: 0.2em 0;
-    background: #ccc;
-    color: #000;
-    padding: 0.2em 0;
+	margin: 0.2em 0;
+	background: #ccc;
+	color: #000;
+	padding: 0.2em 0;
 }
 
 
@@ -61,43 +56,91 @@ textarea {
    ========================================================================== */
 
 #content {
-    position:fixed;
-    top:0;
-    left:0;
-    bottom:0;
-    right:400px;
+	position:fixed;
+	top:0;
+	left:0;
+	bottom:0;
+	right:400px;
+	#framerate {
+		position:absolute;
+	}
 }
 
 #editor {
 	width:360px;
-    position:fixed;
-    right:0;
-    top:0;
-    height:100%;
-    overflow: auto;
+	position:fixed;
+	right:0;
+	top:0;
+	bottom:0;
+	overflow: auto;
 	display:block;
 	padding:20px;
+	.option {
+		margin:0 0 10px;
+		border-bottom: 1px solid #bbb;
+		padding-bottom: 10px;
+	}
+	.category {
+		font-weight: bold;
+		width:117px;
+		float:left;
+	}
+	.fields {
+		float:left;
+		width:228px;
+		.ui-widget {
+			display: inline-block;
+		}
+		.ui-spinner {
+			margin-right: 10px;
+		}
+		.row {
+			margin-bottom:5px;
+		}
+		.label {
+			width:40px;
+			margin:0;
+			display:inline-block;
+			text-transform: uppercase;
+			font-size:80%;
+			color:#666;
+		}
+	}
+}
+
+#alpha .row {
+	height:20px;
+	margin-bottom:5px;
+	&:first-child {
+		margin-bottom:20px;
+	}
+}
+
+#color .row {
+	margin-bottom:5px;
+	&:last-child {
+		margin: 0;
+	}
+}
+
+#customEase {
+	width:214px
 }
 
 #editor .ui-state-focus {
-    outline: none;
+	outline: none;
 }
 
 .ui-selectmenu-button {
-    outline: none;
+	outline: none;
 }
 
-#editor .option div {
-    display: inline-block;
-    margin: 5px;
-}
-
-#editor .category {
-    font-weight: bold;
+.ui-dialog .ui-dialog-titlebar {
+	margin-bottom:.5em;
 }
 
 .unitSlider {
-	width:150px;
+	width:120px;
 	margin-left: 45px !important;
 }
 
@@ -119,68 +162,71 @@ textarea {
 	left: -45px;
 }
 
-.positiveSpinner {
-    width: 30px;
+.positiveSpinner,
+.generalSpinner, 
+.frequencySpinner {
+	width: 30px;
 }
-
-.generalSpinner, .frequencySpinner {
-    width: 50px;
-}
-
+.sliderInput,
 .colorPicker {
-    width: 50px;
+	width: 50px;
+	border-radius: 4px;
+	border: 1px solid #aaa;
+	padding: 4px;
+	margin-right: 5px;
 }
 
 .particleImage {
-    position: relative;
+	position: relative;
+	display: inline-block;
 }
 
 .particleImage button {
-    position: absolute;
-    top: 0px;
-    width: 16px !important;
-    height: 16px;
-    z-index:1;
-    display: none;
+	position: absolute;
+	top: 0px;
+	width: 16px !important;
+	height: 16px;
+	z-index:1;
+	display: none;
 }
 
 .particleImage button .ui-button-text {
-    display: none;
+	display: none;
 }
 
 .particleImage button .ui-icon {
-    margin-top: -8px;
-    margin-left: -8px;
+	margin-top: -8px;
+	margin-left: -8px;
 }
 
 .particleImage .remove {
-    right: 0px;
+	right: 0px;
 }
 
 .particleImage .download {
-    right: 20px;
+	right: 20px;
 }
 
 .particleImage:hover button {
-    display: block;
+	display: block;
 }
 
 #defaultImageSelector {
-    width: 200px;
+	width: 200px;
 }
 
 #defaultConfigSelector {
-    width: 200px;
+	width: 200px;
 }
 
 #imageUpload {
-    margin-top: 10px;
-    height: 30px;
+	margin-top: 10px;
+	height: 30px;
 }
 
 #configDialog textarea {
-    margin-top: 15px;
-    width: 365px;
+	margin-top: 15px;
+	width: 365px;
 }
 
 #emitSpawnType {
@@ -188,6 +234,7 @@ textarea {
 }
 
 body, html {
+	line-height: 1.4;
 	margin: 0;
 	padding: 0;
 	font-family: Arial, Verdana, sans-serif;
@@ -196,24 +243,16 @@ body, html {
 	background-color: #ddd;
 }
 
-header {
-	font-size:14px;
-	padding-top:20px;
-}
-
-header a{
-	cursor:pointer;
-	color:#069;
-	padding:0 10px;
-}
-
-header,
 footer {
+	color:#999;
+	font-size:80%;
 	text-align:center;
 }
 
-footer {
-	color:#999;
+h3 {
+	background:#AFAFAF;
+	color:#fff;
+	padding:5px;
 }
 
 
@@ -226,7 +265,7 @@ footer {
 }
 
 @media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-       only screen and (min-resolution: 144dpi) {
+	   only screen and (min-resolution: 144dpi) {
 
 }
 
@@ -235,61 +274,61 @@ footer {
    ========================================================================== */
 
 .ir {
-    background-color: transparent;
-    border: 0;
-    overflow: hidden;
-    *text-indent: -9999px;
+	background-color: transparent;
+	border: 0;
+	overflow: hidden;
+	*text-indent: -9999px;
 }
 
 .ir:before {
-    content: "";
-    display: block;
-    width: 0;
-    height: 100%;
+	content: "";
+	display: block;
+	width: 0;
+	height: 100%;
 }
 
 .hidden {
-    display: none !important;
-    visibility: hidden;
+	display: none !important;
+	visibility: hidden;
 }
 
 .visuallyhidden {
-    border: 0;
-    clip: rect(0 0 0 0);
-    height: 1px;
-    margin: -1px;
-    overflow: hidden;
-    padding: 0;
-    position: absolute;
-    width: 1px;
+	border: 0;
+	clip: rect(0 0 0 0);
+	height: 1px;
+	margin: -1px;
+	overflow: hidden;
+	padding: 0;
+	position: absolute;
+	width: 1px;
 }
 
 .visuallyhidden.focusable:active,
 .visuallyhidden.focusable:focus {
-    clip: auto;
-    height: auto;
-    margin: 0;
-    overflow: visible;
-    position: static;
-    width: auto;
+	clip: auto;
+	height: auto;
+	margin: 0;
+	overflow: visible;
+	position: static;
+	width: auto;
 }
 
 .invisible {
-    visibility: hidden;
+	visibility: hidden;
 }
 
 .clearfix:before,
 .clearfix:after {
-    content: " ";
-    display: table;
+	content: " ";
+	display: table;
 }
 
 .clearfix:after {
-    clear: both;
+	clear: both;
 }
 
 .clearfix {
-    *zoom: 1;
+	*zoom: 1;
 }
 
 /* ==========================================================================
@@ -297,68 +336,68 @@ footer {
    ========================================================================== */
 
 @media print {
-    * {
-        background: transparent !important;
-        color: #000 !important; /* Black prints faster: h5bp.com/s */
-        box-shadow:none !important;
-        text-shadow: none !important;
-    }
+	* {
+		background: transparent !important;
+		color: #000 !important; /* Black prints faster: h5bp.com/s */
+		box-shadow:none !important;
+		text-shadow: none !important;
+	}
 
-    a,
-    a:visited {
-        text-decoration: underline;
-    }
+	a,
+	a:visited {
+		text-decoration: underline;
+	}
 
-    a[href]:after {
-        content: " (" attr(href) ")";
-    }
+	a[href]:after {
+		content: " (" attr(href) ")";
+	}
 
-    abbr[title]:after {
-        content: " (" attr(title) ")";
-    }
+	abbr[title]:after {
+		content: " (" attr(title) ")";
+	}
 
-    /*
-     * Don't show links for images, or javascript/internal links
-     */
+	/*
+	 * Don't show links for images, or javascript/internal links
+	 */
 
-    .ir a:after,
-    a[href^="javascript:"]:after,
-    a[href^="#"]:after {
-        content: "";
-    }
+	.ir a:after,
+	a[href^="javascript:"]:after,
+	a[href^="#"]:after {
+		content: "";
+	}
 
-    pre,
-    blockquote {
-        border: 1px solid #999;
-        page-break-inside: avoid;
-    }
+	pre,
+	blockquote {
+		border: 1px solid #999;
+		page-break-inside: avoid;
+	}
 
-    thead {
-        display: table-header-group; /* h5bp.com/t */
-    }
+	thead {
+		display: table-header-group; /* h5bp.com/t */
+	}
 
-    tr,
-    img {
-        page-break-inside: avoid;
-    }
+	tr,
+	img {
+		page-break-inside: avoid;
+	}
 
-    img {
-        max-width: 100% !important;
-    }
+	img {
+		max-width: 100% !important;
+	}
 
-    @page {
-        margin: 0.5cm;
-    }
+	@page {
+		margin: 0.5cm;
+	}
 
-    p,
-    h2,
-    h3 {
-        orphans: 3;
-        widows: 3;
-    }
+	p,
+	h2,
+	h3 {
+		orphans: 3;
+		widows: 3;
+	}
 
-    h2,
-    h3 {
-        page-break-after: avoid;
-    }
+	h2,
+	h3 {
+		page-break-after: avoid;
+	}
 }

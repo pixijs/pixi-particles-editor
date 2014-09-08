@@ -2,6 +2,7 @@
 	"name": "ParticleEditor",
 	"version": "0.0.1",
 	"main": [
+		"src/EditorInterface.js",
 		"src/Editor.js",
 		"src/main.js",
 		"src/main.less"
@@ -15,7 +16,8 @@
 		"components/cloudkid-framework/dist/cloudkid-framework.js",
 		"components/cloudkid-tasks/dist/cloudkid-tasks.js",
 		"components/cloudkid-pixi-display/dist/cloudkid-pixi-display.js",
-		"components/cloudkid-particles/dist/cloudkid-particles.js"
+		"components/cloudkid-particles/dist/cloudkid-particles.js",
+		"components/filesaver/FileSaver.js"
 	]
 }
 

@@ -19,16 +19,14 @@
     </head>
     <body>
 		<div id="content">
-			<div id="framerate" style="z-index:1; position:absolute;"></div>
-			<canvas id="stage" style="z-index:0;" width="800" height="500"></canvas>
+			<div id="framerate"></div>
+			<canvas id="stage" width="800" height="500"></canvas>
 		</div>
 		<div id="editor">
-			<div class="option">
-				<button id="refresh" title="Reloads the displayed particles from the settings below">Refresh Display</button>
-				<button id="loadConfig" title="Load a particle settings file to edit">Load</button>
-				<!--<button id="clipboard" title="Copy the particle settings to the clipboard">Copy to Clipboard</button>-->
-				<button id="downloadConfig" title="Download a JSON file of the particle settings">Download</button>
-			</div>
+			<button id="refresh" title="Reloads the displayed particles from the settings below">Refresh Display</button>
+			<button id="loadConfig" title="Load a particle settings file to edit">Load</button>
+			<!--<button id="clipboard" title="Copy the particle settings to the clipboard">Copy to Clipboard</button>-->
+			<button id="downloadConfig" title="Download a JSON file of the particle settings">Download</button>
 			<div id="configDialog" title="Upload a particle settings JSON:">
 				<select id="defaultConfigSelector">
 					<option selected="selected">-Default Emitters-</option>
@@ -40,79 +38,107 @@
 					<option>megamanDeath</option>
 					<option>rain</option>
 				</select>
-				<input id="configUpload" type="file" accept='text/json'></input>
+				<input id="configUpload" type="file" accept='text/json' />
 				<textarea id="configPaste" class="ui-autocomplete-input" rows="5"></textarea>
 			</div>
 			<h3>Particle Properties</h3>
-			<div id="alpha" class="option">
+			<div id="alpha" class="clearfix option">
 				<div class="category" title="Transparency of the particles from 0 (transparent) to 1 (opaque)">Alpha</div>
-				<div class="label">Start</div>
-				<div id="alphaStart" class="unitSlider slider">
-					<input type="text" class="ui-autocomplete-input"></input>
-					<label class="sliderStart">0</label>
-					<label class="sliderEnd">1</label>
-				</div>
-				<div class="label">End</div>
-				<div id="alphaEnd" class="unitSlider slider">
-					<input type="text" class="ui-autocomplete-input"></input>
-					<label class="sliderStart">0</label>
-					<label class="sliderEnd">1</label>
+				<div class="fields">
+					<div class="row">
+						<span class="label">Start</span>
+						<div id="alphaStart" class="unitSlider slider">
+							<input type="text" class="sliderInput ui-autocomplete-input" />
+							<label class="sliderStart">0</label>
+							<label class="sliderEnd">1</label>
+						</div>
+					</div>
+					<div class="row">
+						<span class="label">End</span>
+						<div id="alphaEnd" class="unitSlider slider">
+							<input type="text" class="sliderInput ui-autocomplete-input" />
+							<label class="sliderStart">0</label>
+							<label class="sliderEnd">1</label>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div id="scale" class="option">
+			<div id="scale" class="clearfix option">
 				<div class="category" title="Scale of the particles, with a minimum value of 0">Scale</div>
-				<div class="label">Start</div>
-				<input id="scaleStart" type="text" class="positiveSpinner spinner"></input>
-				<div class="label">End</div>
-				<input id="scaleEnd" type="text" class="positiveSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">Start</span>
+					<input id="scaleStart" type="text" class="positiveSpinner spinner" />
+					<span class="label">End</span>
+					<input id="scaleEnd" type="text" class="positiveSpinner spinner" />
+				</div>
 			</div>
-			<div id="color" class="option">
+			<div id="color" class="clearfix option">
 				<div class="category" title="Color of the particles">Color</div>
-				<div class="label">Start</div>
-				<input id="colorStart" type="text" class="colorPicker"></input>
-				<div class="label">End</div>
-				<input id="colorEnd" type="text" class="colorPicker"></input>
+				<div class="fields">
+					<div class="row">
+						<span class="label">Start</span>
+						<input id="colorStart" type="text" class="colorPicker" />
+					</div>
+					<div class="row">
+						<span class="label">End</span>
+						<input id="colorEnd" type="text" class="colorPicker" />
+					</div>
+				</div>
 			</div>
-			<div id="speed" class="option">
+			<div id="speed" class="clearfix option">
 				<div class="category" title="Speed of the particles">Speed</div>
-				<div class="label">Start</div>
-				<input id="speedStart" type="text" class="generalSpinner spinner"></input>
-				<div class="label">End</div>
-				<input id="speedEnd" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">Start</span>
+					<input id="speedStart" type="text" class="generalSpinner spinner" />
+					<span class="label">End</span>
+					<input id="speedEnd" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="startRotation" class="option">
+			<div id="startRotation" class="clearfix option">
 				<div class="category" title="Angle at which particles are are pointed when emitted in degrees - 0 is to the right, 90 is down. This is ignored in 'arc' and 'burst' emission types">Start Rotation</div>
-				<div class="label">Min</div>
-				<input id="startRotationMin" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Max</div>
-				<input id="startRotationMax" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">Min</span>
+					<input id="startRotationMin" type="text" class="generalSpinner spinner" />
+					<span class="label">Max</span>
+					<input id="startRotationMax" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="rotationSpeed" class="option">
+			<div id="rotationSpeed" class="clearfix option">
 				<div class="category" title="Speed in degrees per second that particles rotate - Positive numbers are clockwise">Rotation Speed</div>
-				<div class="label">Min</div>
-				<input id="rotationSpeedMin" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Max</div>
-				<input id="rotationSpeedMax" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">Min</span>
+					<input id="rotationSpeedMin" type="text" class="generalSpinner spinner" />
+					<span class="label">Max</span>
+					<input id="rotationSpeedMax" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="particleLife" class="option">
+			<div id="particleLife" class="clearfix option">
 				<div class="category" title="Lifetime of each particle in seconds">Lifetime</div>
-				<div class="label">Min</div>
-				<input id="lifeMin" type="text" class="positiveSpinner spinner"></input>
-				<div class="label">Max</div>
-				<input id="lifeMax" type="text" class="positiveSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">Min</span>
+					<input id="lifeMin" type="text" class="positiveSpinner spinner" />
+					<span class="label">Max</span>
+					<input id="lifeMax" type="text" class="positiveSpinner spinner" />
+				</div>
 			</div>
-			<div id="ease" class="option">
+			<div id="ease" class="clearfix option">
 				<div class="category" title="Custom ease, as shown by the array output by http://www.greensock.com/customease/">Custom Ease</div>
-				<input id="customEase" type="text" class="ui-autocomplete-input"></input>
+				<div class="fields">
+					<input id="customEase" type="text" class="ui-autocomplete-input" />
+				</div>
 			</div>
-			<div id="images" class="option">
+			<div id="images" class="clearfix option">
 				<div class="category" title="Images that each particle will be given randomly when spawned">Particle Images</div>
-				<button id="addImage" class="ui-icon ui-icon-folder-open"></button>
-				<div id="imageList">
-					<div class="particleImage">
-						<img class="actualImage" src="assets/images/particle.png" />
-						<button class="download"></button>
-						<button class="remove"></button>
+				<div class="fields">
+					<button id="addImage">
+						<span class="ui-icon ui-icon-folder-open"></span>
+					</button>
+					<div id="imageList">
+						<div class="particleImage">
+							<img class="actualImage" src="assets/images/particle.png" />
+							<button class="download"></button>
+							<button class="remove"></button>
+						</div>
 					</div>
 				</div>
 			</div>
@@ -123,72 +149,94 @@
 					<option value="assets/images/smokeparticle.png">smokeparticle.png</option>
 					<option value="assets/images/rain.png">rain.png</option>
 				</select>
-				<input id="imageUpload" type="file" multiple accept='image/*'></input>
+				<input id="imageUpload" type="file" multiple accept='image/*' />
 			</div>
 			<h3>Emitter Properties</h3>
-			<div id="frequency" class="option">
+			<div id="frequency" class="clearfix option">
 				<div class="category" title="Seconds between each particle being spawned">Spawn Frequency</div>
-				<input id="emitFrequency" type="text" class="frequencySpinner spinner"></input>
+				<div class="fields">
+					<input id="emitFrequency" type="text" class="frequencySpinner spinner" />
+				</div>
 			</div>
-			<div id="emitLife" class="option">
+			<div id="emitLife" class="clearfix option">
 				<div class="category" title="Lifetime of the emitter in seconds before it disables itself">Emitter Lifetime</div>
-				<input id="emitLifetime" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<input id="emitLifetime" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="maxParticles" class="option">
+			<div id="maxParticles" class="clearfix option">
 				<div class="category" title="Maximum number of particles that can exist at once">Max Particles</div>
-				<input id="emitMaxParticles" type="text" class="posIntSpinner spinner"></input>
+				<div class="fields">
+					<input id="emitMaxParticles" type="text" class="posIntSpinner spinner" />
+				</div>
 			</div>
-			<div id="spawnType" class="option">
+			<div id="spawnType" class="clearfix option">
 				<div class="category" title="Settings that control different types of particle spawning">Spawn Type</div>
-				<select id="emitSpawnType">
-					<option value="point" selected="selected">Point</option>
-					<option value="rect">Rectangle</option>
-					<option value="circle">Circle</option>
-					<option value="burst">Burst</option>
-				</select>
+				<div class="fields">
+					<select id="emitSpawnType">
+						<option value="point" selected="selected">Point</option>
+						<option value="rect">Rectangle</option>
+						<option value="circle">Circle</option>
+						<option value="burst">Burst</option>
+					</select>
+				</div>
 			</div>
-			<div id="rect" class="option settings-rect">
+			<div id="rect" class="clearfix option settings-rect">
 				<div class="category" title="Rectangle relative to the Spawn Position inside which particles are spawned">Emission Rectangle</div>
-				<div class="label">X</div>
-				<input id="emitRectX" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Y</div>
-				<input id="emitRectY" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Width</div>
-				<input id="emitRectW" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Height</div>
-				<input id="emitRectH" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">X</span>
+					<input id="emitRectX" type="text" class="generalSpinner spinner" />
+					<span class="label">Y</span>
+					<input id="emitRectY" type="text" class="generalSpinner spinner" />
+					<span class="label">Width</span>
+					<input id="emitRectW" type="text" class="generalSpinner spinner" />
+					<span class="label">Height</span>
+					<input id="emitRectH" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="circle" class="option settings-circle">
+			<div id="circle" class="clearfix option settings-circle">
 				<div class="category" title="Circle relative to the Spawn Position inside which particles are spawned">Emission Circle</div>
-				<div class="label">X</div>
-				<input id="emitCircleX" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Y</div>
-				<input id="emitCircleY" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Radius</div>
-				<input id="emitCircleR" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">X</span>
+					<input id="emitCircleX" type="text" class="generalSpinner spinner" />
+					<span class="label">Y</span>
+					<input id="emitCircleY" type="text" class="generalSpinner spinner" />
+					<span class="label">Radius</span>
+					<input id="emitCircleR" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="particlesPerWave" class="option settings-burst">
+			<div id="particlesPerWave" class="clearfix option settings-burst">
 				<div class="category" title="Number of particles to spawn in each burst wave">Particles per Wave</div>
-				<input id="emitParticlesPerWave" type="text" class="posIntSpinner spinner"></input>
+				<div class="fields">
+					<input id="emitParticlesPerWave" type="text" class="posIntSpinner spinner" />
+				</div>
 			</div>
-			<div id="particleSpacing" class="option settings-burst">
+			<div id="particleSpacing" class="clearfix option settings-burst">
 				<div class="category" title="Spacing in degrees between particles within a wave. 0 gives a random angle for each particle">Particle Spacing</div>
-				<input id="emitParticleSpacing" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<input id="emitParticleSpacing" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="angleStart" class="option settings-burst">
+			<div id="angleStart" class="clearfix option settings-burst">
 				<div class="category" title="Angle to start spawning particles at in each wave">Start Angle</div>
-				<input id="emitAngleStart" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<input id="emitAngleStart" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="spawnPos" class="option">
+			<div id="spawnPos" class="clearfix option">
 				<div class="category" title="Position relative to the emitter's owner at which to spawn particles">Spawn Position</div>
-				<div class="label">X</div>
-				<input id="emitSpawnPosX" type="text" class="generalSpinner spinner"></input>
-				<div class="label">Y</div>
-				<input id="emitSpawnPosY" type="text" class="generalSpinner spinner"></input>
+				<div class="fields">
+					<span class="label">X</span>
+					<input id="emitSpawnPosX" type="text" class="generalSpinner spinner" />
+					<span class="label">Y</span>
+					<input id="emitSpawnPosY" type="text" class="generalSpinner spinner" />
+				</div>
 			</div>
-			<div id="addAtBack" class="option">
-				<div class="category" title="If particles should be added to the back of the display list instead of the top">Add Particles At Back</div>
-				<input id="emitAddAtBack" type="checkbox"></input>
+			<div id="addAtBack" class="clearfix option">
+				<div class="category" title="If particles should be added to the back of the display list instead of the top">Add At Back</div>
+				<div class="fields">
+					<input id="emitAddAtBack" type="checkbox" />
+				</div>
 			</div>
 			<footer>CloudKid 2014, smoke particle image from http://stemkoski.github.io/Three.js/images/smokeparticle.png</footer>
 		</div>

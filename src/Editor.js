@@ -9,7 +9,8 @@
 		LoadTask = cloudkid.LoadTask,
 		TaskManager = cloudkid.TaskManager,
 		Emitter = cloudkid.Emitter,
-		Application = cloudkid.Application;
+		Application = cloudkid.Application,
+		EditorInterface = cloudkid.EditorInterface;
 	
 	var Editor = function(options)
 	{
@@ -19,24 +20,22 @@
 	// Extend the createjs container
 	var p = Editor.prototype = Object.create(Application.prototype);
 	
-	var stage;
+	var stage,
+		emitter,
+		emitterEnableTimer = 0,
+		particleDefaults = {},
+		particleDefaultImages = {},
+		particleDefaultImageUrls = {};
 
-	var emitter;
-	var emitterEnableTimer = 0;
-
-	var particleDefaults;
-	var particleDefaultImages;
-
-	var defaultTexture = "particle.png";
 	var defaultNames = ["trail", "flame", "gas", "explosion", "explosion2", "megamanDeath", "rain"];
 	var defaultImages = ["assets/images/particle.png", "assets/images/smokeparticle.png", "assets/images/rain.png"];
 	
-	p.spawnTypes = ["point", "circle", "rect", "burst"];
-
 	var jqImageDiv = null;
 	
 	p.init = function()
 	{
+		this.ui = new EditorInterface(["point", "circle", "rect", "burst"]);
+
 		this.onMouseIn = this.onMouseIn.bind(this);
 		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
@@ -45,11 +44,7 @@
 		jqImageDiv.remove();
 
 		stage = this.display.stage;
-
-		particleDefaults = {};
-		particleDefaultImages = {};
-		particleDefaultImageUrls = {};
-
+		
 		var tasks = [
 			new LoadTask("trail", "assets/config/defaultTrail.json", this.onConfigLoaded),
 			new LoadTask("flame", "assets/config/defaultFlame.json", this.onConfigLoaded),
@@ -98,7 +93,7 @@
 		this.on("update", this.update.bind(this));
 
 		$("#refresh").click(this.loadFromUI.bind(this));
-		$("#downloadConfig").click(this.downloadConfig.bind(this));
+
 		$("#defaultImageSelector").on("selectmenuselect", this.loadImage.bind(this, "select"));
 		$("#imageUpload").change(this.loadImage.bind(this, "upload"));
 		$("#defaultConfigSelector").on("selectmenuselect", this.loadConfig.bind(this, "default"));
@@ -106,7 +101,9 @@
 		$("#configPaste").on('paste', this.loadConfig.bind(this, "paste"));
 
 		emitter = new Emitter(stage);
+
 		this.loadDefault("trail");
+
 		this.on('resize', this._centerEmitter.bind(this));
 	};
 
@@ -120,67 +117,14 @@
 		for(var i = 0; i < imageUrls.length; ++i)
 			this.addImage(imageUrls[i]);
 		this.loadSettings(particleDefaultImages[name], particleDefaults[name]);
-		this.updateUI(particleDefaults[name]);
-	};
-
-	p.updateUI = function(config)
-	{
-		//particle settings
-		$("#alphaStart").slider("value", config.alpha ? config.alpha.start : 1);
-		$("#alphaEnd").slider("value", config.alpha ? config.alpha.end : 1);
-		$("#scaleStart").spinner("value", config.scale ? config.scale.start : 1);
-		$("#scaleEnd").spinner("value", config.scale ? config.scale.end : 1);
-		$("#colorStart").colorpicker("setColor", config.color ? config.color.start : "FFFFFF");
-		$("#colorEnd").colorpicker("setColor", config.color ? config.color.end : "FFFFFF");
-		$("#speedStart").spinner("value", config.speed ? config.speed.start : 0);
-		$("#speedEnd").spinner("value", config.speed ? config.speed.end : 0);
-		$("#startRotationMin").spinner("value", config.startRotation ? config.startRotation.min : 0);
-		$("#startRotationMax").spinner("value", config.startRotation ? config.startRotation.max : 0);
-		$("#rotationSpeedMin").spinner("value", config.rotationSpeed ? config.rotationSpeed.min : 0);
-		$("#rotationSpeedMax").spinner("value", config.rotationSpeed ? config.rotationSpeed.max : 0);
-		$("#lifeMin").spinner("value", config.lifetime ? config.lifetime.min : 1);
-		$("#lifeMax").spinner("value", config.lifetime ? config.lifetime.max : 1);
-		$("#customEase").val(config.ease ? JSON.stringify(config.ease) : "");
-		//emitter settings
-		$("#emitFrequency").spinner("value", config.frequency || 0.5);
-		$("#emitLifetime").spinner("value", config.emitterLifetime || -1);
-		$("#emitMaxParticles").spinner("value", config.maxParticles || 1000);
-		$("#emitSpawnPosX").spinner("value", config.pos ? config.pos.x : 0);
-		$("#emitSpawnPosY").spinner("value", config.pos ? config.pos.y : 0);
-		$("#emitAddAtBack").prop("checked", !!config.addAtBack);
-		//spawn type
-		var spawnType = config.spawnType, spawnTypes = this.spawnTypes;
-		if(spawnTypes.indexOf(spawnType) == -1)
-			spawnType = spawnTypes[0];
-		//update dropdown
-		$("#emitSpawnType").val(spawnType);
-		$("#emitSpawnType").selectmenu("refresh");
-		//hide non-type options
-		for(var i = 0; i < spawnTypes.length; ++i)
-		{
-			if(spawnTypes[i] == spawnType)
-				$(".settings-" + spawnTypes[i]).show();
-			else
-				$(".settings-" + spawnTypes[i]).hide();
-		}
-		//set or reset these options
-		$("#emitRectX").spinner("value", config.spawnRect ? config.spawnRect.x : 0);
-		$("#emitRectY").spinner("value", config.spawnRect ? config.spawnRect.y : 0);
-		$("#emitRectW").spinner("value", config.spawnRect ? config.spawnRect.w : 0);
-		$("#emitRectH").spinner("value", config.spawnRect ? config.spawnRect.h : 0);
-		$("#emitCircleX").spinner("value", config.spawnCircle ? config.spawnCircle.x : 0);
-		$("#emitCircleY").spinner("value", config.spawnCircle ? config.spawnCircle.y : 0);
-		$("#emitCircleR").spinner("value", config.spawnCircle ? config.spawnCircle.R : 0);
-		$("#emitParticlesPerWave").spinner("value", config.particlesPerWave > 0 ? config.particlesPerWave : 1);
-		$("#emitParticleSpacing").spinner("value", config.particleSpacing ? config.particleSpacing : 0);
-		$("#emitAngleStart").spinner("value", config.angleStart ? config.angleStart : 0);
+		this.ui.set(particleDefaults[name]);
 	};
 
 	p.loadConfig = function(type, event, ui)
 	{
 		if(type == "default")
 		{
-			var value = $("#defaultConfigSelector option:selected").text();
+			var value = $("#defaultConfigSelector").val();
 			if(value == "-Default Emitters-")
 				return;
 			this.loadDefault(value);
@@ -196,7 +140,7 @@
 					/* jshint ignore:start */
 					eval("var obj = " + elem.val() + ";");
 					/* jshint ignore:end */
-					this.updateUI(obj);
+					this.ui.set(obj);
 				}
 				catch(e)
 				{
@@ -214,7 +158,7 @@
 					/* jshint ignore:start */
 					eval("var obj = " + readerObj.result + ";");
 					/* jshint ignore:end */
-					this.updateUI(obj);
+					this.ui.set(obj);
 				}
 				catch(e)
 				{
@@ -235,7 +179,7 @@
 	{
 		if(type == "select")
 		{
-			var value = $("#defaultImageSelector option:selected").text();
+			var value = $("#defaultImageSelector").val();
 			if(value == "-Default Images-")
 				return;
 			this.addImage(value);
@@ -272,8 +216,14 @@
 		var item = jqImageDiv.clone();
 		item.children("img").prop("src", src);
 		$("#imageList").append(item);
-		item.children(".remove").button({icons:{primary:"ui-icon-close"}, text:false}).click(removeImage);
-		item.children(".download").button({icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}).click(downloadImage);
+
+		item.children(".remove").button(
+			{icons:{primary:"ui-icon-close"}, text:false}
+		).click(removeImage);
+
+		item.children(".download").button(
+			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
+		).click(downloadImage);
 	};
 
 	var downloadImage = function(event, ui)
@@ -287,68 +237,12 @@
 		$(event.delegateTarget).parent().remove();
 	};
 
-	p.generateConfig = function()
-	{
-		var output = {};
-		
-		//particle settings
-		output.alpha = {start: $("#alphaStart").slider("value"), end: $("#alphaEnd").slider("value")};
-		output.scale = {start: $("#scaleStart").spinner("value"), end: $("#scaleEnd").spinner("value")};
-		output.color = {start: $("#colorStart").val(), end: $("#colorEnd").val()};
-		output.speed = {start: $("#speedStart").spinner("value"), end: $("#speedEnd").spinner("value")};
-		output.startRotation = {min: $("#startRotationMin").spinner("value"), max: $("#startRotationMax").spinner("value")};
-		output.rotationSpeed = {min: $("#rotationSpeedMin").spinner("value"), max: $("#rotationSpeedMax").spinner("value")};
-		output.lifetime = {min: $("#lifeMin").spinner("value"), max: $("#lifeMax").spinner("value")};
-		var val = $("#customEase").val();
-		if(val)
-		{
-			try{
-				/* jshint ignore:start */
-				eval("val = " + val + ";");
-				/* jshint ignore:end */
-				if(val && typeof val != "string")
-					output.ease = val;
-			}
-			catch(e)
-			{
-			}
-		}
-		//emitter settings
-		output.frequency = $("#emitFrequency").spinner("value");
-		output.emitterLifetime = $("#emitLifetime").spinner("value");
-		output.maxParticles = $("#emitMaxParticles").spinner("value");
-		output.pos = {x: $("#emitSpawnPosX").spinner("value"), y: $("#emitSpawnPosY").spinner("value")};
-		output.addAtBack = $("#emitAddAtBack").prop("checked");
-		//spawn type stuff
-		var spawnType = output.spawnType = $("#emitSpawnType option:selected").val();
-		if(spawnType == "rect")
-			output.spawnRect = {x: $("#emitRectX").spinner("value"), y: $("#emitRectY").spinner("value"),
-								w: $("#emitRectW").spinner("value"), h: $("#emitRectH").spinner("value")};
-		else if(spawnType == "circle")
-			output.spawnCircle = {x: $("#emitCircleX").spinner("value"), y: $("#emitCircleY").spinner("value"),
-								r: $("#emitCircleR").spinner("value")};
-		else if(spawnType == "burst")
-		{
-			output.particlesPerWave = $("#emitParticlesPerWave").spinner("value");
-			output.particleSpacing = $("#emitParticleSpacing").spinner("value");
-			output.angleStart = $("#emitAngleStart").spinner("value");
-		}
-		return output;
-	};
-
-	p.downloadConfig = function()
-	{
-		//could use "data:application/octet-stream;charset=utf-8,", but it just names the file "download"
-		//by merely opening it, the download can be named in the save dialog
-		var exportData = "data:text/json;charset=utf-8,";
-		exportData += JSON.stringify(this.generateConfig(), null, "\t");
-		var encodedUri = encodeURI(exportData);
-		window.open(encodedUri);
-	};
-
 	p.loadFromUI = function()
 	{
-		this.loadSettings(this.getTexturesFromImageList(), this.generateConfig());
+		this.loadSettings(
+			this.getTexturesFromImageList(), 
+			this.ui.get()
+		);
 	};
 
 	p.getTexturesFromImageList = function()
