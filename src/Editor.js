@@ -39,6 +39,7 @@
 		this.onMouseIn = this.onMouseIn.bind(this);
 		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
 
 		jqImageDiv = $(".particleImage");
 		jqImageDiv.remove();
@@ -90,6 +91,8 @@
 	{
 		stage.interactionManager.stageIn = this.onMouseIn;
 		stage.interactionManager.stageOut = this.onMouseOut;
+		stage.mouseup = this.onMouseUp;
+
 		this.on("update", this.update.bind(this));
 
 		$("#refresh").click(this.loadFromUI.bind(this));
@@ -280,6 +283,13 @@
 			if(emitterEnableTimer <= 0)
 				emitter.emit = true;
 		}
+	};
+
+	p.onMouseUp = function()
+	{
+		emitter.resetPositionTracking();
+		emitter.emit = true;
+		emitterEnableTimer = 0;
 	};
 
 	p.onMouseIn = function()

@@ -63,6 +63,7 @@ textarea {
 	right:400px;
 	#framerate {
 		position:absolute;
+		padding:4px;
 	}
 }
 
@@ -89,7 +90,8 @@ textarea {
 		float:left;
 		width:228px;
 		.ui-widget {
-			display: inline-block;
+			display:block;
+			float:left;
 		}
 		.ui-spinner {
 			margin-right: 10px;
@@ -98,9 +100,11 @@ textarea {
 			margin-bottom:5px;
 		}
 		.label {
+			padding-top:5px;
 			width:40px;
 			margin:0;
-			display:inline-block;
+			display:block;
+			float:left;
 			text-transform: uppercase;
 			font-size:80%;
 			color:#666;
@@ -174,41 +178,47 @@ textarea {
 	border: 1px solid #aaa;
 	padding: 4px;
 	margin-right: 5px;
+	float:left;
+	display:block;
 }
 
 .particleImage {
 	position: relative;
 	display: inline-block;
-}
-
-.particleImage button {
-	position: absolute;
-	top: 0px;
-	width: 16px !important;
-	height: 16px;
-	z-index:1;
-	display: none;
-}
-
-.particleImage button .ui-button-text {
-	display: none;
-}
-
-.particleImage button .ui-icon {
-	margin-top: -8px;
-	margin-left: -8px;
-}
-
-.particleImage .remove {
-	right: 0px;
-}
-
-.particleImage .download {
-	right: 20px;
-}
-
-.particleImage:hover button {
-	display: block;
+	.actualImage {
+		width: 32px;
+		height: 32px;
+		background-color: #999;
+		border-radius: 4px;
+		margin: 0 2px;
+		padding: 4px;
+	}
+	button {
+		position: absolute;
+		top: 0px;
+		width: 16px !important;
+		height: 16px;
+		z-index:1;
+		display: none;
+		.ui-button-text {
+			display: none;
+		}
+		.ui-icon {
+			margin-top: -8px;
+			margin-left: -8px;
+		}
+	}
+	.remove {
+		right: 2px;
+		top:22px;
+	}
+	.download {
+		right: 22px;
+		top:22px;
+	}
+	&:hover button {
+		display: block;
+	}
 }
 
 #defaultImageSelector {
