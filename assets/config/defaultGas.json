@@ -4,7 +4,7 @@
 		"end": 0
 	},
 	"scale": {
-		"start": 1,
+		"start": 2,
 		"end": 0.4
 	},
 	"color": {
@@ -34,11 +34,11 @@
 		"x": 0,
 		"y": 0
 	},
-	"addAtBack": false,
+	"addAtBack": true,
 	"spawnType": "circle",
 	"spawnCircle": {
 		"x": 0,
 		"y": 0,
-		"r": null
+		"r": 150
 	}
 }
