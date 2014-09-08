@@ -1,10 +1,10 @@
 {
 	"alpha": {
 		"start": 0.4,
-		"end": 0.1
+		"end": 0
 	},
 	"scale": {
-		"start": 0.5,
+		"start": 1,
 		"end": 0.4
 	},
 	"color": {
@@ -39,6 +39,6 @@
 	"spawnCircle": {
 		"x": 0,
 		"y": 0,
-		"r": 150
+		"r": null
 	}
 }
