@@ -25,13 +25,9 @@
 		emitterEnableTimer = 0,
 		particleDefaults = {},
 		particleDefaultImages = {},
-		particleDefaultImageUrls = {};
-
-	var defaultNames = ["trail", "flame", "gas", "explosion", "explosion2", "megamanDeath", "rain"];
-	var defaultImages = ["assets/images/particle.png", "assets/images/smokeparticle.png", "assets/images/rain.png"];
-	
-	var jqImageDiv = null;
-	
+		particleDefaultImageUrls = {},
+		jqImageDiv = null;
+		
 	p.init = function()
 	{
 		this.ui = new EditorInterface(["point", "circle", "rect", "burst"]);
@@ -39,6 +35,7 @@
 		this.onMouseIn = this.onMouseIn.bind(this);
 		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
 
 		jqImageDiv = $(".particleImage");
 		jqImageDiv.remove();
@@ -53,6 +50,7 @@
 			new LoadTask("explosion2", "assets/config/explosion2.json", this.onConfigLoaded),
 			new LoadTask("megamanDeath", "assets/config/megamanDeath.json", this.onConfigLoaded),
 			new LoadTask("rain", "assets/config/rain.json", this.onConfigLoaded),
+			new LoadTask("pixieDust", "assets/config/pixieDust.json", this.onConfigLoaded),
 			new PixiTask("particle", [
 					"assets/images/particle.png", 
 					"assets/images/smokeparticle.png", 
@@ -72,24 +70,35 @@
 	{
 		particleDefaultImageUrls.trail = ["assets/images/particle.png"];
 		particleDefaultImages.trail = [PIXI.Texture.fromImage("particle")];
+
 		particleDefaultImageUrls.flame = ["assets/images/particle.png"];
 		particleDefaultImages.flame = [PIXI.Texture.fromImage("particle")];
+
 		particleDefaultImageUrls.gas = ["assets/images/smokeparticle.png"];
 		particleDefaultImages.gas = [PIXI.Texture.fromImage("smokeparticle")];
+
 		particleDefaultImageUrls.explosion = ["assets/images/particle.png"];
 		particleDefaultImages.explosion = [PIXI.Texture.fromImage("particle")];
+
 		particleDefaultImageUrls.explosion2 = ["assets/images/particle.png"];
 		particleDefaultImages.explosion2 = [PIXI.Texture.fromImage("particle")];
+
 		particleDefaultImageUrls.megamanDeath = ["assets/images/particle.png"];
 		particleDefaultImages.megamanDeath = [PIXI.Texture.fromImage("particle")];
+		
 		particleDefaultImageUrls.rain = ["assets/images/rain.png"];
 		particleDefaultImages.rain = [PIXI.Texture.fromImage("rain")];
+
+		particleDefaultImageUrls.pixieDust = ["assets/images/particle.png"];
+		particleDefaultImages.pixieDust = [PIXI.Texture.fromImage("particle")];
 	};
 	
 	p._onCompletedLoad = function()
 	{
 		stage.interactionManager.stageIn = this.onMouseIn;
 		stage.interactionManager.stageOut = this.onMouseOut;
+		stage.mouseup = this.onMouseUp;
+
 		this.on("update", this.update.bind(this));
 
 		$("#refresh").click(this.loadFromUI.bind(this));
@@ -280,6 +289,13 @@
 			if(emitterEnableTimer <= 0)
 				emitter.emit = true;
 		}
+	};
+
+	p.onMouseUp = function()
+	{
+		emitter.resetPositionTracking();
+		emitter.emit = true;
+		emitterEnableTimer = 0;
 	};
 
 	p.onMouseIn = function()
