@@ -16,7 +16,7 @@
 		"components/cloudkid-framework/dist/cloudkid-framework.js",
 		"components/cloudkid-tasks/dist/cloudkid-tasks.js",
 		"components/cloudkid-pixi-display/dist/cloudkid-pixi-display.js",
-		"components/cloudkid-particles/dist/cloudkid-particles.js",
+		"components/pixi-particles/dist/pixi-particles.js",
 		"components/filesaver/FileSaver.js"
 	]
 }

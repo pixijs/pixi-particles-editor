@@ -9,7 +9,7 @@
 		"cloudkid-framework": "*",
 		"cloudkid-tasks": "framework",
 		"cloudkid-pixi-display": "*",
-		"cloudkid-particles": "*",
+		"pixi-particles": "*",
 		"normalize.css": "*"
 	}
 }
