@@ -40,7 +40,21 @@
 			"emitCircleR",
 			"emitParticlesPerWave",
 			"emitParticleSpacing",
-			"emitAngleStart"
+			"emitAngleStart",
+			"defaultConfigSelector",
+			"defaultImageSelector",
+			"configUpload",
+			"configPaste",
+			"imageUpload",
+			"imageDialog",
+			"imageList",
+			"refresh",
+			"loadConfig",
+			"downloadConfig",
+			"configDialog",
+			"addImage",
+			"stageColor", 
+			"content"
 		];
 
 		for (var i = 0; i < elements.length; i++)
@@ -48,8 +62,7 @@
 			this[elements[i]] = $("#"+elements[i]);
 		}
 
-		$("#downloadConfig").click(this.download.bind(this));
-
+		this.downloadConfig.click(this.download.bind(this));
 		this.init();
 	};
 
@@ -57,15 +70,17 @@
 
 	p.init = function()
 	{
+		var self = this;
+
 		//enable tooltips for any element with a title attribute
 		//$(document).tooltip();
 
 		//enable the buttons at the top
-		$("#refresh").button({icons:{primary:"ui-icon-arrowrefresh-1-s"}});
-		$("#loadConfig").button({icons:{primary:"ui-icon-folder-open"}});
+		this.refresh.button({icons:{primary:"ui-icon-arrowrefresh-1-s"}});
+		this.loadConfig.button({icons:{primary:"ui-icon-folder-open"}});
 
 		//$("#clipboard").button({icons:{primary:"ui-icon-copy"}});
-		$("#downloadConfig").button({icons:{primary:"ui-icon-arrowthickstop-1-s"}});
+		this.downloadConfig.button({icons:{primary:"ui-icon-arrowthickstop-1-s"}});
 
 		//enable all unit sliders (0-1)
 		$(".unitSlider").slider({
@@ -117,23 +132,25 @@
 			parts: ["header", "map", "bar", "hsv", "rgb", "hex", "preview", "footer"],
 			showOn: "both",
 			buttonColorize: true,
+			okOnEnter: true,
 			revert: true,
 			mode: "h",
 			buttonImage: "assets/js/colorpicker/images/ui-colorpicker.png"
 		});
 
 		//enable image upload dialog
-		$("#addImage").button();
-		$("#addImage").click(function(event) {
-			$("#defaultImageSelector").find("option:contains('-Default Images-')").prop("selected",true);
-			$("#defaultImageSelector").selectmenu("refresh");
-			$("#imageUpload").wrap('<form>').parent('form').trigger('reset');
-			$("#imageUpload").unwrap();
-			$("#imageDialog").dialog("open");
-			event.preventDefault();
-		});
+		this.addImage
+			.button()
+			.click(function(event) {
+				self.defaultImageSelector.find("option:contains('-Default Images-')").prop("selected",true);
+				self.defaultImageSelector.selectmenu("refresh");
+				self.imageUpload.wrap('<form>').parent('form').trigger('reset');
+				self.imageUpload.unwrap();
+				self.imageDialog.dialog("open");
+				event.preventDefault();
+			});
 
-		$("#imageDialog").dialog({
+		this.imageDialog.dialog({
 			autoOpen: false,
 			width: 400,
 			buttons: [
@@ -146,20 +163,22 @@
 			]
 		});
 
-		$("#defaultImageSelector").selectmenu();
+		this.defaultImageSelector.selectmenu();
 
 		//enable config upload dialog
-		$("#loadConfig").click(function(event) {
-			$("#defaultConfigSelector").find("option:contains('-Default Emitters-')").prop("selected",true);
-			$("#defaultConfigSelector").selectmenu("refresh");
-			$("#configUpload").wrap('<form>').parent('form').trigger('reset');
-			$("#configUpload").unwrap();
-			$("#configPaste").val("");
-			$("#configDialog").dialog("open");
+		this.loadConfig.click(function(event) {
+			self.defaultConfigSelector
+				.find("option:contains('-Default Emitters-')")
+				.prop("selected",true);
+			self.defaultConfigSelector.selectmenu("refresh");
+			self.configUpload.wrap('<form>').parent('form').trigger('reset');
+			self.configUpload.unwrap();
+			self.configPaste.val("");
+			self.configDialog.dialog("open");
 			event.preventDefault();
 		});
 
-		$("#configDialog").dialog({
+		this.configDialog.dialog({
 			autoOpen: false,
 			width: 400,
 			buttons: [
@@ -172,15 +191,15 @@
 			]
 		});
 
-		$("#defaultConfigSelector").selectmenu();
+		this.defaultConfigSelector.selectmenu();
 
 		var spawnTypes = this.spawnTypes;
 
 		//enable spawn type stuff
-		$("#emitSpawnType").selectmenu({
+		this.emitSpawnType.selectmenu({
 			select: function(event, ui)
 			{
-				var value = $("#emitSpawnType").val();
+				var value = self.emitSpawnType.val();
 				for(var i = 0; i < spawnTypes.length; ++i)
 				{
 					if(spawnTypes[i] == value)
@@ -188,6 +207,14 @@
 					else
 						$(".settings-" + spawnTypes[i]).hide();
 				}
+			}
+		});
+
+		// Update the background color
+		this.stageColor.colorpicker({
+			select : function(e, data)
+			{
+				self.content.css("backgroundColor", "#" + data.formatted);
 			}
 		});
 	};
@@ -249,7 +276,7 @@
 		this.emitRectH.spinner("value", config.spawnRect ? config.spawnRect.h : 0);
 		this.emitCircleX.spinner("value", config.spawnCircle ? config.spawnCircle.x : 0);
 		this.emitCircleY.spinner("value", config.spawnCircle ? config.spawnCircle.y : 0);
-		this.emitCircleR.spinner("value", config.spawnCircle ? config.spawnCircle.R : 0);
+		this.emitCircleR.spinner("value", config.spawnCircle ? config.spawnCircle.r : 0);
 		this.emitParticlesPerWave.spinner("value", config.particlesPerWave > 0 ? config.particlesPerWave : 1);
 		this.emitParticleSpacing.spinner("value", config.particleSpacing ? config.particleSpacing : 0);
 		this.emitAngleStart.spinner("value", config.angleStart ? config.angleStart : 0);

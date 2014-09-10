@@ -61,9 +61,30 @@ textarea {
 	left:0;
 	bottom:0;
 	right:400px;
+	background-color:#999;
 	#framerate {
 		position:absolute;
-		padding:4px;
+		padding: 4px 8px;
+		background: rgba(0,0,0,0.3);
+		color: rgba(255,255,255,0.8);
+		font-family:"Lucida Console", Monaco, monospace;
+		letter-spacing:1px;
+		font-size: 10px;
+	}
+	#stageColorContainer {
+		position:absolute;
+		right:10px;
+		bottom:10px;
+		input {
+			visibility: hidden;
+		}
+	}
+}
+
+body.loading {
+	#editor *,
+	#content * {
+		display:none
 	}
 }
 

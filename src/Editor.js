@@ -10,6 +10,7 @@
 		TaskManager = cloudkid.TaskManager,
 		Emitter = cloudkid.Emitter,
 		Application = cloudkid.Application,
+		MediaLoader = cloudkid.MediaLoader,
 		EditorInterface = cloudkid.EditorInterface;
 	
 	var Editor = function(options)
@@ -30,8 +31,6 @@
 		
 	p.init = function()
 	{
-		this.ui = new EditorInterface(["point", "circle", "rect", "burst"]);
-
 		this.onMouseIn = this.onMouseIn.bind(this);
 		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
@@ -42,21 +41,36 @@
 
 		stage = this.display.stage;
 		
-		var tasks = [
-			new LoadTask("trail", "assets/config/defaultTrail.json", this.onConfigLoaded),
-			new LoadTask("flame", "assets/config/defaultFlame.json", this.onConfigLoaded),
-			new LoadTask("gas", "assets/config/defaultGas.json", this.onConfigLoaded),
-			new LoadTask("explosion", "assets/config/explosion.json", this.onConfigLoaded),
-			new LoadTask("explosion2", "assets/config/explosion2.json", this.onConfigLoaded),
-			new LoadTask("megamanDeath", "assets/config/megamanDeath.json", this.onConfigLoaded),
-			new LoadTask("rain", "assets/config/rain.json", this.onConfigLoaded),
-			new LoadTask("pixieDust", "assets/config/pixieDust.json", this.onConfigLoaded),
-			new PixiTask("particle", [
-					"assets/images/particle.png", 
-					"assets/images/smokeparticle.png", 
-					"assets/images/rain.png"
-				], this.onTexturesLoaded)
-		];
+		MediaLoader.instance.load(
+			"assets/config/config.json", 
+			this.onInitialized.bind(this)
+		);
+	};
+
+	p.onInitialized = function(result)
+	{
+		$("body").removeClass('loading');
+
+		this.config = result.content;
+		this.ui = new EditorInterface(this.config.spawnTypes);
+
+		var tasks = [],
+			images = [],
+			emitter;
+
+		// Load the emitters
+		for (var i = 0; i < this.config.emitters.length; i++)
+		{
+			emitter = this.config.emitters[i];
+			tasks.push(new LoadTask(emitter.id, emitter.config, this.onConfigLoaded));
+		}
+
+		// Load the images
+		for (var id in this.config.images)
+		{
+			images.push(this.config.images[id]);
+		}
+		tasks.push(new PixiTask("particle", images, this.onTexturesLoaded.bind(this)));
 		
 		TaskManager.process(tasks, this._onCompletedLoad.bind(this));
 	};
@@ -68,29 +82,25 @@
 
 	p.onTexturesLoaded = function()
 	{
-		particleDefaultImageUrls.trail = ["assets/images/particle.png"];
-		particleDefaultImages.trail = [PIXI.Texture.fromImage("particle")];
+		// Load the emitters
+		var emitter,
+			image,
+			id,
+			images = this.config.images;
+		for (var i = 0; i < this.config.emitters.length; i++)
+		{
+			emitter = this.config.emitters[i];
+			id = emitter.id;
 
-		particleDefaultImageUrls.flame = ["assets/images/particle.png"];
-		particleDefaultImages.flame = [PIXI.Texture.fromImage("particle")];
-
-		particleDefaultImageUrls.gas = ["assets/images/smokeparticle.png"];
-		particleDefaultImages.gas = [PIXI.Texture.fromImage("smokeparticle")];
-
-		particleDefaultImageUrls.explosion = ["assets/images/particle.png"];
-		particleDefaultImages.explosion = [PIXI.Texture.fromImage("particle")];
-
-		particleDefaultImageUrls.explosion2 = ["assets/images/particle.png"];
-		particleDefaultImages.explosion2 = [PIXI.Texture.fromImage("particle")];
-
-		particleDefaultImageUrls.megamanDeath = ["assets/images/particle.png"];
-		particleDefaultImages.megamanDeath = [PIXI.Texture.fromImage("particle")];
-		
-		particleDefaultImageUrls.rain = ["assets/images/rain.png"];
-		particleDefaultImages.rain = [PIXI.Texture.fromImage("rain")];
-
-		particleDefaultImageUrls.pixieDust = ["assets/images/particle.png"];
-		particleDefaultImages.pixieDust = [PIXI.Texture.fromImage("particle")];
+			particleDefaultImageUrls[id] = [];
+			particleDefaultImages[id] = [];
+			for (var j = 0; j < emitter.images.length; j++)
+			{
+				image = emitter.images[j];
+				particleDefaultImageUrls[id].push(images[image]);
+				particleDefaultImages[id].push(PIXI.Texture.fromImage(image));
+			}
+		}
 	};
 	
 	p._onCompletedLoad = function()
@@ -99,21 +109,20 @@
 		stage.interactionManager.stageOut = this.onMouseOut;
 		stage.mouseup = this.onMouseUp;
 
-		this.on("update", this.update.bind(this));
-
-		$("#refresh").click(this.loadFromUI.bind(this));
-
-		$("#defaultImageSelector").on("selectmenuselect", this.loadImage.bind(this, "select"));
-		$("#imageUpload").change(this.loadImage.bind(this, "upload"));
-		$("#defaultConfigSelector").on("selectmenuselect", this.loadConfig.bind(this, "default"));
-		$("#configUpload").change(this.loadConfig.bind(this, "upload"));
-		$("#configPaste").on('paste', this.loadConfig.bind(this, "paste"));
+		this.ui.refresh.click(this.loadFromUI.bind(this));
+		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
+		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
+		this.ui.defaultConfigSelector.on("selectmenuselect", this.loadConfig.bind(this, "default"));
+		this.ui.configUpload.change(this.loadConfig.bind(this, "upload"));
+		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
 
 		emitter = new Emitter(stage);
 
-		this.loadDefault("trail");
+		var hash = window.location.hash.replace("#", '');
+		this.loadDefault(hash || this.config.default);
 
-		this.on('resize', this._centerEmitter.bind(this));
+		this.on('resize', this._centerEmitter.bind(this))
+			.on("update", this.update.bind(this));
 	};
 
 	p.loadDefault = function(name)
@@ -121,7 +130,10 @@
 		if(!name)
 			name = trail;
 
-		$("#imageList").children().remove();
+		window.location.hash = "#" + name;
+
+		this.ui.imageList.children().remove();
+
 		var imageUrls = particleDefaultImageUrls[name];
 		for(var i = 0; i < imageUrls.length; ++i)
 			this.addImage(imageUrls[i]);
@@ -129,32 +141,30 @@
 		this.ui.set(particleDefaults[name]);
 	};
 
-	p.loadConfig = function(type, event, ui)
+	p.loadConfig = function(type, event)
 	{
+		var ui = this.ui;
 		if(type == "default")
 		{
-			var value = $("#defaultConfigSelector").val();
+			var value = ui.defaultConfigSelector.val();
 			if(value == "-Default Emitters-")
 				return;
 			this.loadDefault(value);
-			$("#configDialog").dialog("close");
+			ui.configDialog.dialog("close");
 		}
 		else if(type == "paste")
 		{
-			var elem = $("#configPaste");
+			var elem = ui.configPaste;
 			setTimeout(function()
 			{
-				try
-				{
+				try	{
 					/* jshint ignore:start */
 					eval("var obj = " + elem.val() + ";");
 					/* jshint ignore:end */
-					this.ui.set(obj);
+					ui.set(obj);
 				}
-				catch(e)
-				{
-				}
-				$("#configDialog").dialog("close");//close the dialog after the delay
+				catch(e){}
+				ui.configDialog.dialog("close");//close the dialog after the delay
 			}.bind(this), 10);
 		}
 		else if(type == "upload")
@@ -162,16 +172,13 @@
 			var files = event.originalEvent.target.files;
 			var onloadend = function(readerObj)
 			{
-				try
-				{
+				try {
 					/* jshint ignore:start */
 					eval("var obj = " + readerObj.result + ";");
 					/* jshint ignore:end */
-					this.ui.set(obj);
+					ui.set(obj);
 				}
-				catch(e)
-				{
-				}
+				catch(e){}
 			};
 			for (var i = 0; i < files.length; i++)
 			{
@@ -180,15 +187,15 @@
 				reader.onloadend = onloadend.bind(this, reader);
 				reader.readAsText(file);
 			}
-			$("#configDialog").dialog("close");
+			ui.configDialog.dialog("close");
 		}
 	};
 
-	p.loadImage = function(type, event, ui)
+	p.loadImage = function(type, event)
 	{
 		if(type == "select")
 		{
-			var value = $("#defaultImageSelector").val();
+			var value = this.ui.defaultImageSelector.val();
 			if(value == "-Default Images-")
 				return;
 			this.addImage(value);
@@ -210,7 +217,7 @@
 				reader.readAsDataURL(file);
 			}
 		}
-		$("#imageDialog").dialog("close");
+		this.ui.imageDialog.dialog("close");
 	};
 
 	p.addImage = function(src)
@@ -224,7 +231,7 @@
 		}
 		var item = jqImageDiv.clone();
 		item.children("img").prop("src", src);
-		$("#imageList").append(item);
+		this.ui.imageList.append(item);
 
 		item.children(".remove").button(
 			{icons:{primary:"ui-icon-close"}, text:false}
@@ -235,13 +242,13 @@
 		).click(downloadImage);
 	};
 
-	var downloadImage = function(event, ui)
+	var downloadImage = function(event)
 	{
 		var src = $(event.delegateTarget).siblings("img").prop("src");
 		window.open(src);
 	};
 
-	var removeImage = function(event, ui)
+	var removeImage = function(event)
 	{
 		$(event.delegateTarget).parent().remove();
 	};
@@ -257,7 +264,7 @@
 	p.getTexturesFromImageList = function()
 	{
 		var images = [];
-		var children = $("#imageList").find("img");
+		var children = this.ui.imageList.find("img");
 		if(children.length === 0)
 			return null;
 		children.each(function() { images.push($(this).prop("src")); });

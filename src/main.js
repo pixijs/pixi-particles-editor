@@ -10,8 +10,8 @@
 		display: cloudkid.PixiDisplay,
 		displayOptions: {
 			clearView: true,
-			transparent: false,
-			backgroundColor: 0x999999
+			transparent: true,
+			preMultAlpha: true
 		}
 	});
 
