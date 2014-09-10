@@ -53,6 +53,7 @@
 
 		this.config = result.content;
 		this.ui = new EditorInterface(this.config.spawnTypes);
+		this.ui.on('change', this.loadFromUI.bind(this));
 
 		var tasks = [],
 			images = [],

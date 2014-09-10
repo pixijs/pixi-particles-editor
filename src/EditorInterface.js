@@ -1,11 +1,15 @@
 (function($){
 
+	var EventDispatcher = cloudkid.EventDispatcher;
+
 	/**
 	*  The class for interacting with the interface
 	*  @class EditorInterface
 	*/
 	var EditorInterface = function(spawnTypes)
 	{
+		EventDispatcher.call(this);
+
 		this.spawnTypes = spawnTypes;
 
 		var elements = [
@@ -66,11 +70,17 @@
 		this.init();
 	};
 
-	var p = EditorInterface.prototype;
+	var p = EditorInterface.prototype = Object.create(EventDispatcher.prototype);
+
+	p.changed = function()
+	{
+		this.trigger('change');
+	};
 
 	p.init = function()
 	{
 		var self = this;
+		var changed = this.changed.bind(this);
 
 		//enable tooltips for any element with a title attribute
 		//$(document).tooltip();
@@ -88,45 +98,48 @@
 			min: 0,
 			max: 1,
 			step: 0.01
-		});
+		}).on('slidechange slidestop', changed);
 
 		//set up all sliders to change their text input when they slide or
 		//or are changed externally
 		var sliders = $(".slider");
 		sliders.on("slide slidechange", function(event, ui) {
 			$(this).children("input").val(ui.value);
-		});
+		}).on('slidechange slidestop', changed);
 
 		//set up all sliders to get changed by their text inputs
 		//this also changes the text input, which clamps values in the sliders
 		$(".slider input").change(function() {
 			$(this).parent().slider("value", $(this).val().replace(/[^0-9.]+/,""));
+			changed();
 		});
+
 		//set up all spinners that can't go negative
 		$(".positiveSpinner").spinner({
 			min: 0,
 			numberFormat: "n",
 			step: 0.01
-		});
+		}).on('spinchange spinstop', changed);
 
 		//set up all spinners that can't go negative
 		$(".frequencySpinner").spinner({
 			min: 0,
 			numberFormat: "n",
 			step: 0.001
-		});
+		}).on('spinchange spinstop', changed);
 
 		//set up general spinners
 		$(".generalSpinner").spinner({
 			numberFormat: "n",
 			step: 0.1
-		});
+		}).on('spinchange spinstop', changed);
 
 		//set up integer spinners
 		$(".posIntSpinner").spinner({
 			min: 1,
 			step: 1
-		});
+		}).on('spinchange spinstop', changed);
+
 		//enable color pickers
 		$(".colorPicker").colorpicker({
 			parts: ["header", "map", "bar", "hsv", "rgb", "hex", "preview", "footer"],
@@ -135,7 +148,8 @@
 			okOnEnter: true,
 			revert: true,
 			mode: "h",
-			buttonImage: "assets/js/colorpicker/images/ui-colorpicker.png"
+			buttonImage: "assets/js/colorpicker/images/ui-colorpicker.png",
+			select: changed
 		});
 
 		//enable image upload dialog
@@ -208,7 +222,7 @@
 						$(".settings-" + spawnTypes[i]).hide();
 				}
 			}
-		});
+		}).on('selectmenuchange', changed);
 
 		// Update the background color
 		this.stageColor.colorpicker({
