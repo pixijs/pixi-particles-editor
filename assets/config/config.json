@@ -1,0 +1,51 @@
+{
+	"default" : "pixieDust",
+	"spawnTypes" : ["point", "circle", "rect", "burst"],
+	"images" : {
+		"particle" : "assets/images/particle.png",
+		"smokeparticle" : "assets/images/smokeparticle.png",
+		"rain" : "assets/images/rain.png"
+	},
+	"emitters" : [
+		{
+			"id" : "trail",
+			"config" : "assets/config/trail.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "flame",
+			"config" : "assets/config/flame.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "gas",
+			"config" : "assets/config/gas.json",
+			"images" : ["smokeparticle"]
+		},
+		{
+			"id" : "explosion",
+			"config" : "assets/config/explosion.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "explosion2",
+			"config" : "assets/config/explosion2.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "megamanDeath",
+			"config" : "assets/config/megamanDeath.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "pixieDust",
+			"config" : "assets/config/pixieDust.json",
+			"images" : ["particle"]
+		},
+		{
+			"id" : "rain",
+			"config" : "assets/config/rain.json",
+			"images" : ["rain"]
+		}
+	]
+}
