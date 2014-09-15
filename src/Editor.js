@@ -27,7 +27,8 @@
 		particleDefaults = {},
 		particleDefaultImages = {},
 		particleDefaultImageUrls = {},
-		jqImageDiv = null;
+		jqImageDiv = null,
+		particleCountDiv = null;
 		
 	p.init = function()
 	{
@@ -38,6 +39,8 @@
 
 		jqImageDiv = $(".particleImage");
 		jqImageDiv.remove();
+
+		particleCountDiv = document.getElementById("particleCount");
 
 		stage = this.display.stage;
 		
@@ -297,6 +300,8 @@
 			if(emitterEnableTimer <= 0)
 				emitter.emit = true;
 		}
+
+		particleCountDiv.innerHTML = emitter._activeParticles.length + " Particles";
 	};
 
 	p.onMouseUp = function()
