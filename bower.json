@@ -2,13 +2,9 @@
 	"name": "ParticleEditor",
 	"version": "0.0.1",
 	"dependencies": {
-		"cloudkid-debug": "*",
-		"cloudkid-namespace": "*",
 		"pixi.js": "https://github.com/CloudKidStudio/pixi.js.git#^1.6.2",
 		"filesaver": "https://github.com/eligrey/FileSaver.js.git",
 		"cloudkid-framework": "*",
-		"cloudkid-tasks": "framework",
-		"cloudkid-pixi-display": "*",
 		"pixi-particles": "*",
 		"normalize.css": "*"
 	}

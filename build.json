@@ -11,11 +11,10 @@
 		"components/normalize.css/normalize.css",
 		"components/preloadjs/lib/preloadjs.min.js",
 		"components/pixi.js/bin/pixi.dev.js",
-		"components/cloudkid-namespace/namespace.js",
-		"components/cloudkid-debug/dist/cloudkid-debug.js",
-		"components/cloudkid-framework/dist/cloudkid-framework.js",
-		"components/cloudkid-tasks/dist/cloudkid-tasks.js",
-		"components/cloudkid-pixi-display/dist/cloudkid-pixi-display.js",
+		"components/cloudkid-framework/dist/modules/debug.js",
+		"components/cloudkid-framework/dist/core.js",
+		"components/cloudkid-framework/dist/modules/tasks.js",
+		"components/cloudkid-framework/dist/modules/display-pixi.js",
 		"components/pixi-particles/dist/pixi-particles.js",
 		"components/filesaver/FileSaver.js"
 	]

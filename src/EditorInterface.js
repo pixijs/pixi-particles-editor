@@ -27,6 +27,7 @@
 			"rotationSpeedMax",
 			"lifeMin",
 			"lifeMax",
+			"blendMode",
 			"customEase",
 			"emitFrequency",
 			"emitLifetime",
@@ -152,6 +153,9 @@
 			select: changed
 		});
 
+		//enable blend mode selector
+		this.blendMode.selectmenu().on('selectmenuchange', changed);
+
 		//enable image upload dialog
 		this.addImage
 			.button()
@@ -228,7 +232,8 @@
 		this.stageColor.colorpicker({
 			select : function(e, data)
 			{
-				self.content.css("backgroundColor", "#" + data.formatted);
+				//self.content.css("backgroundColor", "#" + data.formatted);
+				cloudkid.Application.instance.display.stage.setBackgroundColor(parseInt(data.formatted, 16));
 			}
 		});
 	};
@@ -256,6 +261,21 @@
 		this.lifeMin.spinner("value", config.lifetime ? config.lifetime.min : 1);
 		this.lifeMax.spinner("value", config.lifetime ? config.lifetime.max : 1);
 		this.customEase.val(config.ease ? JSON.stringify(config.ease) : "");
+		var blendMode;
+		//ensure that the blend mode is valid
+		if(config.blendMode && cloudkid.ParticleUtils.getBlendMode())
+		{
+			//make sure the blend mode is in the format we want for our values
+			blendMode = config.blendMode.toLowerCase();
+			while(blendMode.indexOf(" ") >= 0)
+				blendMode = blendMode.replace("_");
+		}
+		else//default to normal
+		{
+			blendMode = "normal";
+		}
+		this.blendMode.find("option[value='" + blendMode + "']").prop("selected",true);
+		this.blendMode.selectmenu("refresh");
 
 		//emitter settings
 		this.emitFrequency.spinner("value", config.frequency || 0.5);
@@ -334,6 +354,7 @@
 			min: this.lifeMin.spinner("value"),
 			max: this.lifeMax.spinner("value")
 		};
+		output.blendMode = this.blendMode.val();
 		var val = this.customEase.val();
 		if(val)
 		{
