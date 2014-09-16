@@ -1,17 +1,19 @@
 (function(){
 		
 	// Import library dependencies
-	var Texture = PIXI.Texture,
-		Sprite = PIXI.Sprite,
-		Point = PIXI.Point,
-		Graphics = PIXI.Graphics,
-		PixiTask = cloudkid.PixiTask,
-		LoadTask = cloudkid.LoadTask,
-		TaskManager = cloudkid.TaskManager,
-		Emitter = cloudkid.Emitter,
-		Application = cloudkid.Application,
-		MediaLoader = cloudkid.MediaLoader,
-		EditorInterface = cloudkid.EditorInterface;
+	var Texture = include('PIXI.Texture'),
+		Sprite = include('PIXI.Sprite'),
+		Point = include('PIXI.Point'),
+		Graphics = include('PIXI.Graphics'),
+		PixiTask = include('cloudkid.PixiTask'),
+		LoadTask = include('cloudkid.LoadTask'),
+		PixiDisplay = include('cloudkid.PixiDisplay'),
+		TaskManager = include('cloudkid.TaskManager'),
+		Emitter = include('cloudkid.Emitter'),
+		Application = include('cloudkid.Application'),
+		Loader = include('cloudkid.Loader'),
+		SavedData = include('cloudkid.SavedData'),
+		EditorInterface = include('cloudkid.EditorInterface');
 	
 	var Editor = function(options)
 	{
@@ -21,7 +23,7 @@
 	// Extend the createjs container
 	var p = Editor.prototype = Object.create(Application.prototype);
 	
-	var stage,
+	var stage, 
 		emitter,
 		emitterEnableTimer = 0,
 		particleDefaults = {},
@@ -42,9 +44,25 @@
 
 		particleCountDiv = document.getElementById("particleCount");
 
-		stage = this.display.stage;
-		
-		MediaLoader.instance.load(
+		var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
+
+		var options = {
+			clearView: true,
+			backgroundColor: backgroundColor,
+			forceContext: "webgl"
+		};
+
+		// Add webgl renderer
+		this.webgl = this.addDisplay("webgl", PixiDisplay, options);
+		options.forceContext = 'canvas2d';
+
+		// Add canvas2d renderer
+		this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
+
+		// Default is stage
+		this.setRenderer("webgl");
+
+		Loader.instance.load(
 			"assets/config/config.json", 
 			this.onInitialized.bind(this)
 		);
@@ -55,8 +73,15 @@
 		$("body").removeClass('loading');
 
 		this.config = result.content;
-		this.ui = new EditorInterface(this.config.spawnTypes);
-		this.ui.on('change', this.loadFromUI.bind(this));
+		this.ui = new EditorInterface(this.config.spawnTypes)
+			.on({
+				change : this.loadFromUI.bind(this),
+				renderer : this.setRenderer.bind(this),
+				stageColor : this.stageColor.bind(this)
+			});
+
+		// Set the color
+		this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
 
 		var tasks = [],
 			images = [],
@@ -107,12 +132,12 @@
 		}
 	};
 	
+	/**
+	*  When the initial load has completed
+	*  @method _onCompletedLoad
+	*/
 	p._onCompletedLoad = function()
 	{
-		stage.interactionManager.stageIn = this.onMouseIn;
-		stage.interactionManager.stageOut = this.onMouseOut;
-		stage.mouseup = this.onMouseUp;
-
 		this.ui.refresh.click(this.loadFromUI.bind(this));
 		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
 		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
@@ -125,8 +150,52 @@
 		var hash = window.location.hash.replace("#", '');
 		this.loadDefault(hash || this.config.default);
 
-		this.on('resize', this._centerEmitter.bind(this))
-			.on("update", this.update.bind(this));
+		this.on({
+			resize : this._centerEmitter.bind(this),
+			update : this.update.bind(this)
+		});
+	};
+
+	/**
+	*  Change the stage color
+	*  @method stageColor
+	*  @param {String} color
+	*/
+	p.stageColor = function(color)
+	{
+		SavedData.write('stageColor', color);
+		this.webgl.stage.setBackgroundColor(parseInt(color, 16));
+		this.canvas2d.stage.setBackgroundColor(parseInt(color, 16));
+	};
+
+	/**
+	*  Change the renderer to use
+	*  @method setRenderer
+	*  @param {String} type Either "webgl" or "canvas2d"
+	*/
+	p.setRenderer = function(type)
+	{
+		// The other stage
+		var other = type == 'webgl' ? this.canvas2d : this.webgl;
+		other.enabled = other.visible = false;
+
+		// The selected stage
+		var display = this[type];
+
+		// Remove old mouse listener
+		if (stage)
+			stage.mousemove = null;
+
+		stage = display.stage;
+		stage.interactionManager.stageIn = this.onMouseIn;
+		stage.interactionManager.stageOut = this.onMouseOut;
+		stage.mouseup = this.onMouseUp;
+		display.enabled = display.visible = true;
+		
+		if (emitter)
+		{
+			emitter.parent = stage;
+		}
 	};
 
 	p.loadDefault = function(name)
@@ -281,6 +350,8 @@
 
 	p.loadSettings = function(images, config)
 	{
+		if (!emitter) return;
+
 		emitter.init(images, config);
 		this._centerEmitter();
 		emitterEnableTimer = 0;
@@ -288,6 +359,8 @@
 
 	p.update = function(elapsed)
 	{
+		if (!emitter) return;
+
 		emitter.update(elapsed * 0.001);
 		
 		if(!emitter.emit && emitterEnableTimer <= 0)
@@ -306,6 +379,8 @@
 
 	p.onMouseUp = function()
 	{
+		if (!emitter) return;
+
 		emitter.resetPositionTracking();
 		emitter.emit = true;
 		emitterEnableTimer = 0;
@@ -313,12 +388,16 @@
 
 	p.onMouseIn = function()
 	{
+		if (!emitter) return;
+
 		stage.mousemove = this.onMouseMove;
 		emitter.resetPositionTracking();
 	};
 
 	p._centerEmitter = function()
 	{
+		if (!emitter) return;
+
 		emitter.updateOwnerPos(
 			this.display.canvas.width / 2, 
 			this.display.canvas.height / 2
@@ -327,6 +406,8 @@
 
 	p.onMouseOut = function()
 	{
+		if (!emitter) return;
+
 		stage.mousemove = null;
 		this._centerEmitter();
 		emitter.resetPositionTracking();
@@ -334,6 +415,8 @@
 
 	p.onMouseMove = function(data)
 	{
+		if (!emitter) return;
+
 		emitter.updateOwnerPos(data.global.x, data.global.y);
 	};
 	

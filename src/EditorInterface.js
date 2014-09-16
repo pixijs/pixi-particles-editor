@@ -1,6 +1,6 @@
 (function($){
 
-	var EventDispatcher = cloudkid.EventDispatcher;
+	var EventDispatcher = include('cloudkid.EventDispatcher');
 
 	/**
 	*  The class for interacting with the interface
@@ -59,7 +59,8 @@
 			"configDialog",
 			"addImage",
 			"stageColor", 
-			"content"
+			"content",
+			"renderer"
 		];
 
 		for (var i = 0; i < elements.length; i++)
@@ -81,6 +82,7 @@
 	p.init = function()
 	{
 		var self = this;
+		var app = cloudkid.Application.instance;
 		var changed = this.changed.bind(this);
 
 		//enable tooltips for any element with a title attribute
@@ -151,6 +153,11 @@
 			mode: "h",
 			buttonImage: "assets/js/colorpicker/images/ui-colorpicker.png",
 			select: changed
+		});
+
+		this.renderer.buttonset().find('input').change(function(){
+			self.trigger('renderer', this.value);
+			changed();
 		});
 
 		//enable blend mode selector
@@ -232,10 +239,11 @@
 		this.stageColor.colorpicker({
 			select : function(e, data)
 			{
-				//self.content.css("backgroundColor", "#" + data.formatted);
-				cloudkid.Application.instance.display.stage.setBackgroundColor(parseInt(data.formatted, 16));
+				self.trigger('stageColor', data.formatted);
 			}
 		});
+
+		//this.stageColor.colorpicker("setColor", stageColor);
 	};
 
 	/**

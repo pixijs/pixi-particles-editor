@@ -1,19 +1,12 @@
 (function(){
 
-	new cloudkid.Editor({
+	var app = new cloudkid.Editor({
 		framerate: "framerate",
 		fps: 60,
 		raf: true,
+		debug: DEBUG,
 		resizeElement: "content",
-		uniformResize: false,
-		canvasId: "stage",
-		display: cloudkid.PixiDisplay,
-		displayOptions: {
-			clearView: true,
-			transparent: false,
-			preMultAlpha: false,
-			backgroundColor: 0x999999
-		}
+		uniformResize: false
 	});
 
 }());
