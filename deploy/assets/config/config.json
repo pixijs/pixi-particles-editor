@@ -23,6 +23,11 @@
 			"images" : ["smokeparticle"]
 		},
 		{
+			"id" : "smoke",
+			"config" : "assets/config/smoke.json",
+			"images" : ["smokeparticle"]
+		},
+		{
 			"id" : "explosion",
 			"config" : "assets/config/explosion.json",
 			"images" : ["particle"]
