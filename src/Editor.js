@@ -114,8 +114,14 @@
 			images.push(this.config.images[id]);
 		}
 
+		var customImages;
 		// Add any custom images
-		var customImages = SavedData.read('customImages');
+		try
+		{
+			customImages = SavedData.read('customImages');
+		}
+		catch(err){}
+		
 		if (customImages)
 		{
 			for (i = 0; i < customImages.length; i++)
@@ -179,8 +185,15 @@
 		emitter = new Emitter(stage);
 
 		var hash = window.location.hash.replace("#", '');
-		var config = SavedData.read('customConfig');
-		var images = SavedData.read('customImages');
+
+		var config, images;
+
+		try
+		{
+			config = SavedData.read('customConfig');
+			images = SavedData.read('customImages');
+		}
+		catch(e){}		
 
 		if (hash)
 		{
@@ -263,7 +276,7 @@
 		this.ui.imageList.children().remove();
 
 		var imageUrls = particleDefaultImageUrls[name];
-		
+
 		// Save the current custom images
 		SavedData.write('customImages', imageUrls);
 
