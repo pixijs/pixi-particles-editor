@@ -23,8 +23,10 @@
 	// Extend the createjs container
 	var p = Editor.prototype = Object.create(Application.prototype);
 	
-	var stage, 
+	var stage,
+		backgroundSprite,
 		emitter,
+		emitterContainer,
 		emitterEnableTimer = 0,
 		particleDefaults = {},
 		particleDefaultImages = {},
@@ -48,6 +50,11 @@
 
 		var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
 
+		backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
+		backgroundSprite.tint = backgroundColor;
+
+		emitterContainer = new PIXI.DisplayObjectContainer();
+
 		var options = {
 			clearView: true,
 			backgroundColor: backgroundColor,
@@ -68,6 +75,17 @@
 			"assets/config/config.json", 
 			this.onInitialized.bind(this)
 		);
+
+		backgroundSprite.scale.x = this.webgl.width;
+		backgroundSprite.scale.y = this.webgl.height;
+
+		this.on("resize", this.onResize);
+	};
+
+	p.onResize = function(w, h)
+	{
+		backgroundSprite.scale.x = w;
+		backgroundSprite.scale.y = h;
 	};
 
 	/**
@@ -99,13 +117,13 @@
 
 		var tasks = [],
 			images = [],
-			emitter;
+			emitterData;
 
 		// Load the emitters
 		for (var i = 0; i < this.config.emitters.length; i++)
 		{
-			emitter = this.config.emitters[i];
-			tasks.push(new LoadTask(emitter.id, emitter.config, this.onConfigLoaded));
+			emitterData = this.config.emitters[i];
+			tasks.push(new LoadTask(emitterData.id, emitterData.config, this.onConfigLoaded));
 		}
 
 		// Load the images
@@ -155,21 +173,21 @@
 	p.onTexturesLoaded = function()
 	{
 		// Load the emitters
-		var emitter,
+		var emitterData,
 			image,
 			id,
 			images = this.config.images;
 
 		for (var i = 0; i < this.config.emitters.length; i++)
 		{
-			emitter = this.config.emitters[i];
-			id = emitter.id;
+			emitterData = this.config.emitters[i];
+			id = emitterData.id;
 
 			particleDefaultImageUrls[id] = [];
 			particleDefaultImages[id] = [];
-			for (var j = 0; j < emitter.images.length; j++)
+			for (var j = 0; j < emitterData.images.length; j++)
 			{
-				image = emitter.images[j];
+				image = emitterData.images[j];
 				particleDefaultImageUrls[id].push(images[image]);
 				particleDefaultImages[id].push(Texture.fromImage(image));
 			}
@@ -182,7 +200,7 @@
 	*/
 	p._onCompletedLoad = function()
 	{
-		emitter = new Emitter(stage);
+		emitter = new Emitter(emitterContainer);
 
 		var hash = window.location.hash.replace("#", '');
 
@@ -228,8 +246,9 @@
 	p.stageColor = function(color)
 	{
 		SavedData.write('stageColor', color);
-		this.webgl.stage.setBackgroundColor(parseInt(color, 16));
-		this.canvas2d.stage.setBackgroundColor(parseInt(color, 16));
+		//this.webgl.stage.setBackgroundColor(parseInt(color, 16));
+		//this.canvas2d.stage.setBackgroundColor(parseInt(color, 16));
+		backgroundSprite.tint = parseInt(color, 16);
 	};
 
 	/**
@@ -255,11 +274,21 @@
 		stage.interactionManager.stageOut = this.onMouseOut;
 		stage.mouseup = this.onMouseUp;
 		display.enabled = display.visible = true;
+
+		if(backgroundSprite)
+		{
+			stage.addChild(backgroundSprite);
+		}
+
+		if(emitterContainer)
+		{
+			stage.addChild(emitterContainer);
+		}
 		
-		if (emitter)
+		/*if (emitter)
 		{
 			emitter.parent = stage;
-		}
+		}*/
 	};
 
 	/**
