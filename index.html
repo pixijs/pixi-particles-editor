@@ -19,12 +19,12 @@
     </head>
     <body class="loading">
 		<div id="content">
-			<div id="framerate"></div>
-			<div id="particleCount">0 Particles</div>
-			<div id="stageColorContainer">
-				<input id="stageColor" type="text" class="colorPicker" value="999999" />
+			<div class="stageInfo">
+				<div id="framerate">FPS: 00.000</div>
+				<div id="particleCount">000 Particles</div>
 			</div>
-			<canvas id="stage" width="800" height="500"></canvas>
+			<canvas id="webgl" width="800" height="500"></canvas>
+			<canvas id="canvas2d" width="800" height="500"></canvas>
 		</div>
 		<div id="editor">
 			<button id="refresh" title="Reloads the displayed particles from the settings below">Refresh Display</button>
@@ -134,19 +134,19 @@
 						<option value="add">Add</option>
 						<option value="multiply">Multiply</option>
 						<option value="screen">Screen</option>
-						<option value="overlay">Overlay (Canvas2D Only)</option>
-						<option value="darken">Darken (Canvas2D Only)</option>
-						<option value="lighten">Lighten (Canvas2D Only)</option>
-						<option value="color_dodge">Color Dodge (Canvas2D Only)</option>
-						<option value="color_burn">Color Burn (Canvas2D Only)</option>
-						<option value="hard_light">Hard Light (Canvas2D Only)</option>
-						<option value="soft_light">Soft Light (Canvas2D Only)</option>
-						<option value="difference">Difference (Canvas2D Only)</option>
-						<option value="exclusion">Exclusion (Canvas2D Only)</option>
-						<option value="hue">Hue (Canvas2D Only)</option>
-						<option value="saturation">Saturation (Canvas2D Only)</option>
-						<option value="color">Color (Canvas2D Only)</option>
-						<option value="luminosity">Luminosity (Canvas2D Only)</option>
+						<option value="overlay">Overlay (canvas2d only)</option>
+						<option value="darken">Darken (canvas2d only)</option>
+						<option value="lighten">Lighten (canvas2d only)</option>
+						<option value="color_dodge">Color Dodge (canvas2d only)</option>
+						<option value="color_burn">Color Burn (canvas2d only)</option>
+						<option value="hard_light">Hard Light (canvas2d only)</option>
+						<option value="soft_light">Soft Light (canvas2d only)</option>
+						<option value="difference">Difference (canvas2d only)</option>
+						<option value="exclusion">Exclusion (canvas2d only)</option>
+						<option value="hue">Hue (canvas2d only)</option>
+						<option value="saturation">Saturation (canvas2d only)</option>
+						<option value="color">Color (canvas2d only)</option>
+						<option value="luminosity">Luminosity (canvas2d only)</option>
 					</select>
 				</div>
 			</div>
@@ -213,25 +213,33 @@
 			<div id="rect" class="clearfix option settings-rect">
 				<div class="category" title="Rectangle relative to the Spawn Position inside which particles are spawned">Emission Rectangle</div>
 				<div class="fields">
-					<span class="label">X</span>
-					<input id="emitRectX" type="text" class="generalSpinner spinner" />
-					<span class="label">Y</span>
-					<input id="emitRectY" type="text" class="generalSpinner spinner" />
-					<span class="label">Width</span>
-					<input id="emitRectW" type="text" class="generalSpinner spinner" />
-					<span class="label">Height</span>
-					<input id="emitRectH" type="text" class="generalSpinner spinner" />
+					<div class="clearfix row">
+						<span class="label">X</span>
+						<input id="emitRectX" type="text" class="generalSpinner spinner" />
+						<span class="label">Y</span>
+						<input id="emitRectY" type="text" class="generalSpinner spinner" />
+					</div>
+					<div class="clearfix row">
+						<span class="label">Width</span>
+						<input id="emitRectW" type="text" class="generalSpinner spinner" />
+						<span class="label">Height</span>
+						<input id="emitRectH" type="text" class="generalSpinner spinner" />
+					</div>
 				</div>
 			</div>
 			<div id="circle" class="clearfix option settings-circle">
 				<div class="category" title="Circle relative to the Spawn Position inside which particles are spawned">Emission Circle</div>
 				<div class="fields">
-					<span class="label">X</span>
-					<input id="emitCircleX" type="text" class="generalSpinner spinner" />
-					<span class="label">Y</span>
-					<input id="emitCircleY" type="text" class="generalSpinner spinner" />
-					<span class="label">Radius</span>
-					<input id="emitCircleR" type="text" class="generalSpinner spinner" />
+					<div class="clearfix row">
+						<span class="label">X</span>
+						<input id="emitCircleX" type="text" class="generalSpinner spinner" />
+						<span class="label">Y</span>
+						<input id="emitCircleY" type="text" class="generalSpinner spinner" />
+					</div>
+					<div class="clearfix row">
+						<span class="label">Radius</span>
+						<input id="emitCircleR" type="text" class="generalSpinner spinner" />
+					</div>
 				</div>
 			</div>
 			<div id="particlesPerWave" class="clearfix option settings-burst">
@@ -265,6 +273,22 @@
 				<div class="category" title="If particles should be added to the back of the display list instead of the top">Add At Back</div>
 				<div class="fields">
 					<input id="emitAddAtBack" type="checkbox" />
+				</div>
+			</div>
+			<h3>Stage Properties</h3>
+			<div class="clearfix option">
+				<div class="category" title="Background color of the stage">Background</div>
+				<div class="fields">
+					<input id="stageColor" type="text" class="colorPicker" value="999999" />
+				</div>
+			</div>
+			<div class="clearfix option">
+				<div class="category" title="Renderer for the stage">Renderer</div>
+				<div class="fields">
+					<div id="renderer">
+						<input type="radio" name="renderer" id="webglRenderer" value="webgl" checked /><label for="webglRenderer">WebGL</label>
+						<input type="radio" name="renderer" id="canvas2dRenderer" value="canvas2d" /><label for="canvas2dRenderer">Context2D</label>
+					</div>
 				</div>
 			</div>
 			<footer>CloudKid 2014, smoke particle image from http://stemkoski.github.io/Three.js/images/smokeparticle.png</footer>
