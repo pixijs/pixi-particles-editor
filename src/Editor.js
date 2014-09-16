@@ -38,6 +38,8 @@
 		this.onMouseOut = this.onMouseOut.bind(this);
 		this.onMouseMove = this.onMouseMove.bind(this);
 		this.onMouseUp = this.onMouseUp.bind(this);
+		this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
+		this.loadFromUI = this.loadFromUI.bind(this);
 
 		jqImageDiv = $(".particleImage");
 		jqImageDiv.remove();
@@ -68,20 +70,32 @@
 		);
 	};
 
+	/**
+	*  Handler on the configuration load
+	*  @method onInitialized
+	*  @param {Loader} result
+	*/
 	p.onInitialized = function(result)
 	{
 		$("body").removeClass('loading');
 
 		this.config = result.content;
-		this.ui = new EditorInterface(this.config.spawnTypes)
-			.on({
-				change : this.loadFromUI.bind(this),
-				renderer : this.setRenderer.bind(this),
-				stageColor : this.stageColor.bind(this)
-			});
+		this.ui = new EditorInterface(this.config.spawnTypes);
+		this.ui.refresh.click(this.loadFromUI);
+		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
+		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
+		this.ui.defaultConfigSelector.on("selectmenuselect", this.loadConfig.bind(this, "default"));
+		this.ui.configUpload.change(this.loadConfig.bind(this, "upload"));
+		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
 
-		// Set the color
+		// Set the starting stage color
 		this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
+
+		this.ui.on({
+			change : this.loadFromUI,
+			renderer : this.setRenderer.bind(this),
+			stageColor : this.stageColor.bind(this)
+		});
 
 		var tasks = [],
 			images = [],
@@ -99,16 +113,39 @@
 		{
 			images.push(this.config.images[id]);
 		}
-		tasks.push(new PixiTask("particle", images, this.onTexturesLoaded.bind(this)));
-		
+
+		// Add any custom images
+		var customImages = SavedData.read('customImages');
+		if (customImages)
+		{
+			for (i = 0; i < customImages.length; i++)
+			{
+				if (images.indexOf(customImages[i]) == -1)
+				{
+					images.push(customImages[i]);
+				}
+			}
+		}
+		tasks.push(new PixiTask("particle", images, this.onTexturesLoaded));
+
 		TaskManager.process(tasks, this._onCompletedLoad.bind(this));
 	};
 
+	/**
+	*  Callback for loading the default emitter configuration files
+	*  @method onConfigLoaded
+	*  @param {LoaderResult} result
+	*  @param {LoadTask} task
+	*/
 	p.onConfigLoaded = function(result, task)
 	{
 		particleDefaults[task.id] = result.content;
 	};
 
+	/**
+	*  Callback when an image is loaded
+	*  @method onTexturesLoaded
+	*/
 	p.onTexturesLoaded = function()
 	{
 		// Load the emitters
@@ -116,6 +153,7 @@
 			image,
 			id,
 			images = this.config.images;
+
 		for (var i = 0; i < this.config.emitters.length; i++)
 		{
 			emitter = this.config.emitters[i];
@@ -127,7 +165,7 @@
 			{
 				image = emitter.images[j];
 				particleDefaultImageUrls[id].push(images[image]);
-				particleDefaultImages[id].push(PIXI.Texture.fromImage(image));
+				particleDefaultImages[id].push(Texture.fromImage(image));
 			}
 		}
 	};
@@ -138,17 +176,30 @@
 	*/
 	p._onCompletedLoad = function()
 	{
-		this.ui.refresh.click(this.loadFromUI.bind(this));
-		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
-		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
-		this.ui.defaultConfigSelector.on("selectmenuselect", this.loadConfig.bind(this, "default"));
-		this.ui.configUpload.change(this.loadConfig.bind(this, "upload"));
-		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
-
 		emitter = new Emitter(stage);
 
 		var hash = window.location.hash.replace("#", '');
-		this.loadDefault(hash || this.config.default);
+		var config = SavedData.read('customConfig');
+		var images = SavedData.read('customImages');
+
+		if (hash)
+		{
+			this.loadDefault(hash);
+		}
+		else if (config && images)
+		{
+			this.loadSettings(getTexturesFromUrls(images), config);
+			this.setConfig(config);
+
+			for(var i = 0; i < images.length; ++i)
+			{
+				this.addImage(images[i]);
+			}
+		}
+		else 
+		{
+			this.loadDefault(this.config.default);
+		}
 
 		this.on({
 			resize : this._centerEmitter.bind(this),
@@ -198,26 +249,64 @@
 		}
 	};
 
+	/**
+	*  Load the default configuration
+	*  @method loadDefault
+	*  @param {String} name The name of the configuration
+	*/
 	p.loadDefault = function(name)
 	{
 		if(!name)
 			name = trail;
 
 		window.location.hash = "#" + name;
-
 		this.ui.imageList.children().remove();
 
 		var imageUrls = particleDefaultImageUrls[name];
+		
+		// Save the current custom images
+		SavedData.write('customImages', imageUrls);
+
 		for(var i = 0; i < imageUrls.length; ++i)
+		{
 			this.addImage(imageUrls[i]);
+		}
 		this.loadSettings(particleDefaultImages[name], particleDefaults[name]);
-		this.ui.set(particleDefaults[name]);
+		this.setConfig(particleDefaults[name]);
 	};
 
+	/**
+	*  Set the configuration without triggering lots of change events
+	*  @method setConfig
+	*  @param {object} config
+	*/
+	p.setConfig = function(config)
+	{
+		this.ui.off('change');
+		this.ui.set(config);
+		this.ui.on('change', this.loadFromUI);
+	};
+
+	var getTexturesFromUrls = function(urls)
+	{
+		var images = [];
+		for(var i = 0; i < urls.length; ++i)
+		{
+			images[i] = Texture.fromImage(urls[i]);
+		}
+		return images;
+	};
+
+	/**
+	*  Handler for loading the configuration by UI
+	*  @method loadConfig
+	*  @param {String} type Either default, upload or paste
+	*  @param {Event} event Jquery event
+	*/
 	p.loadConfig = function(type, event)
 	{
 		var ui = this.ui;
-		if(type == "default")
+		if (type == "default")
 		{
 			var value = ui.defaultConfigSelector.val();
 			if(value == "-Default Emitters-")
@@ -225,7 +314,7 @@
 			this.loadDefault(value);
 			ui.configDialog.dialog("close");
 		}
-		else if(type == "paste")
+		else if (type == "paste")
 		{
 			var elem = ui.configPaste;
 			setTimeout(function()
@@ -240,7 +329,7 @@
 				ui.configDialog.dialog("close");//close the dialog after the delay
 			}.bind(this), 10);
 		}
-		else if(type == "upload")
+		else if (type == "upload")
 		{
 			var files = event.originalEvent.target.files;
 			var onloadend = function(readerObj)
@@ -264,22 +353,28 @@
 		}
 	};
 
+	/**
+	*  Load image handler
+	*  @method loadImage
+	*  @param {String} type Either select or upload
+	*/
 	p.loadImage = function(type, event)
 	{
-		if(type == "select")
+		if (type == "select")
 		{
 			var value = this.ui.defaultImageSelector.val();
-			if(value == "-Default Images-")
-				return;
+			if(value == "-Default Images-") return;
 			this.addImage(value);
+			this.loadFromUI();
 		}
-		else if(type == "upload")
+		else if (type == "upload")
 		{
 			var files = event.originalEvent.target.files;
 			
 			var onloadend = function(readerObj)
 			{
 				this.addImage(readerObj.result);
+				this.loadFromUI();
 			};
 
 			for (var i = 0; i < files.length; i++)
@@ -293,14 +388,19 @@
 		this.ui.imageDialog.dialog("close");
 	};
 
+	/**
+	*  Add an image from a filesource
+	*  @method addImage
+	*  @param {String} src Image source
+	*/
 	p.addImage = function(src)
 	{
-		if(!PIXI.Texture.fromFrame(src, true))
+		if (!PIXI.Texture.fromFrame(src, true))
 		{
-			var tasks = [
-				new PixiTask("image", [src], this.onTexturesLoaded)
-			];
-			TaskManager.process(tasks, function(){});
+			TaskManager.process(
+				[new PixiTask("image", [src], this.onTexturesLoaded)], 
+				function(){}
+			);
 		}
 		var item = jqImageDiv.clone();
 		item.children("img").prop("src", src);
@@ -308,7 +408,7 @@
 
 		item.children(".remove").button(
 			{icons:{primary:"ui-icon-close"}, text:false}
-		).click(removeImage);
+		).click(removeImage.bind(this));
 
 		item.children(".download").button(
 			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
@@ -324,30 +424,50 @@
 	var removeImage = function(event)
 	{
 		$(event.delegateTarget).parent().remove();
+		this.loadFromUI();
 	};
 
+	/**
+	*  Hnalder when the ui updates
+	*  @method loadFromUI
+	*/
 	p.loadFromUI = function()
 	{
-		this.loadSettings(
-			this.getTexturesFromImageList(), 
-			this.ui.get()
-		);
+		window.location.hash = '';
+		var config = this.ui.get();
+		var images = this.getTexturesFromImageList();
+		SavedData.write('customConfig', config);
+		this.loadSettings(images, config);
 	};
 
+	/**
+	*  Get the texture from the images list
+	*  @method getTexturesFromImageList
+	*/
 	p.getTexturesFromImageList = function()
 	{
 		var images = [];
 		var children = this.ui.imageList.find("img");
-		if(children.length === 0)
-			return null;
-		children.each(function() { images.push($(this).prop("src")); });
-		for(var i = 0; i < images.length; ++i)
-		{
-			images[i] = PIXI.Texture.fromImage(images[i]);
-		}
-		return images;
+
+		if (children.length === 0) return null;
+
+		var self = this;
+		children.each(function() { 
+			images.push(this.src); 
+		});
+
+		// Save the current image sources
+		SavedData.write('customImages', images);
+
+		return getTexturesFromUrls(images);
 	};
 
+	/**
+	*  Load the settings 
+	*  @method loadSettings
+	*  @param {array} images The collection of images
+	*  @param {object} config The emitter configuration
+	*/
 	p.loadSettings = function(images, config)
 	{
 		if (!emitter) return;
@@ -357,6 +477,11 @@
 		emitterEnableTimer = 0;
 	};
 
+	/**
+	*  Frame update
+	*  @method update
+	*  @param {int} elapsed Milliseconds since last update
+	*/
 	p.update = function(elapsed)
 	{
 		if (!emitter) return;
