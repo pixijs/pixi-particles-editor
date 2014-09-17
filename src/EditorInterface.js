@@ -163,6 +163,9 @@
 		//enable blend mode selector
 		this.blendMode.selectmenu().on('selectmenuchange', changed);
 
+		//listen to custom ease changes
+		this.customEase.on("input", changed);
+
 		//enable image upload dialog
 		this.addImage
 			.button()
@@ -271,7 +274,7 @@
 		this.customEase.val(config.ease ? JSON.stringify(config.ease) : "");
 		var blendMode;
 		//ensure that the blend mode is valid
-		if(config.blendMode && cloudkid.ParticleUtils.getBlendMode())
+		if(config.blendMode && cloudkid.ParticleUtils.getBlendMode(config.blendMode))
 		{
 			//make sure the blend mode is in the format we want for our values
 			blendMode = config.blendMode.toLowerCase();
@@ -286,7 +289,7 @@
 		this.blendMode.selectmenu("refresh");
 
 		//emitter settings
-		this.emitFrequency.spinner("value", config.frequency || 0.5);
+		this.emitFrequency.spinner("value", parseFloat(config.frequency) > 0 ? parseFloat(config.frequency) : 0.5);
 		this.emitLifetime.spinner("value", config.emitterLifetime || -1);
 		this.emitMaxParticles.spinner("value", config.maxParticles || 1000);
 		this.emitSpawnPosX.spinner("value", config.pos ? config.pos.x : 0);
@@ -375,11 +378,14 @@
 			}
 			catch(e)
 			{
+				Debug.error("Error evaluating easing data: " + e.message);
 			}
 		}
 
 		//emitter settings
-		output.frequency = this.emitFrequency.spinner("value");
+		var frequency = this.emitFrequency.spinner("value");
+		//catch 0, NaN, and negative values
+		output.frequency = parseFloat(frequency) > 0 ? parseFloat(frequency) : 0.5;
 		output.emitterLifetime = this.emitLifetime.spinner("value");
 		output.maxParticles = this.emitMaxParticles.spinner("value");
 		output.pos = {

@@ -298,7 +298,7 @@
 	*/
 	p.loadDefault = function(name)
 	{
-		if(!name)
+		if(!name || !particleDefaultImageUrls[name])
 			name = trail;
 
 		window.location.hash = "#" + name;
@@ -365,7 +365,8 @@
 					/* jshint ignore:start */
 					eval("var obj = " + elem.val() + ";");
 					/* jshint ignore:end */
-					ui.set(obj);
+					this.setConfig(obj);
+					this.loadFromUI();
 				}
 				catch(e){}
 				ui.configDialog.dialog("close");//close the dialog after the delay
@@ -374,13 +375,15 @@
 		else if (type == "upload")
 		{
 			var files = event.originalEvent.target.files;
+			var scope = this;
 			var onloadend = function(readerObj)
 			{
 				try {
 					/* jshint ignore:start */
 					eval("var obj = " + readerObj.result + ";");
 					/* jshint ignore:end */
-					ui.set(obj);
+					scope.setConfig(obj);
+					scope.loadFromUI();
 				}
 				catch(e){}
 			};
@@ -563,7 +566,7 @@
 
 	p._centerEmitter = function()
 	{
-		if (!emitter) return;
+		if (!emitter || !emitter.ownerPos) return;
 
 		emitter.updateOwnerPos(
 			this.display.canvas.width / 2, 

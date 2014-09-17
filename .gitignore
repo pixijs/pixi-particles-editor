@@ -2,3 +2,6 @@
 .grunt
 node_modules
 components
+deploy/assets/css/main.css.map
+
+deploy/assets/js/main.js.map
