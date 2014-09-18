@@ -8,8 +8,8 @@
 		"end": 0.4
 	},
 	"color": {
-		"start": "a225fe",
-		"end": "904bfe"
+		"start": "6bff61",
+		"end": "d8ff4a"
 	},
 	"speed": {
 		"start": 10,
@@ -27,12 +27,13 @@
 		"min": 2,
 		"max": 1.8
 	},
-	"frequency": 0.03,
-	"emitterLifetime": -1,
+	"blendMode": "screen",
+	"frequency": 0.01,
+	"emitterLifetime": 0,
 	"maxParticles": 1000,
 	"pos": {
-		"x": 0,
-		"y": 0
+		"x": 0.5,
+		"y": 0.5
 	},
 	"addAtBack": true,
 	"spawnType": "circle",
