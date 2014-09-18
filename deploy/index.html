@@ -7,7 +7,7 @@
         <meta name="description" content="Particle Editor">
 
         <link rel="stylesheet" href="assets/css/libraries.css">
-        <link rel="stylesheet" href="assets/css/main.css">
+        <link rel="stylesheet" href="assets/css/main.css?v=1">
 
 		<link href="assets/js/jquery-ui-smoothness/jquery-ui.min.css" rel="stylesheet">
 		<link href="assets/js/colorpicker/jquery.colorpicker.css" rel="stylesheet">
@@ -53,6 +53,7 @@
 					<option value="pixelTrail">Pixel Trail</option>
 					<option value="snow">Snow</option>
 					<option value="sparks">Sparks</option>
+					<option value="fountain">Fountain</option>
 				</select>
 				<input id="configUpload" type="file" accept='text/json' />
 				<textarea id="configPaste" class="ui-autocomplete-input" rows="5"></textarea>
@@ -82,10 +83,16 @@
 			<div id="scale" class="clearfix option">
 				<div class="category" title="Scale of the particles, with a minimum value of 0">Scale</div>
 				<div class="fields">
-					<span class="label">Start</span>
-					<input id="scaleStart" type="text" class="positiveSpinner spinner" />
-					<span class="label">End</span>
-					<input id="scaleEnd" type="text" class="positiveSpinner spinner" />
+					<div class="clearfix row">
+						<span class="label">Start</span>
+						<input id="scaleStart" type="text" class="positiveSpinner spinner" />
+						<span class="label">End</span>
+						<input id="scaleEnd" type="text" class="positiveSpinner spinner" />
+					</div>
+					<div class="clearfix row">
+						<span class="label wideLabel" title="A value between minimum scale multipler and 1 is randomly generated and multiplied with start scale and end scale to provide the actual start scale and end scale for each particle.">Minimum Scale Multiplier</span>
+						<input id="minimumScaleMultiplier" type="text" class="positiveSpinner spinner" />
+					</div>
 				</div>
 			</div>
 			<div id="color" class="clearfix option">
@@ -108,6 +115,15 @@
 					<input id="speedStart" type="text" class="generalSpinner spinner" />
 					<span class="label">End</span>
 					<input id="speedEnd" type="text" class="generalSpinner spinner" />
+				</div>
+			</div>
+			<div id="acceleration" class="clearfix option">
+				<div class="category" title="Acceleration of particles. Prevents using end speed. Without a rotation speed defined, particles will rotate to match movement direction">Acceleration</div>
+				<div class="fields">
+					<span class="label">X</span>
+					<input id="accelX" type="text" class="generalSpinner spinner" />
+					<span class="label">Y</span>
+					<input id="accelY" type="text" class="generalSpinner spinner" />
 				</div>
 			</div>
 			<div id="startRotation" class="clearfix option">
@@ -210,7 +226,7 @@
 				</div>
 			</div>
 			<div id="emitLife" class="clearfix option">
-				<div class="category" title="Lifetime of the emitter in seconds before it disables itself">Emitter Lifetime</div>
+				<div class="category" title="Lifetime of the emitter in seconds before it disables itself. Values of 0 or -1 are infinite">Emitter Lifetime</div>
 				<div class="fields">
 					<input id="emitLifetime" type="text" class="positiveSpinner spinner" />
 				</div>
@@ -315,8 +331,8 @@
 			</div>
 			<footer>CloudKid 2014, smoke particle image from http://stemkoski.github.io/Three.js/images/smokeparticle.png</footer>
 		</div>
-		<script src="assets/js/libraries.js"></script>
-		<script src="assets/js/main.js"></script>
+		<script src="assets/js/libraries.js?v=1"></script>
+		<script src="assets/js/main.js?v=1"></script>
 		<script>
 			(function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
 			(i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),

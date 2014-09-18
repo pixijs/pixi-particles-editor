@@ -36,10 +36,5 @@
 		"y": 0
 	},
 	"addAtBack": false,
-	"spawnType": "circle",
-	"spawnCircle": {
-		"x": 0,
-		"y": 0,
-		"r": 0
-	}
+	"spawnType": "point"
 }

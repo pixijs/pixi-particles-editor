@@ -17,10 +17,13 @@
 			"alphaEnd",
 			"scaleStart",
 			"scaleEnd",
+			"minimumScaleMultiplier",
 			"colorStart",
 			"colorEnd",
 			"speedStart",
 			"speedEnd",
+			"accelX",
+			"accelY",
 			"startRotationMin",
 			"startRotationMax",
 			"rotationSpeedMin",
@@ -261,10 +264,13 @@
 		this.alphaEnd.slider("value", config.alpha ? config.alpha.end : 1);
 		this.scaleStart.spinner("value", config.scale ? config.scale.start : 1);
 		this.scaleEnd.spinner("value", config.scale ? config.scale.end : 1);
+		this.minimumScaleMultiplier.spinner("value", config.scale ? (config.scale.minimumScaleMultiplier || 1) : 1);
 		this.colorStart.colorpicker("setColor", config.color ? config.color.start : "FFFFFF");
 		this.colorEnd.colorpicker("setColor", config.color ? config.color.end : "FFFFFF");
 		this.speedStart.spinner("value", config.speed ? config.speed.start : 0);
 		this.speedEnd.spinner("value", config.speed ? config.speed.end : 0);
+		this.accelX.spinner("value", config.acceleration ? config.acceleration.x : 0);
+		this.accelY.spinner("value", config.acceleration ? config.acceleration.y : 0);
 		this.startRotationMin.spinner("value", config.startRotation ? config.startRotation.min : 0);
 		this.startRotationMax.spinner("value", config.startRotation ? config.startRotation.max : 0);
 		this.rotationSpeedMin.spinner("value", config.rotationSpeed ? config.rotationSpeed.min : 0);
@@ -343,7 +349,8 @@
 		};
 		output.scale = {
 			start: parseFloat(this.scaleStart.spinner("value")) || 1,
-			end: parseFloat(this.scaleEnd.spinner("value")) || 1
+			end: parseFloat(this.scaleEnd.spinner("value")) || 1,
+			minimumScaleMultiplier: parseFloat(this.minimumScaleMultiplier.spinner("value")) || 1
 		};
 		output.color = {
 			start: this.colorStart.val() || "#ffffff",
@@ -352,6 +359,10 @@
 		output.speed = {
 			start: parseFloat(this.speedStart.spinner("value")) || 0,
 			end: parseFloat(this.speedEnd.spinner("value")) || 0
+		};
+		output.acceleration = {
+			x: parseFloat(this.accelX.spinner("value") || 0), 
+			y: parseFloat(this.accelY.spinner("value") || 0)
 		};
 		output.startRotation = {
 			min: parseFloat(this.startRotationMin.spinner("value")) || 0,
