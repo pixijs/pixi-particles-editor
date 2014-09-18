@@ -4,8 +4,9 @@
 		"end": 0.12
 	},
 	"scale": {
-		"start": null,
-		"end": 0.8
+		"start": 0.01,
+		"end": 0.8,
+		"minimumScaleMultiplier": 0.5
 	},
 	"color": {
 		"start": "ffffff",

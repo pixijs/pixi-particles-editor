@@ -5,7 +5,8 @@
 	},
 	"scale": {
 		"start": 0.15,
-		"end": 0.2
+		"end": 0.2,
+		"minimumScaleMultiplier": 0.5
 	},
 	"color": {
 		"start": "ffffff",
