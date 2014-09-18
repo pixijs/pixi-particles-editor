@@ -343,9 +343,11 @@
 		var output = {};
 		
 		//particle settings
+		var start = parseFloat(this.alphaStart.slider("value"));
+		var end = parseFloat(this.alphaEnd.slider("value"));
 		output.alpha = {
-			start: parseFloat(this.alphaStart.slider("value")) || 1,
-			end: parseFloat(this.alphaEnd.slider("value")) || 1
+			start: start == start ? start : 1,
+			end: end == end ? end : 1
 		};
 		output.scale = {
 			start: parseFloat(this.scaleStart.spinner("value")) || 1,
