@@ -29,7 +29,7 @@ if (APP)
 			// Create the build in mac menubar
 			// this needs to happen BEFORE assigning the menu
 			this.parent.createMacBuiltin("PixiParticlesEditor", {
-				hideEdit: true,
+				hideEdit: false,
 				hideWindow: true
 			});
 		}
