@@ -1,7 +1,8 @@
 .DS_Store
 .grunt
+npm-debug.log
 node_modules
+build
+cache
 components
-deploy/assets/css/main.css.map
-
-deploy/assets/js/main.js.map
+*.map

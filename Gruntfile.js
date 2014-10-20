@@ -1,17 +1,14 @@
 module.exports = function(grunt)
 {
 	var path = require('path'),
-		_ = grunt.util._;
+		_ = require('lodash');
 
 	// Combine the game builder and current project
 	// configs into one object
 	grunt.initConfig(_.extend(
 
 		// Setup the default game tasks
-		require('grunt-game-builder')(grunt, { 
-			autoInit: false,
-			jsFolder : "deploy/assets/js"
-		}), 
+		require('grunt-game-builder')(grunt, { autoInit: false }), 
 
 		// Setup the current project tasks
 		require('load-grunt-config')(grunt, {
@@ -24,6 +21,12 @@ module.exports = function(grunt)
 				'grunt-*', 
 				'!grunt-game-builder'
 			] },
+
+			// Share the deploy folder with the tasks
+			data: { 
+				buildDir : './build',
+				installerDir : './installer'
+			}
 		})
 	));
 };

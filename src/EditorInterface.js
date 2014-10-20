@@ -17,10 +17,13 @@
 			"alphaEnd",
 			"scaleStart",
 			"scaleEnd",
+			"minimumScaleMultiplier",
 			"colorStart",
 			"colorEnd",
 			"speedStart",
 			"speedEnd",
+			"accelX",
+			"accelY",
 			"startRotationMin",
 			"startRotationMax",
 			"rotationSpeedMin",
@@ -261,10 +264,13 @@
 		this.alphaEnd.slider("value", config.alpha ? config.alpha.end : 1);
 		this.scaleStart.spinner("value", config.scale ? config.scale.start : 1);
 		this.scaleEnd.spinner("value", config.scale ? config.scale.end : 1);
+		this.minimumScaleMultiplier.spinner("value", config.scale ? (config.scale.minimumScaleMultiplier || 1) : 1);
 		this.colorStart.colorpicker("setColor", config.color ? config.color.start : "FFFFFF");
 		this.colorEnd.colorpicker("setColor", config.color ? config.color.end : "FFFFFF");
 		this.speedStart.spinner("value", config.speed ? config.speed.start : 0);
 		this.speedEnd.spinner("value", config.speed ? config.speed.end : 0);
+		this.accelX.spinner("value", config.acceleration ? config.acceleration.x : 0);
+		this.accelY.spinner("value", config.acceleration ? config.acceleration.y : 0);
 		this.startRotationMin.spinner("value", config.startRotation ? config.startRotation.min : 0);
 		this.startRotationMax.spinner("value", config.startRotation ? config.startRotation.max : 0);
 		this.rotationSpeedMin.spinner("value", config.rotationSpeed ? config.rotationSpeed.min : 0);
@@ -337,43 +343,55 @@
 		var output = {};
 		
 		//particle settings
+		var start = parseFloat(this.alphaStart.slider("value"));
+		var end = parseFloat(this.alphaEnd.slider("value"));
 		output.alpha = {
-			start: this.alphaStart.slider("value"),
-			end: this.alphaEnd.slider("value")
+			start: start == start ? start : 1,
+			end: end == end ? end : 1
 		};
 		output.scale = {
-			start: this.scaleStart.spinner("value"),
-			end: this.scaleEnd.spinner("value")
+			start: parseFloat(this.scaleStart.spinner("value")) || 1,
+			end: parseFloat(this.scaleEnd.spinner("value")) || 1,
+			minimumScaleMultiplier: parseFloat(this.minimumScaleMultiplier.spinner("value")) || 1
 		};
 		output.color = {
-			start: this.colorStart.val(),
-			end: this.colorEnd.val()
+			start: this.colorStart.val() || "#ffffff",
+			end: this.colorEnd.val() || "#ffffff"
 		};
 		output.speed = {
-			start: this.speedStart.spinner("value"),
-			end: this.speedEnd.spinner("value")
+			start: parseFloat(this.speedStart.spinner("value")) || 0,
+			end: parseFloat(this.speedEnd.spinner("value")) || 0
+		};
+		output.acceleration = {
+			x: parseFloat(this.accelX.spinner("value") || 0), 
+			y: parseFloat(this.accelY.spinner("value") || 0)
 		};
 		output.startRotation = {
-			min: this.startRotationMin.spinner("value"),
-			max: this.startRotationMax.spinner("value")
+			min: parseFloat(this.startRotationMin.spinner("value")) || 0,
+			max: parseFloat(this.startRotationMax.spinner("value")) || 0
 		};
 		output.rotationSpeed = {
-			min: this.rotationSpeedMin.spinner("value"),
-			max: this.rotationSpeedMax.spinner("value")
+			min: parseFloat(this.rotationSpeedMin.spinner("value")) || 0,
+			max: parseFloat(this.rotationSpeedMax.spinner("value")) || 0
 		};
 		output.lifetime = {
-			min: this.lifeMin.spinner("value"),
-			max: this.lifeMax.spinner("value")
+			min: parseFloat(this.lifeMin.spinner("value")) || 1,
+			max: parseFloat(this.lifeMax.spinner("value")) || 1
 		};
 		output.blendMode = this.blendMode.val();
 		var val = this.customEase.val();
 		if(val)
 		{
 			try{
+				//convert the ease value to an object to ensure that is an Array
+				//and so it can be converted into json properly
+				//by using eval, we are a little less strict on syntax.
 				/* jshint ignore:start */
 				eval("val = " + val + ";");
 				/* jshint ignore:end */
-				if(val && typeof val != "string")
+				//required to be an array, we won't bother checking for the required properties
+				//Honor system, folks!
+				if(val && val instanceof Array)
 					output.ease = val;
 			}
 			catch(e)
@@ -386,11 +404,11 @@
 		var frequency = this.emitFrequency.spinner("value");
 		//catch 0, NaN, and negative values
 		output.frequency = parseFloat(frequency) > 0 ? parseFloat(frequency) : 0.5;
-		output.emitterLifetime = this.emitLifetime.spinner("value");
-		output.maxParticles = this.emitMaxParticles.spinner("value");
+		output.emitterLifetime = parseFloat(this.emitLifetime.spinner("value")) || -1;
+		output.maxParticles = parseInt(this.emitMaxParticles.spinner("value")) || 1000;
 		output.pos = {
-			x: this.emitSpawnPosX.spinner("value"), 
-			y: this.emitSpawnPosY.spinner("value")
+			x: parseFloat(this.emitSpawnPosX.spinner("value") || 0), 
+			y: parseFloat(this.emitSpawnPosY.spinner("value") || 0)
 		};
 		output.addAtBack = this.emitAddAtBack.prop("checked");
 
@@ -400,25 +418,25 @@
 		if(spawnType == "rect")
 		{
 			output.spawnRect = {
-				x: this.emitRectX.spinner("value"), 
-				y: this.emitRectY.spinner("value"),
-				w: this.emitRectW.spinner("value"), 
-				h: this.emitRectH.spinner("value")
+				x: parseFloat(this.emitRectX.spinner("value")) || 0, 
+				y: parseFloat(this.emitRectY.spinner("value")) || 0,
+				w: parseFloat(this.emitRectW.spinner("value")) || 0, 
+				h: parseFloat(this.emitRectH.spinner("value")) || 0
 			};
 		}
 		else if(spawnType == "circle")
 		{
 			output.spawnCircle = {
-				x: this.emitCircleX.spinner("value"), 
-				y: this.emitCircleY.spinner("value"),
-				r: this.emitCircleR.spinner("value")
+				x: parseFloat(this.emitCircleX.spinner("value")) || 0, 
+				y: parseFloat(this.emitCircleY.spinner("value")) || 0,
+				r: parseFloat(this.emitCircleR.spinner("value")) || 0
 			};
 		}
 		else if(spawnType == "burst")
 		{
-			output.particlesPerWave = this.emitParticlesPerWave.spinner("value");
-			output.particleSpacing = this.emitParticleSpacing.spinner("value");
-			output.angleStart = this.emitAngleStart.spinner("value");
+			output.particlesPerWave = parseInt(this.emitParticlesPerWave.spinner("value")) || 1;
+			output.particleSpacing = parseFloat(this.emitParticleSpacing.spinner("value")) || 0;
+			output.angleStart = parseFloat(this.emitAngleStart.spinner("value")) || 0;
 		}
 		return output;
 	};
@@ -451,6 +469,6 @@
 	};
 
 	// assign to global space
-	namespace('cloudkid').EditorInterface = EditorInterface;
+	namespace('pixiparticles').EditorInterface = EditorInterface;
 
 }(jQuery));

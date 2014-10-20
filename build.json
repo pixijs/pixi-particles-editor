@@ -1,9 +1,14 @@
 {
-	"name": "ParticleEditor",
-	"version": "0.0.1",
+	"name": "PixiParticlesEditor",
+	"version": "0.1.0",
 	"main": [
+		"components/node-webkit-app/src/utils/UpdateChecker.js",
+		"components/node-webkit-app/src/utils/Browser.js",
+		"components/node-webkit-app/src/NodeWebkitApp.js",
+		"src/Menu.js",
 		"src/EditorInterface.js",
 		"src/Editor.js",
+		"src/App.js",
 		"src/main.js",
 		"src/main.less"
 	],

@@ -13,8 +13,15 @@
 		Application = include('cloudkid.Application'),
 		Loader = include('cloudkid.Loader'),
 		SavedData = include('cloudkid.SavedData'),
-		EditorInterface = include('cloudkid.EditorInterface');
+		EditorInterface = include('pixiparticles.EditorInterface');
 	
+	/**
+	*  Main logic of the application
+	*  @class Editor
+	*  @extends cloudkid.Application
+	*  @constructor
+	*  @param {object} [options] The application options
+	*/
 	var Editor = function(options)
 	{
 		Application.call(this, options);
@@ -57,27 +64,37 @@
 
 		var options = {
 			clearView: true,
-			backgroundColor: backgroundColor,
-			forceContext: "webgl"
+			backgroundColor: backgroundColor//,
+			//forceContext: "webgl"
 		};
 
 		// Add webgl renderer
 		this.webgl = this.addDisplay("webgl", PixiDisplay, options);
-		options.forceContext = 'canvas2d';
+		if(this.webgl.isWebGL)
+		{
+			options.forceContext = 'canvas2d';
 
-		// Add canvas2d renderer
-		this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
+			// Add canvas2d renderer
+			this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
+		}
+		else
+		{
+			this.canvas2d = this.webgl;
+			this.webgl = null;
+			document.getElementById("webglRenderer").disabled = true;
+			document.getElementById("canvas2dRenderer").checked = true;
+		}
 
 		// Default is stage
-		this.setRenderer("webgl");
+		this.setRenderer(this.webgl ? "webgl" : "canvas2d");
 
 		Loader.instance.load(
 			"assets/config/config.json", 
 			this.onInitialized.bind(this)
 		);
 
-		backgroundSprite.scale.x = this.webgl.width;
-		backgroundSprite.scale.y = this.webgl.height;
+		backgroundSprite.scale.x = this.canvas2d.width;
+		backgroundSprite.scale.y = this.canvas2d.height;
 
 		this.on("resize", this.onResize);
 	};
@@ -258,9 +275,12 @@
 	*/
 	p.setRenderer = function(type)
 	{
+		//if we had to fall back due to not supporting WebGL, then don't do anything dumb
+		if(type == 'webgl' && !this.webgl) return;
 		// The other stage
 		var other = type == 'webgl' ? this.canvas2d : this.webgl;
-		other.enabled = other.visible = false;
+		if(other)
+			other.enabled = other.visible = false;
 
 		// The selected stage
 		var display = this[type];
@@ -284,11 +304,6 @@
 		{
 			stage.addChild(emitterContainer);
 		}
-		
-		/*if (emitter)
-		{
-			emitter.parent = stage;
-		}*/
 	};
 
 	/**
@@ -590,6 +605,6 @@
 		emitter.updateOwnerPos(data.global.x, data.global.y);
 	};
 	
-	namespace('cloudkid').Editor = Editor;
+	namespace('pixiparticles').Editor = Editor;
 	
 }());

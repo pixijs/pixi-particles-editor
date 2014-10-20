@@ -71,22 +71,22 @@
 		{
 			"id" : "bubbles",
 			"config" : "assets/config/bubbles.json",
-			"images" : ["Bubbles99px", "Bubbles50px"]
+			"images" : ["Bubbles99px"]
 		},
 		{
 			"id" : "bubbleSpray",
 			"config" : "assets/config/bubbleSpray.json",
-			"images" : ["Bubbles99px", "Bubbles50px"]
+			"images" : ["Bubbles99px"]
 		},
 		{
 			"id" : "bubbleStream",
 			"config" : "assets/config/bubbleStream.json",
-			"images" : ["Bubbles99px", "Bubbles50px"]
+			"images" : ["Bubbles99px"]
 		},
 		{
 			"id" : "bubblesVertical",
 			"config" : "assets/config/bubblesVertical.json",
-			"images" : ["Bubbles99px", "Bubbles50px"]
+			"images" : ["Bubbles99px"]
 		},
 		{
 			"id" : "cartoonSmoke",
@@ -106,11 +106,16 @@
 		{
 			"id" : "snow",
 			"config" : "assets/config/snow.json",
-			"images" : ["Snow100px", "Snow50px"]
+			"images" : ["Snow100px"]
 		},
 		{
 			"id" : "sparks",
 			"config" : "assets/config/sparks.json",
+			"images" : ["Sparks"]
+		},
+		{
+			"id" : "fountain",
+			"config" : "assets/config/fountain.json",
 			"images" : ["Sparks"]
 		}
 	]
