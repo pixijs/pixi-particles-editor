@@ -3,10 +3,10 @@
   "dependencies": {
     "grunt": "~0.4.2",
     "grunt-game-builder": "*",
-    "load-grunt-tasks": "*",
+    "load-grunt-config": "*",
     "grunt-node-webkit-builder": "~0.2.2",
     "lodash": "~2.4.1",
-    "load-grunt-config": "~0.13.1",
-    "grunt-exec": "~0.4.6"
+    "grunt-exec": "~0.4.6",
+    "grunt-gh-pages": "~0.9.1"
   }
 }
