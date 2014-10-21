@@ -2,7 +2,7 @@
   "private": true,
   "dependencies": {
     "grunt": "~0.4.2",
-    "grunt-game-builder": "*",
+    "grunt-game-builder": "~0.3.0",
     "load-grunt-config": "*",
     "grunt-node-webkit-builder": "~0.2.2",
     "lodash": "~2.4.1",
