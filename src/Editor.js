@@ -43,60 +43,66 @@
 		
 	p.init = function()
 	{
-		this.onMouseIn = this.onMouseIn.bind(this);
-		this.onMouseOut = this.onMouseOut.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseUp = this.onMouseUp.bind(this);
-		this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
-		this.loadFromUI = this.loadFromUI.bind(this);
 
-		jqImageDiv = $(".particleImage");
-		jqImageDiv.remove();
+		$("[data-toggle='tooltip']").tooltip({
+			container: 'body',
+			animation: false
+		});
 
-		particleCountDiv = document.getElementById("particleCount");
+		// this.onMouseIn = this.onMouseIn.bind(this);
+		// this.onMouseOut = this.onMouseOut.bind(this);
+		// this.onMouseMove = this.onMouseMove.bind(this);
+		// this.onMouseUp = this.onMouseUp.bind(this);
+		// this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
+		// this.loadFromUI = this.loadFromUI.bind(this);
 
-		var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
+		// jqImageDiv = $(".particleImage");
+		// jqImageDiv.remove();
 
-		backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
-		backgroundSprite.tint = backgroundColor;
+		// particleCountDiv = document.getElementById("particleCount");
 
-		emitterContainer = new PIXI.DisplayObjectContainer();
+		// var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
 
-		var options = {
-			clearView: true,
-			backgroundColor: backgroundColor//,
-			//forceContext: "webgl"
-		};
+		// backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
+		// backgroundSprite.tint = backgroundColor;
 
-		// Add webgl renderer
-		this.webgl = this.addDisplay("webgl", PixiDisplay, options);
-		if(this.webgl.isWebGL)
-		{
-			options.forceContext = 'canvas2d';
+		// emitterContainer = new PIXI.DisplayObjectContainer();
 
-			// Add canvas2d renderer
-			this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
-		}
-		else
-		{
-			this.canvas2d = this.webgl;
-			this.webgl = null;
-			document.getElementById("webglRenderer").disabled = true;
-			document.getElementById("canvas2dRenderer").checked = true;
-		}
+		// var options = {
+		// 	clearView: true,
+		// 	backgroundColor: backgroundColor//,
+		// 	//forceContext: "webgl"
+		// };
 
-		// Default is stage
-		this.setRenderer(this.webgl ? "webgl" : "canvas2d");
+		// // Add webgl renderer
+		// this.webgl = this.addDisplay("webgl", PixiDisplay, options);
+		// if(this.webgl.isWebGL)
+		// {
+		// 	options.forceContext = 'canvas2d';
 
-		Loader.instance.load(
-			"assets/config/config.json",
-			this.onInitialized.bind(this)
-		);
+		// 	// Add canvas2d renderer
+		// 	this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
+		// }
+		// else
+		// {
+		// 	this.canvas2d = this.webgl;
+		// 	this.webgl = null;
+		// 	document.getElementById("webglRenderer").disabled = true;
+		// 	document.getElementById("canvas2dRenderer").checked = true;
+		// }
 
-		backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
-		backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
+		// // Default is stage
+		// this.setRenderer(this.webgl ? "webgl" : "canvas2d");
 
-		this.on("resize", this.onResize);
+		// Loader.instance.load(
+		// 	"assets/config/config.json",
+		// 	this.onInitialized.bind(this)
+		// );
+
+		// backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
+		// backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
+
+		// this.on("resize", this.onResize);
 	};
 
 	p.onResize = function(w, h)
@@ -124,7 +130,7 @@
 		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
 
 		// Set the starting stage color
-		this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
+		//this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
 
 		this.ui.on({
 			change : this.loadFromUI,
@@ -466,13 +472,13 @@
 		item.children("img").prop("src", src);
 		this.ui.imageList.append(item);
 
-		item.children(".remove").button(
-			{icons:{primary:"ui-icon-close"}, text:false}
-		).click(removeImage.bind(this));
+		// item.children(".remove").button(
+		// 	{icons:{primary:"ui-icon-close"}, text:false}
+		// ).click(removeImage.bind(this));
 
-		item.children(".download").button(
-			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
-		).click(downloadImage);
+		// item.children(".download").button(
+		// 	{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
+		// ).click(downloadImage);
 	};
 
 	var downloadImage = function(event)

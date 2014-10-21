@@ -88,6 +88,9 @@
 		var app = cloudkid.Application.instance;
 		var changed = this.changed.bind(this);
 
+		return;
+
+		/*
 		//enable tooltips for any element with a title attribute
 		//$(document).tooltip();
 
@@ -249,7 +252,7 @@
 			}
 		});
 
-		//this.stageColor.colorpicker("setColor", stageColor);
+		//this.stageColor.colorpicker("setColor", stageColor);*/
 	};
 
 	/**
@@ -259,6 +262,7 @@
 	*/
 	p.set = function(config)
 	{
+		/*
 		//particle settings
 		this.alphaStart.slider("value", config.alpha ? config.alpha.start : 1);
 		this.alphaEnd.slider("value", config.alpha ? config.alpha.end : 1);
@@ -331,6 +335,7 @@
 		this.emitParticlesPerWave.spinner("value", config.particlesPerWave > 0 ? config.particlesPerWave : 1);
 		this.emitParticleSpacing.spinner("value", config.particleSpacing ? config.particleSpacing : 0);
 		this.emitAngleStart.spinner("value", config.angleStart ? config.angleStart : 0);
+		*/
 	};
 
 	/**
@@ -343,101 +348,101 @@
 		var output = {};
 		
 		//particle settings
-		var start = parseFloat(this.alphaStart.slider("value"));
-		var end = parseFloat(this.alphaEnd.slider("value"));
-		output.alpha = {
-			start: start == start ? start : 1,
-			end: end == end ? end : 1
-		};
-		output.scale = {
-			start: parseFloat(this.scaleStart.spinner("value")) || 1,
-			end: parseFloat(this.scaleEnd.spinner("value")) || 1,
-			minimumScaleMultiplier: parseFloat(this.minimumScaleMultiplier.spinner("value")) || 1
-		};
-		output.color = {
-			start: this.colorStart.val() || "#ffffff",
-			end: this.colorEnd.val() || "#ffffff"
-		};
-		output.speed = {
-			start: parseFloat(this.speedStart.spinner("value")) || 0,
-			end: parseFloat(this.speedEnd.spinner("value")) || 0
-		};
-		output.acceleration = {
-			x: parseFloat(this.accelX.spinner("value") || 0), 
-			y: parseFloat(this.accelY.spinner("value") || 0)
-		};
-		output.startRotation = {
-			min: parseFloat(this.startRotationMin.spinner("value")) || 0,
-			max: parseFloat(this.startRotationMax.spinner("value")) || 0
-		};
-		output.rotationSpeed = {
-			min: parseFloat(this.rotationSpeedMin.spinner("value")) || 0,
-			max: parseFloat(this.rotationSpeedMax.spinner("value")) || 0
-		};
-		output.lifetime = {
-			min: parseFloat(this.lifeMin.spinner("value")) || 1,
-			max: parseFloat(this.lifeMax.spinner("value")) || 1
-		};
-		output.blendMode = this.blendMode.val();
-		var val = this.customEase.val();
-		if(val)
-		{
-			try{
-				//convert the ease value to an object to ensure that is an Array
-				//and so it can be converted into json properly
-				//by using eval, we are a little less strict on syntax.
-				/* jshint ignore:start */
-				eval("val = " + val + ";");
-				/* jshint ignore:end */
-				//required to be an array, we won't bother checking for the required properties
-				//Honor system, folks!
-				if(val && val instanceof Array)
-					output.ease = val;
-			}
-			catch(e)
-			{
-				Debug.error("Error evaluating easing data: " + e.message);
-			}
-		}
+		// var start = parseFloat(this.alphaStart.slider("value"));
+		// var end = parseFloat(this.alphaEnd.slider("value"));
+		// output.alpha = {
+		// 	start: start == start ? start : 1,
+		// 	end: end == end ? end : 1
+		// };
+		// output.scale = {
+		// 	start: parseFloat(this.scaleStart.spinner("value")) || 1,
+		// 	end: parseFloat(this.scaleEnd.spinner("value")) || 1,
+		// 	minimumScaleMultiplier: parseFloat(this.minimumScaleMultiplier.spinner("value")) || 1
+		// };
+		// output.color = {
+		// 	start: this.colorStart.val() || "#ffffff",
+		// 	end: this.colorEnd.val() || "#ffffff"
+		// };
+		// output.speed = {
+		// 	start: parseFloat(this.speedStart.spinner("value")) || 0,
+		// 	end: parseFloat(this.speedEnd.spinner("value")) || 0
+		// };
+		// output.acceleration = {
+		// 	x: parseFloat(this.accelX.spinner("value") || 0), 
+		// 	y: parseFloat(this.accelY.spinner("value") || 0)
+		// };
+		// output.startRotation = {
+		// 	min: parseFloat(this.startRotationMin.spinner("value")) || 0,
+		// 	max: parseFloat(this.startRotationMax.spinner("value")) || 0
+		// };
+		// output.rotationSpeed = {
+		// 	min: parseFloat(this.rotationSpeedMin.spinner("value")) || 0,
+		// 	max: parseFloat(this.rotationSpeedMax.spinner("value")) || 0
+		// };
+		// output.lifetime = {
+		// 	min: parseFloat(this.lifeMin.spinner("value")) || 1,
+		// 	max: parseFloat(this.lifeMax.spinner("value")) || 1
+		// };
+		// output.blendMode = this.blendMode.val();
+		// var val = this.customEase.val();
+		// if(val)
+		// {
+		// 	try{
+		// 		//convert the ease value to an object to ensure that is an Array
+		// 		//and so it can be converted into json properly
+		// 		//by using eval, we are a little less strict on syntax.
+		// 		/* jshint ignore:start */
+		// 		eval("val = " + val + ";");
+		// 		/* jshint ignore:end */
+		// 		//required to be an array, we won't bother checking for the required properties
+		// 		//Honor system, folks!
+		// 		if(val && val instanceof Array)
+		// 			output.ease = val;
+		// 	}
+		// 	catch(e)
+		// 	{
+		// 		Debug.error("Error evaluating easing data: " + e.message);
+		// 	}
+		// }
 
-		//emitter settings
-		var frequency = this.emitFrequency.spinner("value");
-		//catch 0, NaN, and negative values
-		output.frequency = parseFloat(frequency) > 0 ? parseFloat(frequency) : 0.5;
-		output.emitterLifetime = parseFloat(this.emitLifetime.spinner("value")) || -1;
-		output.maxParticles = parseInt(this.emitMaxParticles.spinner("value")) || 1000;
-		output.pos = {
-			x: parseFloat(this.emitSpawnPosX.spinner("value") || 0), 
-			y: parseFloat(this.emitSpawnPosY.spinner("value") || 0)
-		};
-		output.addAtBack = this.emitAddAtBack.prop("checked");
+		// //emitter settings
+		// var frequency = this.emitFrequency.spinner("value");
+		// //catch 0, NaN, and negative values
+		// output.frequency = parseFloat(frequency) > 0 ? parseFloat(frequency) : 0.5;
+		// output.emitterLifetime = parseFloat(this.emitLifetime.spinner("value")) || -1;
+		// output.maxParticles = parseInt(this.emitMaxParticles.spinner("value")) || 1000;
+		// output.pos = {
+		// 	x: parseFloat(this.emitSpawnPosX.spinner("value") || 0), 
+		// 	y: parseFloat(this.emitSpawnPosY.spinner("value") || 0)
+		// };
+		// output.addAtBack = this.emitAddAtBack.prop("checked");
 
-		//spawn type stuff
-		var spawnType = output.spawnType = this.emitSpawnType.val();
+		// //spawn type stuff
+		// var spawnType = output.spawnType = this.emitSpawnType.val();
 
-		if(spawnType == "rect")
-		{
-			output.spawnRect = {
-				x: parseFloat(this.emitRectX.spinner("value")) || 0, 
-				y: parseFloat(this.emitRectY.spinner("value")) || 0,
-				w: parseFloat(this.emitRectW.spinner("value")) || 0, 
-				h: parseFloat(this.emitRectH.spinner("value")) || 0
-			};
-		}
-		else if(spawnType == "circle")
-		{
-			output.spawnCircle = {
-				x: parseFloat(this.emitCircleX.spinner("value")) || 0, 
-				y: parseFloat(this.emitCircleY.spinner("value")) || 0,
-				r: parseFloat(this.emitCircleR.spinner("value")) || 0
-			};
-		}
-		else if(spawnType == "burst")
-		{
-			output.particlesPerWave = parseInt(this.emitParticlesPerWave.spinner("value")) || 1;
-			output.particleSpacing = parseFloat(this.emitParticleSpacing.spinner("value")) || 0;
-			output.angleStart = parseFloat(this.emitAngleStart.spinner("value")) || 0;
-		}
+		// if(spawnType == "rect")
+		// {
+		// 	output.spawnRect = {
+		// 		x: parseFloat(this.emitRectX.spinner("value")) || 0, 
+		// 		y: parseFloat(this.emitRectY.spinner("value")) || 0,
+		// 		w: parseFloat(this.emitRectW.spinner("value")) || 0, 
+		// 		h: parseFloat(this.emitRectH.spinner("value")) || 0
+		// 	};
+		// }
+		// else if(spawnType == "circle")
+		// {
+		// 	output.spawnCircle = {
+		// 		x: parseFloat(this.emitCircleX.spinner("value")) || 0, 
+		// 		y: parseFloat(this.emitCircleY.spinner("value")) || 0,
+		// 		r: parseFloat(this.emitCircleR.spinner("value")) || 0
+		// 	};
+		// }
+		// else if(spawnType == "burst")
+		// {
+		// 	output.particlesPerWave = parseInt(this.emitParticlesPerWave.spinner("value")) || 1;
+		// 	output.particleSpacing = parseFloat(this.emitParticleSpacing.spinner("value")) || 0;
+		// 	output.angleStart = parseFloat(this.emitAngleStart.spinner("value")) || 0;
+		// }
 		return output;
 	};
 

@@ -4,9 +4,11 @@
 	"dependencies": {
 		"pixi.js": "https://github.com/CloudKidStudio/pixi.js.git#^1.6.2",
 		"filesaver": "https://github.com/eligrey/FileSaver.js.git",
+		"bootstrap": "~3.2.0",
 		"cloudkid-framework": "*",
 		"pixi-particles": "*",
 		"normalize.css": "*",
-		"node-webkit-app": "*"
+		"node-webkit-app": "*",
+		"jquery": "*"
 	}
 }

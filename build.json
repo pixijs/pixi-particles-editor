@@ -21,7 +21,11 @@
 		"components/cloudkid-framework/dist/modules/tasks.min.js",
 		"components/cloudkid-framework/dist/modules/display-pixi.min.js",
 		"components/pixi-particles/dist/pixi-particles.min.js",
-		"components/filesaver/FileSaver.js"
+		"components/filesaver/FileSaver.js",
+		"components/jquery/dist/jquery.js",
+		"components/bootstrap/dist/js/bootstrap.min.js",
+		"components/bootstrap/less/bootstrap.less",
+		"components/bootstrap/less/theme.less"
 	],
 	"librariesDebug": [
 		"components/normalize.css/normalize.css",
@@ -32,7 +36,11 @@
 		"components/cloudkid-framework/dist/modules/tasks.js",
 		"components/cloudkid-framework/dist/modules/display-pixi.js",
 		"components/pixi-particles/dist/pixi-particles.js",
-		"components/filesaver/FileSaver.js"
+		"components/filesaver/FileSaver.js",
+		"components/jquery/dist/jquery.js",
+		"components/bootstrap/dist/js/bootstrap.js",
+		"components/bootstrap/less/bootstrap.less",
+		"components/bootstrap/less/theme.less"
 	]
 }
 
