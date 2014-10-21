@@ -89,20 +89,20 @@
 		this.setRenderer(this.webgl ? "webgl" : "canvas2d");
 
 		Loader.instance.load(
-			"assets/config/config.json", 
+			"assets/config/config.json",
 			this.onInitialized.bind(this)
 		);
 
-		backgroundSprite.scale.x = this.canvas2d.width;
-		backgroundSprite.scale.y = this.canvas2d.height;
+		backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
+		backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
 
 		this.on("resize", this.onResize);
 	};
 
 	p.onResize = function(w, h)
 	{
-		backgroundSprite.scale.x = w;
-		backgroundSprite.scale.y = h;
+		backgroundSprite.scale.x = 0.1 * w;
+		backgroundSprite.scale.y = 0.1 * h;
 	};
 
 	/**
@@ -228,7 +228,7 @@
 			config = SavedData.read('customConfig');
 			images = SavedData.read('customImages');
 		}
-		catch(e){}		
+		catch(e){}
 
 		if (hash)
 		{
@@ -244,7 +244,7 @@
 				this.addImage(images[i]);
 			}
 		}
-		else 
+		else
 		{
 			this.loadDefault(this.config.default);
 		}
@@ -458,7 +458,7 @@
 		if (!PIXI.Texture.fromFrame(src, true))
 		{
 			TaskManager.process(
-				[new PixiTask("image", [src], this.onTexturesLoaded)], 
+				[new PixiTask("image", [src], this.onTexturesLoaded)],
 				function(){}
 			);
 		}
@@ -512,8 +512,8 @@
 		if (children.length === 0) return null;
 
 		var self = this;
-		children.each(function() { 
-			images.push(this.src); 
+		children.each(function() {
+			images.push(this.src);
 		});
 
 		// Save the current image sources
@@ -523,7 +523,7 @@
 	};
 
 	/**
-	*  Load the settings 
+	*  Load the settings
 	*  @method loadSettings
 	*  @param {array} images The collection of images
 	*  @param {object} config The emitter configuration
@@ -584,7 +584,7 @@
 		if (!emitter || !emitter.ownerPos) return;
 
 		emitter.updateOwnerPos(
-			this.display.canvas.width / 2, 
+			this.display.canvas.width / 2,
 			this.display.canvas.height / 2
 		);
 	};
