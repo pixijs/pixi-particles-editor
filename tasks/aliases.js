@@ -7,7 +7,6 @@ module.exports = function(grunt)
 		'clean:css',
 		'less:release',
 		'libs',
-		'sync-version',
 		'exec:app_modules',
 		'nodewebkit'
 	]);
