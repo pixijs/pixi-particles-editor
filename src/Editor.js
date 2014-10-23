@@ -43,66 +43,60 @@
 		
 	p.init = function()
 	{
+		this.onMouseIn = this.onMouseIn.bind(this);
+		this.onMouseOut = this.onMouseOut.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
+		this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
+		this.loadFromUI = this.loadFromUI.bind(this);
 
-		$("[data-toggle='tooltip']").tooltip({
-			container: 'body',
-			animation: false
-		});
+		jqImageDiv = $(".particleImage");
+		jqImageDiv.remove();
 
-		// this.onMouseIn = this.onMouseIn.bind(this);
-		// this.onMouseOut = this.onMouseOut.bind(this);
-		// this.onMouseMove = this.onMouseMove.bind(this);
-		// this.onMouseUp = this.onMouseUp.bind(this);
-		// this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
-		// this.loadFromUI = this.loadFromUI.bind(this);
+		particleCountDiv = document.getElementById("particleCount");
 
-		// jqImageDiv = $(".particleImage");
-		// jqImageDiv.remove();
+		var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
 
-		// particleCountDiv = document.getElementById("particleCount");
+		backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
+		backgroundSprite.tint = backgroundColor;
 
-		// var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
+		emitterContainer = new PIXI.DisplayObjectContainer();
 
-		// backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
-		// backgroundSprite.tint = backgroundColor;
+		var options = {
+			clearView: true,
+			backgroundColor: backgroundColor//,
+			//forceContext: "webgl"
+		};
 
-		// emitterContainer = new PIXI.DisplayObjectContainer();
+		// Add webgl renderer
+		this.webgl = this.addDisplay("webgl", PixiDisplay, options);
+		if(this.webgl.isWebGL)
+		{
+			options.forceContext = 'canvas2d';
 
-		// var options = {
-		// 	clearView: true,
-		// 	backgroundColor: backgroundColor//,
-		// 	//forceContext: "webgl"
-		// };
+			// Add canvas2d renderer
+			this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
+		}
+		else
+		{
+			this.canvas2d = this.webgl;
+			this.webgl = null;
+			document.getElementById("webglRenderer").disabled = true;
+			document.getElementById("canvas2dRenderer").checked = true;
+		}
 
-		// // Add webgl renderer
-		// this.webgl = this.addDisplay("webgl", PixiDisplay, options);
-		// if(this.webgl.isWebGL)
-		// {
-		// 	options.forceContext = 'canvas2d';
+		// Default is stage
+		this.setRenderer(this.webgl ? "webgl" : "canvas2d");
 
-		// 	// Add canvas2d renderer
-		// 	this.canvas2d = this.addDisplay("canvas2d", PixiDisplay, options);
-		// }
-		// else
-		// {
-		// 	this.canvas2d = this.webgl;
-		// 	this.webgl = null;
-		// 	document.getElementById("webglRenderer").disabled = true;
-		// 	document.getElementById("canvas2dRenderer").checked = true;
-		// }
+		Loader.instance.load(
+			"assets/config/config.json",
+			this.onInitialized.bind(this)
+		);
 
-		// // Default is stage
-		// this.setRenderer(this.webgl ? "webgl" : "canvas2d");
+		backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
+		backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
 
-		// Loader.instance.load(
-		// 	"assets/config/config.json",
-		// 	this.onInitialized.bind(this)
-		// );
-
-		// backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
-		// backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
-
-		// this.on("resize", this.onResize);
+		this.on("resize", this.onResize);
 	};
 
 	p.onResize = function(w, h)
@@ -269,8 +263,6 @@
 	p.stageColor = function(color)
 	{
 		SavedData.write('stageColor', color);
-		//this.webgl.stage.setBackgroundColor(parseInt(color, 16));
-		//this.canvas2d.stage.setBackgroundColor(parseInt(color, 16));
 		backgroundSprite.tint = parseInt(color, 16);
 	};
 
@@ -472,13 +464,13 @@
 		item.children("img").prop("src", src);
 		this.ui.imageList.append(item);
 
-		// item.children(".remove").button(
-		// 	{icons:{primary:"ui-icon-close"}, text:false}
-		// ).click(removeImage.bind(this));
+		item.children(".remove").button(
+			{icons:{primary:"ui-icon-close"}, text:false}
+		).click(removeImage.bind(this));
 
-		// item.children(".download").button(
-		// 	{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
-		// ).click(downloadImage);
+		item.children(".download").button(
+			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
+		).click(downloadImage);
 	};
 
 	var downloadImage = function(event)
@@ -538,6 +530,9 @@
 	{
 		if (!emitter) return;
 
+		console.log(images);
+		console.log(config);
+		
 		emitter.init(images, config);
 		this._centerEmitter();
 		emitterEnableTimer = 0;

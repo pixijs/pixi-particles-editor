@@ -5,6 +5,8 @@
 		"pixi.js": "https://github.com/CloudKidStudio/pixi.js.git#^1.6.2",
 		"filesaver": "https://github.com/eligrey/FileSaver.js.git",
 		"bootstrap": "~3.2.0",
+		"bootstrap-touchspin": "~3.0.1",
+		"seiyria-bootstrap-slider": "~4.0.8",
 		"cloudkid-framework": "*",
 		"pixi-particles": "*",
 		"normalize.css": "*",

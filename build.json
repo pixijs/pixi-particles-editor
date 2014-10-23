@@ -25,7 +25,11 @@
 		"components/jquery/dist/jquery.js",
 		"components/bootstrap/dist/js/bootstrap.min.js",
 		"components/bootstrap/less/bootstrap.less",
-		"components/bootstrap/less/theme.less"
+		"components/bootstrap/less/theme.less",
+		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",
+		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css",
+		"components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css",
+		"components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"
 	],
 	"librariesDebug": [
 		"components/normalize.css/normalize.css",
@@ -40,7 +44,10 @@
 		"components/jquery/dist/jquery.js",
 		"components/bootstrap/dist/js/bootstrap.js",
 		"components/bootstrap/less/bootstrap.less",
-		"components/bootstrap/less/theme.less"
+		"components/bootstrap/less/theme.less",
+		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js",
+		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.css",
+		"components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css",
+		"components/seiyria-bootstrap-slider/js/bootstrap-slider.js"
 	]
 }
-
