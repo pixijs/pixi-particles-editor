@@ -60,6 +60,7 @@
 			"loadConfig",
 			"downloadConfig",
 			"configDialog",
+			"configConfirm",
 			"addImage",
 			"stageColor",
 			"content",
@@ -137,18 +138,9 @@
 					theme: 'bootstrap'
 				});
 			});
-
-		// //enable color pickers
-		// $(".colorPicker").colorpicker({
-		// 	parts: ["header", "map", "bar", "hsv", "rgb", "hex", "preview", "footer"],
-		// 	showOn: "both",
-		// 	buttonColorize: true,
-		// 	okOnEnter: true,
-		// 	revert: true,
-		// 	mode: "h",
-		// 	buttonImage: "assets/js/colorpicker/images/ui-colorpicker.png",
-		// 	select: changed
-		// });
+		
+		this.configDialog.on("show.bs.modal", function() { Debug.log("showing modal!"); });
+		this.configDialog.on("hide.bs.modal", function() { Debug.log("hiding modal!"); });
 
 		// this.renderer.buttonset().find('input').change(function(){
 		// 	self.trigger('renderer', this.value);

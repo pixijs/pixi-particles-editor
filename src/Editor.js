@@ -117,11 +117,9 @@
 		this.config = result.content;
 		this.ui = new EditorInterface(this.config.spawnTypes);
 		this.ui.refresh.click(this.loadFromUI);
+		this.ui.configConfirm.on("click", this.loadConfig.bind(this));
 		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
 		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
-		this.ui.defaultConfigSelector.on("selectmenuselect", this.loadConfig.bind(this, "default"));
-		this.ui.configUpload.change(this.loadConfig.bind(this, "upload"));
-		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
 
 		// Set the starting stage color
 		this.ui.stageColor.val(SavedData.read('stageColor') || '999999');
@@ -358,40 +356,48 @@
 	*  @param {String} type Either default, upload or paste
 	*  @param {Event} event Jquery event
 	*/
-	p.loadConfig = function(type, event)
+	p.loadConfig = function(event)
 	{
-		var ui = this.ui;
+		var ui = this.ui, type, value, success = false;
+		
+		if(ui.defaultConfigSelector.val() != "-Default Emitters-")
+			type = "default";
+		else if(ui.configPaste.val())
+			type = "paste";
+		else if(ui.configUpload[0].files.length > 0)
+			type = "upload";
+		
 		if (type == "default")
 		{
-			var value = ui.defaultConfigSelector.val();
-			if(value == "-Default Emitters-")
-				return;
-			this.loadDefault(value);
-			ui.configDialog.dialog("close");
+			value = ui.defaultConfigSelector.val();
+			if(value != "-Default Emitters-")
+			{
+				success = true;
+				this.loadDefault(value);
+			}
 		}
 		else if (type == "paste")
 		{
-			var elem = ui.configPaste;
-			setTimeout(function()
+			value = ui.configPaste.val();
+			try
 			{
-				try	{
-					/* jshint ignore:start */
-					eval("var obj = " + elem.val() + ";");
-					/* jshint ignore:end */
-					this.setConfig(obj);
-					this.loadFromUI();
-				}
-				catch(e){}
-				ui.configDialog.dialog("close");//close the dialog after the delay
-			}.bind(this), 10);
+				/* jshint ignore:start */
+				eval("var obj = " + elem.val() + ";");
+				/* jshint ignore:end */
+				success = true;
+				this.setConfig(obj);
+				this.loadFromUI();
+			}
+			catch(e) {}
 		}
 		else if (type == "upload")
 		{
-			var files = event.originalEvent.target.files;
+			var files = ui.configUpload[0].files;
 			var scope = this;
 			var onloadend = function(readerObj)
 			{
-				try {
+				try
+				{
 					/* jshint ignore:start */
 					eval("var obj = " + readerObj.result + ";");
 					/* jshint ignore:end */
@@ -400,15 +406,15 @@
 				}
 				catch(e){}
 			};
-			for (var i = 0; i < files.length; i++)
-			{
-				var file = files[i];
-				var reader = new FileReader();
-				reader.onloadend = onloadend.bind(this, reader);
-				reader.readAsText(file);
-			}
-			ui.configDialog.dialog("close");
+			var file = files[0];
+			var reader = new FileReader();
+			reader.onloadend = onloadend.bind(this, reader);
+			reader.readAsText(file);
+			
+			success = true;
 		}
+		if(success)
+			ui.configDialog.modal("hide");
 	};
 
 	/**
