@@ -1,23 +1,15 @@
 <!DOCTYPE html>
 <html class="no-js">
-    <head>
-        <meta charset="utf-8">
-        <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-        <title>PixiParticlesEditor</title>
-        <meta name="description" content="PixiParticlesEditor">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+		<title>PixiParticlesEditor</title>
+		<meta name="description" content="PixiParticlesEditor">
 
-        <link rel="stylesheet" href="assets/css/libraries.css?v=0.1.0">
-        <link rel="stylesheet" href="assets/css/main.css?v=0.1.0">
-
-		<!--<link href="assets/js/jquery-ui-smoothness/jquery-ui.min.css?v=0.1.0" rel="stylesheet">
-		<link href="assets/js/colorpicker/jquery.colorpicker.css?v=0.1.0" rel="stylesheet">
-		
-		<script src="assets/js/jquery-ui-smoothness/external/jquery/jquery.js?v=0.1.0"></script>
-		<script src="assets/js/jquery-ui-smoothness/jquery-ui.min.js?v=0.1.0"></script>
-		<script src="assets/js/colorpicker/jquery.colorpicker.js?v=0.1.0"></script>-->
-
-    </head>
-    <div class="modal fade" id="configDialog">
+	<link rel="stylesheet" href="assets/css/libraries.css?v=0.1.0">
+	<link rel="stylesheet" href="assets/css/main.css?v=0.1.0">
+	</head>
+	<div class="modal fade" id="configDialog">
 		<div class="modal-dialog">
 			<div class="modal-content">
 				<div class="modal-header">
@@ -57,7 +49,7 @@
 			</div>
 		</div>
 	</div>
-    <body class="loading">
+	<body class="loading">
 		<div id="content">
 			<div class="stageInfo">
 				<div id="framerate">FPS: 00.000</div>
@@ -93,25 +85,23 @@
 				<div id="scale" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Scale of the particles, with a minimum value of 0">Scale</div>
 					<div class="col-xs-4">
-						<input id="scaleStart" data-toggle="tooltip" data-placement="top" title="Starting scale" type="text" class="spinner form-control" />
+						<input id="scaleStart" data-toggle="tooltip" data-placement="top" data-min="0.001" data-step="0.01" data-decimals="2" title="Starting scale" type="text" class="spinner form-control" />
 					</div>
 					<div class="col-xs-4">
-						<input id="scaleEnd" data-toggle="tooltip" data-placement="top" title="Ending scale" type="text" class=" spinner form-control" />
+						<input id="scaleEnd" data-toggle="tooltip" data-placement="top" data-min="0.001" data-step="0.01" data-decimals="2" title="Ending scale" type="text" class="spinner form-control" />
 					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-4 form-label"  data-toggle="tooltip"  data-placement="left" title="A value between minimum scale multipler and 1 is randomly generated and multiplied with start scale and end scale to provide the actual start scale and end scale for each particle.">Minimum Scale Multiplier</div>
+					<input id="minimumScaleMultiplier" type="text" data-min="0.001" data-step="0.01" data-decimals="2" class="spinner form-control" />
 				</div>
 				<div id="color" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Color of the particles">Color</div>
 					<div class="col-xs-4">
-						<div class="input-group">
-							<span class="input-group-addon">#</span>
-							<input id="colorStart" data-toggle="tooltip"  data-placement="top" title="Starting Color" type="text" class="colorPicker form-control" />
-						</div>
+						<input type="text" id="colorStart" data-toggle="tooltip" class="form-control colorPicker" title="Starting Color">
 					</div>
 					<div class="col-xs-4">
-						<div class="input-group">
-							<span class="input-group-addon">#</span>
-							<input id="colorEnd" data-toggle="tooltip"  data-placement="top" title="Ending Color" type="text" class="colorPicker form-control" />
-						</div>
+						<input type="text" id="colorEnd" data-toggle="tooltip" class="form-control colorPicker" title="Ending Color">
 					</div>
 				</div>
 				<div id="speed" class="form-group">
@@ -121,6 +111,15 @@
 					</div>
 					<div class="col-xs-4">
 						<input id="speedEnd" data-toggle="tooltip" data-placement="top" title="Ending speed" type="text" class="spinner form-control" />
+					</div>
+				</div>
+				<div id="accleration" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Acceleration of particles. Prevents using end speed. Without a rotation speed defined, particles will rotate to match movement direction">Acceleration</div>
+					<div class="col-xs-4">
+						<input id="accelX" data-toggle="tooltip" data-placement="top" title="X position" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="accelY" data-toggle="tooltip" data-placement="top" title="Y position" type="text" class="spinner form-control" />
 					</div>
 				</div>
 				<div id="startRotation" class="form-group">
@@ -144,10 +143,10 @@
 				<div id="particleLife" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of each particle in seconds">Lifetime</div>
 					<div class="col-xs-4">
-						<input id="lifeMin" data-toggle="tooltip" data-placement="top" title="Minimum lifetime" type="text" class="spinner form-control" />
+						<input id="lifeMin" data-toggle="tooltip" data-placement="top" data-min="0.001" data-step="0.01" data-decimals="3" title="Minimum lifetime" type="text" class="spinner form-control" />
 					</div>
 					<div class="col-xs-4">
-						<input id="lifeMax" data-toggle="tooltip" data-placement="top" title="Maximum lifetime" type="text" class="spinner form-control" />
+						<input id="lifeMax" data-toggle="tooltip" data-placement="top" data-min="0.001" data-step="0.01" data-decimals="3" title="Maximum lifetime" type="text" class="spinner form-control" />
 					</div>
 				</div>
 				<div id="blend" class="form-group">
@@ -225,19 +224,19 @@
 				<div id="frequency" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Seconds between each particle being spawned">Spawn Frequency</div>
 					<div class="col-xs-4">
-						<input id="emitFrequency" type="text" class="frequencySpinner spinner form-control" />
+						<input id="emitFrequency" type="text" data-min="0.001" data-step="0.001" data-decimals="3" class="frequencySpinner spinner form-control" />
 					</div>
 				</div>
 				<div id="emitLife" class="form-group">
-					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of the emitter in seconds before it disables itself">Emitter Lifetime</div>
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of the emitter in seconds before it disables itself. Values of 0 or -1 are infinite">Emitter Lifetime</div>
 					<div class="col-xs-4">
-						<input id="emitLifetime" type="text" class="positiveSpinner spinner form-control" />
+						<input id="emitLifetime" type="text" data-min="0" data-step="0.01" data-decimals="2" class="positiveSpinner spinner form-control" />
 					</div>
 				</div>
 				<div id="maxParticles" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Maximum number of particles that can exist at once">Max Particles</div>
 					<div class="col-xs-4">
-						<input id="emitMaxParticles" type="text" class="posIntSpinner spinner form-control" />
+						<input id="emitMaxParticles" type="text" data-min="1" data-decimals="0" class="posIntSpinner spinner form-control" />
 					</div>
 				</div>
 				<div id="spawnType" class="form-group">
@@ -285,7 +284,7 @@
 				<div id="particlesPerWave" class="form-group settings-burst">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Number of particles to spawn in each burst wave">Particles per Wave</div>
 					<div class="col-xs-4">
-						<input id="emitParticlesPerWave" type="text" data-toggle="tooltip" data-placement="top" title="Particles Per Wave" class="spinner form-control" />
+						<input id="emitParticlesPerWave" type="text" data-toggle="tooltip" data-placement="top" data-min="1" data-decimals="0" title="Particles Per Wave" class="spinner form-control" />
 					</div>
 				</div>
 				<div id="particleSpacing" class="form-group settings-burst">
@@ -321,10 +320,7 @@
 				<div class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Background color of the stage">Background</div>
 					<div class="col-xs-8">
-						<div class="input-group">
-							<span class="input-group-addon">#</span>
-							<input id="stageColor" type="text" data-toggle="tooltip"  data-placement="left" title="Stage color" class="colorPicker form-control" value="999999" />
-						</div>
+						<input id="stageColor" type="text" data-toggle="tooltip"  data-placement="left" title="Stage color" class="colorPicker form-control" value="999999" />
 					</div>
 				</div>
 				<div class="form-group">
@@ -343,5 +339,5 @@
 		</div>
 		<script src="assets/js/libraries.js?v=0.1.0"></script>
 		<script src="assets/js/main.js?v=0.1.0"></script>
-    </body>
+</body>
 </html>

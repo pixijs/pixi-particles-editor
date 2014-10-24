@@ -373,7 +373,7 @@
 	window.cloudkid = window.cloudkid || {};
 
 	/**
-	*  A bas web kit application
+	*  A base web kit application
 	*  @class NodeWebkitApp
 	*  @namespace cloudkid
 	*  @constructor
@@ -485,7 +485,7 @@
 			else if (e.keyIdentifier === 'F5')
 			{
 				location.reload();
-			}	
+			}
 		};
 	}
 
@@ -723,7 +723,7 @@ if (false)
 			"downloadConfig",
 			"configDialog",
 			"addImage",
-			"stageColor", 
+			"stageColor",
 			"content",
 			"renderer"
 		];
@@ -759,59 +759,46 @@ if (false)
 		this.alphaStart.slider().data('slider').on('slide', changed);
 		this.alphaEnd.slider().data('slider').on('slide', changed);
 
-		$(".spinner").TouchSpin({
-			verticalbuttons: true
-	    });
+		$(".spinner").each(function()
+			{
+				$(this).TouchSpin({
+					verticalbuttons: true,
+					min: parseFloat($(this).attr("data-min")) || -1000000,
+					max: parseFloat($(this).attr("data-max")) || 1000000,
+					step: parseFloat($(this).attr("data-step")) || 1,
+					decimals: parseFloat($(this).attr("data-decimals")) || 1,
+					forcestepdivisibility: "none"
+				});
+			});
 
-	    $('.bootstrap-touchspin-prefix, bootstrap-touchspin-postfix').remove();
+		$('.bootstrap-touchspin-prefix, bootstrap-touchspin-postfix').remove();
 
-		// //enable all unit sliders (0-1)
-		// $(".unitSlider").slider({
-		// 	animate: "fast",
-		// 	min: 0,
-		// 	max: 1,
-		// 	step: 0.01
-		// }).on('slidechange slidestop', changed);
-
-		// //set up all sliders to change their text input when they slide or
-		// //or are changed externally
-		// var sliders = $(".slider");
-		// sliders.on("slide slidechange", function(event, ui) {
-		// 	$(this).children("input").val(ui.value);
-		// }).on('slidechange slidestop', changed);
-
-		// //set up all sliders to get changed by their text inputs
-		// //this also changes the text input, which clamps values in the sliders
-		$(".spinner").change(function() {
-			$(this).val($(this).val().replace(/[^0-9.]/g,''));
-			changed();
-		});
-
-		// //set up all spinners that can't go negative
-		// $(".positiveSpinner").spinner({
-		// 	min: 0,
-		// 	numberFormat: "n",
-		// 	step: 0.01
-		// }).on('spinchange spinstop', changed);
-
-		// //set up all spinners that can't go negative
-		// $(".frequencySpinner").spinner({
-		// 	min: 0,
-		// 	numberFormat: "n",
-		// 	step: 0.001
-		// }).on('spinchange spinstop', changed);
-
-		// //set up general spinners
-		// $(".generalSpinner").spinner({
-		// 	numberFormat: "n",
-		// 	step: 0.1
-		// }).on('spinchange spinstop', changed);
-
-		// //set up integer spinners
-		// $(".posIntSpinner").spinner({
-		// 	min: 1,
-		// 	step: 1
-		// }).on('spinchange spinstop', changed);
+		//set up all sliders to get changed by their text inputs
+		//this also changes the text input, which clamps values in the sliders
+		$(".spinner").change(function()
+			{
+				$(this).val($(this).val().replace(/[^0-9.]/g,''));
+				changed();
+			});
+		
+		//enable color pickers
+		$(".colorPicker").each(function()
+			{
+				$(this).minicolors(
+				{
+					control: 'hue',
+					defaultValue: '',
+					inline: false,
+					letterCase: 'lowercase',
+					position: 'top right',
+					change: function(hex, opacity)
+					{
+						if( !hex ) return;
+						changed();
+					},
+					theme: 'bootstrap'
+				});
+			});
 
 		// //enable color pickers
 		// $(".colorPicker").colorpicker({
@@ -886,7 +873,7 @@ if (false)
 		// 				$(this).dialog( "close" );
 		// 			}
 		// 		}
-		// 	]
+		//	]
 		// });
 
 		// this.defaultConfigSelector.selectmenu();
@@ -934,8 +921,8 @@ if (false)
 		this.scaleStart.val(config.scale ? config.scale.start : 1);
 		this.scaleEnd.val(config.scale ? config.scale.end : 1);
 		this.minimumScaleMultiplier.val(config.scale ? (config.scale.minimumScaleMultiplier || 1) : 1);
-		this.colorStart.val(config.color ? config.color.start : "FFFFFF");
-		this.colorEnd.val(config.color ? config.color.end : "FFFFFF");
+		this.colorStart.minicolors("value", config.color ? config.color.start : "FFFFFF");
+		this.colorEnd.minicolors("value", config.color ? config.color.end : "FFFFFF");
 		this.speedStart.val(config.speed ? config.speed.start : 0);
 		this.speedEnd.val(config.speed ? config.speed.end : 0);
 		this.accelX.val(config.acceleration ? config.acceleration.x : 0);
@@ -972,7 +959,7 @@ if (false)
 		this.emitAddAtBack.prop("checked", !!config.addAtBack);
 
 		//spawn type
-		var spawnType = config.spawnType, 
+		var spawnType = config.spawnType,
 			spawnTypes = this.spawnTypes;
 
 		if(spawnTypes.indexOf(spawnType) == -1)
@@ -1033,7 +1020,7 @@ if (false)
 			end: parseFloat(this.speedEnd.val()) || 0
 		};
 		output.acceleration = {
-			x: parseFloat(this.accelX.val() || 0), 
+			x: parseFloat(this.accelX.val() || 0),
 			y: parseFloat(this.accelY.val() || 0)
 		};
 		output.startRotation = {
@@ -1077,7 +1064,7 @@ if (false)
 		output.emitterLifetime = parseFloat(this.emitLifetime.val()) || -1;
 		output.maxParticles = parseInt(this.emitMaxParticles.val()) || 1000;
 		output.pos = {
-			x: parseFloat(this.emitSpawnPosX.val() || 0), 
+			x: parseFloat(this.emitSpawnPosX.val() || 0),
 			y: parseFloat(this.emitSpawnPosY.val() || 0)
 		};
 		output.addAtBack = this.emitAddAtBack.prop("checked");
@@ -1088,16 +1075,16 @@ if (false)
 		if(spawnType == "rect")
 		{
 			output.spawnRect = {
-				x: parseFloat(this.emitRectX.val()) || 0, 
+				x: parseFloat(this.emitRectX.val()) || 0,
 				y: parseFloat(this.emitRectY.val()) || 0,
-				w: parseFloat(this.emitRectW.val()) || 0, 
+				w: parseFloat(this.emitRectW.val()) || 0,
 				h: parseFloat(this.emitRectH.val()) || 0
 			};
 		}
 		else if(spawnType == "circle")
 		{
 			output.spawnCircle = {
-				x: parseFloat(this.emitCircleX.val()) || 0, 
+				x: parseFloat(this.emitCircleX.val()) || 0,
 				y: parseFloat(this.emitCircleY.val()) || 0,
 				r: parseFloat(this.emitCircleR.val()) || 0
 			};
@@ -1135,7 +1122,7 @@ if (false)
 		else
 		{
 			window.open(encodeURI(type + "," + content));
-		}		
+		}
 	};
 
 	// assign to global space

@@ -29,7 +29,9 @@
 		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.js",
 		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.min.css",
 		"components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.min.css",
-		"components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js"
+		"components/seiyria-bootstrap-slider/dist/bootstrap-slider.min.js",
+		"components/jquery-minicolors/jquery.minicolors.css",
+		"components/jquery-minicolors/jquery.minicolors.min.js"
 	],
 	"librariesDebug": [
 		"components/normalize.css/normalize.css",
@@ -48,6 +50,8 @@
 		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.js",
 		"components/bootstrap-touchspin/dist/jquery.bootstrap-touchspin.css",
 		"components/seiyria-bootstrap-slider/dist/css/bootstrap-slider.css",
-		"components/seiyria-bootstrap-slider/js/bootstrap-slider.js"
+		"components/seiyria-bootstrap-slider/js/bootstrap-slider.js",
+		"components/jquery-minicolors/jquery.minicolors.css",
+		"components/jquery-minicolors/jquery.minicolors.js"
 	]
 }

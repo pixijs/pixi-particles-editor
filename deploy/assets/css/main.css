@@ -92,6 +92,14 @@ legend.collapsed .up {
   background: #fff;
   border: 1px solid #ccc;
 }
+#editor .colorPicker {
+  padding-right: 0px;
+  padding-left: 18px;
+}
+.minicolors-theme-bootstrap.minicolors-position-right .minicolors-swatch {
+  left: 3px !important;
+  right: auto !important;
+}
 .particleImage {
   position: relative;
   display: inline-block;
