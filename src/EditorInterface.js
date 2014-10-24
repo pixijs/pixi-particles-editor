@@ -13,7 +13,8 @@
 		this.spawnTypes = spawnTypes;
 
 		var elements = [
-			"alpha",
+			"alphaStart",
+			"alphaEnd",
 			"scaleStart",
 			"scaleEnd",
 			"minimumScaleMultiplier",
@@ -93,11 +94,8 @@
 			animation: false
 		});
 
-		this.alpha.slider({
-			formatter: function(alpha) {
-				return 'Start: ' + alpha[0] + ", End: " + alpha[1];
-			}
-		});
+		this.alphaStart.slider().data('slider').on('slide', changed);
+		this.alphaEnd.slider().data('slider').on('slide', changed);
 
 		$(".spinner").TouchSpin({
 			verticalbuttons: true
@@ -122,10 +120,10 @@
 
 		// //set up all sliders to get changed by their text inputs
 		// //this also changes the text input, which clamps values in the sliders
-		// $(".slider input").change(function() {
-		// 	$(this).parent().slider("value", $(this).val().replace(/[^0-9.]+/,""));
-		// 	changed();
-		// });
+		$(".spinner").change(function() {
+			$(this).val($(this).val().replace(/[^0-9.]/g,''));
+			changed();
+		});
 
 		// //set up all spinners that can't go negative
 		// $(".positiveSpinner").spinner({
@@ -247,8 +245,17 @@
 		});
 
 		// // Update the background color
-		this.stageColor.change(function(e, data){
-			self.trigger('stageColor', data.formatted);
+		this.stageColor.change(function(e){
+			var inputColor = self.stageColor.val();
+			var color = inputColor.replace(/[^abcdef0-9]/ig, '');
+			if (color != inputColor)
+			{
+				self.stageColor.val(color);
+			}
+			if (color.length == 6)
+			{
+				self.trigger('stageColor', color);
+			}
 		});
 	};
 
@@ -260,10 +267,8 @@
 	p.set = function(config)
 	{
 		//particle settings
-		this.alpha.data('slider').setValue([
-			config.alpha ? config.alpha.start : 1, 
-			config.alpha ? config.alpha.end : 1]
-		);
+		this.alphaStart.data('slider').setValue(config.alpha ? config.alpha.start : 1);
+		this.alphaEnd.data('slider').setValue(config.alpha ? config.alpha.end : 1);
 		this.scaleStart.val(config.scale ? config.scale.start : 1);
 		this.scaleEnd.val(config.scale ? config.scale.end : 1);
 		this.minimumScaleMultiplier.val(config.scale ? (config.scale.minimumScaleMultiplier || 1) : 1);
@@ -346,8 +351,8 @@
 		var output = {};
 		
 		// particle settings
-		var start = parseFloat(this.alphaStart.val());
-		var end = parseFloat(this.alphaEnd.val());
+		var start = parseFloat(this.alphaStart.data('slider').getValue());
+		var end = parseFloat(this.alphaEnd.data('slider').getValue());
 		output.alpha = {
 			start: start == start ? start : 1,
 			end: end == end ? end : 1

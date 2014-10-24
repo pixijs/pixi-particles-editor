@@ -9,14 +9,14 @@
 *
 * This notice shall be included in all copies or substantial portions of the Software.
 */
-this.createjs=this.createjs||{},function(){"use strict";var a=createjs.PreloadJS=createjs.PreloadJS||{};a.version="0.4.3",a.buildDate="Fri, 19 Sep 2014 18:50:28 GMT"}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a,b,c){this.initialize(a,b,c)},b=a.prototype;b.type=null,b.target=null,b.currentTarget=null,b.eventPhase=0,b.bubbles=!1,b.cancelable=!1,b.timeStamp=0,b.defaultPrevented=!1,b.propagationStopped=!1,b.immediatePropagationStopped=!1,b.removed=!1,b.initialize=function(a,b,c){this.type=a,this.bubbles=b,this.cancelable=c,this.timeStamp=(new Date).getTime()},b.preventDefault=function(){this.defaultPrevented=!0},b.stopPropagation=function(){this.propagationStopped=!0},b.stopImmediatePropagation=function(){this.immediatePropagationStopped=this.propagationStopped=!0},b.remove=function(){this.removed=!0},b.clone=function(){return new a(this.type,this.bubbles,this.cancelable)},b.toString=function(){return"[Event (type="+this.type+")]"},createjs.Event=a}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(){},b=a.prototype;a.initialize=function(a){a.addEventListener=b.addEventListener,a.on=b.on,a.removeEventListener=a.off=b.removeEventListener,a.removeAllEventListeners=b.removeAllEventListeners,a.hasEventListener=b.hasEventListener,a.dispatchEvent=b.dispatchEvent,a._dispatchEvent=b._dispatchEvent,a.willTrigger=b.willTrigger},b._listeners=null,b._captureListeners=null,b.initialize=function(){},b.addEventListener=function(a,b,c){var d;d=c?this._captureListeners=this._captureListeners||{}:this._listeners=this._listeners||{};var e=d[a];return e&&this.removeEventListener(a,b,c),e=d[a],e?e.push(b):d[a]=[b],b},b.on=function(a,b,c,d,e,f){return b.handleEvent&&(c=c||b,b=b.handleEvent),c=c||this,this.addEventListener(a,function(a){b.call(c,a,e),d&&a.remove()},f)},b.removeEventListener=function(a,b,c){var d=c?this._captureListeners:this._listeners;if(d){var e=d[a];if(e)for(var f=0,g=e.length;g>f;f++)if(e[f]==b){1==g?delete d[a]:e.splice(f,1);break}}},b.off=b.removeEventListener,b.removeAllEventListeners=function(a){a?(this._listeners&&delete this._listeners[a],this._captureListeners&&delete this._captureListeners[a]):this._listeners=this._captureListeners=null},b.dispatchEvent=function(a,b){if("string"==typeof a){var c=this._listeners;if(!c||!c[a])return!1;a=new createjs.Event(a)}if(a.target=b||this,a.bubbles&&this.parent){for(var d=this,e=[d];d.parent;)e.push(d=d.parent);var f,g=e.length;for(f=g-1;f>=0&&!a.propagationStopped;f--)e[f]._dispatchEvent(a,1+(0==f));for(f=1;g>f&&!a.propagationStopped;f++)e[f]._dispatchEvent(a,3)}else this._dispatchEvent(a,2);return a.defaultPrevented},b.hasEventListener=function(a){var b=this._listeners,c=this._captureListeners;return!!(b&&b[a]||c&&c[a])},b.willTrigger=function(a){for(var b=this;b;){if(b.hasEventListener(a))return!0;b=b.parent}return!1},b.toString=function(){return"[EventDispatcher]"},b._dispatchEvent=function(a,b){var c,d=1==b?this._captureListeners:this._listeners;if(a&&d){var e=d[a.type];if(!e||!(c=e.length))return;a.currentTarget=this,a.eventPhase=b,a.removed=!1,e=e.slice();for(var f=0;c>f&&!a.immediatePropagationStopped;f++){var g=e[f];g.handleEvent?g.handleEvent(a):g(a),a.removed&&(this.off(a.type,g,1==b),a.removed=!1)}}},createjs.EventDispatcher=a}(),this.createjs=this.createjs||{},function(){"use strict";createjs.indexOf=function(a,b){for(var c=0,d=a.length;d>c;c++)if(b===a[c])return c;return-1}}(),this.createjs=this.createjs||{},function(){"use strict";createjs.proxy=function(a,b){var c=Array.prototype.slice.call(arguments,2);return function(){return a.apply(b,Array.prototype.slice.call(arguments,0).concat(c))}}}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(){this.init()};a.prototype=new createjs.EventDispatcher;var b=a.prototype,c=a;c.ABSOLUTE_PATT=/^(?:\w+:)?\/{2}/i,c.RELATIVE_PATT=/^[./]*?\//i,c.EXTENSION_PATT=/\/?[^/]+\.(\w{1,5})$/i,b.loaded=!1,b.canceled=!1,b.progress=0,b._item=null,b.getItem=function(){return this._item},b.init=function(){},b.load=function(){},b.close=function(){},b._sendLoadStart=function(){this._isCanceled()||this.dispatchEvent("loadstart")},b._sendProgress=function(a){if(!this._isCanceled()){var b=null;"number"==typeof a?(this.progress=a,b=new createjs.Event("progress"),b.loaded=this.progress,b.total=1):(b=a,this.progress=a.loaded/a.total,(isNaN(this.progress)||1/0==this.progress)&&(this.progress=0)),b.progress=this.progress,this.hasEventListener("progress")&&this.dispatchEvent(b)}},b._sendComplete=function(){this._isCanceled()||this.dispatchEvent("complete")},b._sendError=function(a){!this._isCanceled()&&this.hasEventListener("error")&&(null==a&&(a=new createjs.Event("error")),this.dispatchEvent(a))},b._isCanceled=function(){return null==window.createjs||this.canceled?!0:!1},b._parseURI=function(a){var b={absolute:!1,relative:!1};if(null==a)return b;var d=a.indexOf("?");d>-1&&(a=a.substr(0,d));var e;return c.ABSOLUTE_PATT.test(a)?b.absolute=!0:c.RELATIVE_PATT.test(a)&&(b.relative=!0),(e=a.match(c.EXTENSION_PATT))&&(b.extension=e[1].toLowerCase()),b},b._formatQueryString=function(a,b){if(null==a)throw new Error("You must specify data.");var c=[];for(var d in a)c.push(d+"="+escape(a[d]));return b&&(c=c.concat(b)),c.join("&")},b.buildPath=function(a,b){if(null==b)return a;var c=[],d=a.indexOf("?");if(-1!=d){var e=a.slice(d+1);c=c.concat(e.split("&"))}return-1!=d?a.slice(0,d)+"?"+this._formatQueryString(b,c):a+"?"+this._formatQueryString(b,c)},b._isCrossDomain=function(a){var b=document.createElement("a");b.href=a.src;var c=document.createElement("a");c.href=location.href;var d=""!=b.hostname&&(b.port!=c.port||b.protocol!=c.protocol||b.hostname!=c.hostname);return d},b._isLocal=function(a){var b=document.createElement("a");return b.href=a.src,""==b.hostname&&"file:"==b.protocol},b.toString=function(){return"[PreloadJS AbstractLoader]"},createjs.AbstractLoader=a}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a,b,c){this.init(a,b,c)},b=a.prototype=new createjs.AbstractLoader,c=a;c.loadTimeout=8e3,c.LOAD_TIMEOUT=0,c.BINARY="binary",c.CSS="css",c.IMAGE="image",c.JAVASCRIPT="javascript",c.JSON="json",c.JSONP="jsonp",c.MANIFEST="manifest",c.SOUND="sound",c.SVG="svg",c.TEXT="text",c.XML="xml",c.POST="POST",c.GET="GET",b._basePath=null,b._crossOrigin="",b.useXHR=!0,b.stopOnError=!1,b.maintainScriptOrder=!0,b.next=null,b._typeCallbacks=null,b._extensionCallbacks=null,b._loadStartWasDispatched=!1,b._maxConnections=1,b._currentlyLoadingScript=null,b._currentLoads=null,b._loadQueue=null,b._loadQueueBackup=null,b._loadItemsById=null,b._loadItemsBySrc=null,b._loadedResults=null,b._loadedRawResults=null,b._numItems=0,b._numItemsLoaded=0,b._scriptOrder=null,b._loadedScripts=null,b.init=function(a,b,c){this._numItems=this._numItemsLoaded=0,this._paused=!1,this._loadStartWasDispatched=!1,this._currentLoads=[],this._loadQueue=[],this._loadQueueBackup=[],this._scriptOrder=[],this._loadedScripts=[],this._loadItemsById={},this._loadItemsBySrc={},this._loadedResults={},this._loadedRawResults={},this._typeCallbacks={},this._extensionCallbacks={},this._basePath=b,this.setUseXHR(a),this._crossOrigin=c===!0?"Anonymous":c===!1||null==c?"":c},b.setUseXHR=function(a){return this.useXHR=0!=a&&null!=window.XMLHttpRequest,this.useXHR},b.removeAll=function(){this.remove()},b.remove=function(a){var b=null;if(!a||a instanceof Array){if(a)b=a;else if(arguments.length>0)return}else b=[a];var c=!1;if(b){for(;b.length;){var d=b.pop(),e=this.getResult(d);for(f=this._loadQueue.length-1;f>=0;f--)if(g=this._loadQueue[f].getItem(),g.id==d||g.src==d){this._loadQueue.splice(f,1)[0].cancel();break}for(f=this._loadQueueBackup.length-1;f>=0;f--)if(g=this._loadQueueBackup[f].getItem(),g.id==d||g.src==d){this._loadQueueBackup.splice(f,1)[0].cancel();break}if(e)delete this._loadItemsById[e.id],delete this._loadItemsBySrc[e.src],this._disposeItem(e);else for(var f=this._currentLoads.length-1;f>=0;f--){var g=this._currentLoads[f].getItem();if(g.id==d||g.src==d){this._currentLoads.splice(f,1)[0].cancel(),c=!0;break}}}c&&this._loadNext()}else{this.close();for(var h in this._loadItemsById)this._disposeItem(this._loadItemsById[h]);this.init(this.useXHR,this._basePath,this._crossOrigin)}},b.reset=function(){this.close();for(var a in this._loadItemsById)this._disposeItem(this._loadItemsById[a]);for(var b=[],c=0,d=this._loadQueueBackup.length;d>c;c++)b.push(this._loadQueueBackup[c].getItem());this.loadManifest(b,!1)},c.isBinary=function(a){switch(a){case createjs.LoadQueue.IMAGE:case createjs.LoadQueue.BINARY:return!0;default:return!1}},c.isText=function(a){switch(a){case createjs.LoadQueue.TEXT:case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:case createjs.LoadQueue.XML:case createjs.LoadQueue.HTML:case createjs.LoadQueue.CSS:case createjs.LoadQueue.SVG:case createjs.LoadQueue.JAVASCRIPT:return!0;default:return!1}},b.installPlugin=function(a){if(null!=a&&null!=a.getPreloadHandlers){var b=a.getPreloadHandlers();if(b.scope=a,null!=b.types)for(var c=0,d=b.types.length;d>c;c++)this._typeCallbacks[b.types[c]]=b;if(null!=b.extensions)for(c=0,d=b.extensions.length;d>c;c++)this._extensionCallbacks[b.extensions[c]]=b}},b.setMaxConnections=function(a){this._maxConnections=a,!this._paused&&this._loadQueue.length>0&&this._loadNext()},b.loadFile=function(a,b,c){if(null==a){var d=new createjs.Event("error");return d.text="PRELOAD_NO_FILE",void this._sendError(d)}this._addItem(a,null,c),this.setPaused(b!==!1?!1:!0)},b.loadManifest=function(a,b,d){var e=null,f=null;if(a instanceof Array){if(0==a.length){var g=new createjs.Event("error");return g.text="PRELOAD_MANIFEST_EMPTY",void this._sendError(g)}e=a}else if("string"==typeof a)e=[{src:a,type:c.MANIFEST}];else{if("object"!=typeof a){var g=new createjs.Event("error");return g.text="PRELOAD_MANIFEST_NULL",void this._sendError(g)}if(void 0!==a.src){if(null==a.type)a.type=c.MANIFEST;else if(a.type!=c.MANIFEST){var g=new createjs.Event("error");g.text="PRELOAD_MANIFEST_ERROR",this._sendError(g)}e=[a]}else void 0!==a.manifest&&(e=a.manifest,f=a.path)}for(var h=0,i=e.length;i>h;h++)this._addItem(e[h],f,d);this.setPaused(b!==!1?!1:!0)},b.load=function(){this.setPaused(!1)},b.getItem=function(a){return this._loadItemsById[a]||this._loadItemsBySrc[a]},b.getResult=function(a,b){var c=this._loadItemsById[a]||this._loadItemsBySrc[a];if(null==c)return null;var d=c.id;return b&&this._loadedRawResults[d]?this._loadedRawResults[d]:this._loadedResults[d]},b.setPaused=function(a){this._paused=a,this._paused||this._loadNext()},b.close=function(){for(;this._currentLoads.length;)this._currentLoads.pop().cancel();this._scriptOrder.length=0,this._loadedScripts.length=0,this.loadStartWasDispatched=!1},b._addItem=function(a,b,c){var d=this._createLoadItem(a,b,c);if(null!=d){var e=this._createLoader(d);null!=e&&(d._loader=e,this._loadQueue.push(e),this._loadQueueBackup.push(e),this._numItems++,this._updateProgress(),(this.maintainScriptOrder&&d.type==createjs.LoadQueue.JAVASCRIPT||d.maintainOrder===!0)&&(this._scriptOrder.push(d),this._loadedScripts.push(null)))}},b._createLoadItem=function(a,b,c){var d=null;switch(typeof a){case"string":d={src:a};break;case"object":d=window.HTMLAudioElement&&a instanceof window.HTMLAudioElement?{tag:a,src:d.tag.src,type:createjs.LoadQueue.SOUND}:a;break;default:return null}var e=this._parseURI(d.src);e.extension&&(d.ext=e.extension),null==d.type&&(d.ext||(console.error("unable to get extension for "+d.src),console.error("RegEx results: "+e)),d.type=this._getTypeByExtension(d.ext));var f="",g=c||this._basePath,h=d.src;if(!e.absolute&&!e.relative)if(b){f=b;var i=this._parseURI(b);h=b+h,null==g||i.absolute||i.relative||(f=g+f)}else null!=g&&(f=g);if(d.src=f+d.src,d.path=f,(d.type==createjs.LoadQueue.JSON||d.type==createjs.LoadQueue.MANIFEST)&&(d._loadAsJSONP=null!=d.callback),d.type==createjs.LoadQueue.JSONP&&null==d.callback)throw new Error("callback is required for loading JSONP requests.");(void 0===d.tag||null===d.tag)&&(d.tag=this._createTag(d)),(void 0===d.id||null===d.id||""===d.id)&&(d.id=h);var j=this._typeCallbacks[d.type]||this._extensionCallbacks[d.ext];if(j){var k=j.callback.call(j.scope,d.src,d.type,d.id,d.data,f,this);if(k===!1)return null;k===!0||(null!=k.src&&(d.src=k.src),null!=k.id&&(d.id=k.id),null!=k.tag&&(d.tag=k.tag),null!=k.completeHandler&&(d.completeHandler=k.completeHandler),k.type&&(d.type=k.type),e=this._parseURI(d.src),null!=e.extension&&(d.ext=e.extension))}return this._loadItemsById[d.id]=d,this._loadItemsBySrc[d.src]=d,d},b._createLoader=function(a){var b=this.useXHR;switch(a.type){case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:b=!a._loadAsJSONP;break;case createjs.LoadQueue.XML:case createjs.LoadQueue.TEXT:b=!0;break;case createjs.LoadQueue.SOUND:case createjs.LoadQueue.JSONP:b=!1;break;case null:return null}return b?new createjs.XHRLoader(a,this._crossOrigin):new createjs.TagLoader(a)},b._loadNext=function(){if(!this._paused){this._loadStartWasDispatched||(this._sendLoadStart(),this._loadStartWasDispatched=!0),this._numItems==this._numItemsLoaded?(this.loaded=!0,this._sendComplete(),this.next&&this.next.load&&this.next.load()):this.loaded=!1;for(var a=0;a<this._loadQueue.length&&!(this._currentLoads.length>=this._maxConnections);a++){var b=this._loadQueue[a];this._canStartLoad(b)&&(this._loadQueue.splice(a,1),a--,this._loadItem(b))}}},b._loadItem=function(a){a.on("progress",this._handleProgress,this),a.on("complete",this._handleFileComplete,this),a.on("error",this._handleFileError,this),this._currentLoads.push(a),this._sendFileStart(a.getItem()),a.load()},b._handleFileError=function(a){var b=a.target;this._numItemsLoaded++,this._finishOrderedItem(b,!0),this._updateProgress();var c=new createjs.Event("error");c.text="FILE_LOAD_ERROR",c.item=b.getItem(),this._sendError(c),this.stopOnError||(this._removeLoadItem(b),this._loadNext())},b._handleFileComplete=function(a){var b=a.target,c=b.getItem();this._loadedResults[c.id]=b.getResult(),b instanceof createjs.XHRLoader&&(this._loadedRawResults[c.id]=b.getResult(!0)),this._removeLoadItem(b),this._finishOrderedItem(b)||this._processFinishedLoad(c,b)},b._finishOrderedItem=function(a,b){var c=a.getItem();if(this.maintainScriptOrder&&c.type==createjs.LoadQueue.JAVASCRIPT||c.maintainOrder){a instanceof createjs.TagLoader&&c.type==createjs.LoadQueue.JAVASCRIPT&&(this._currentlyLoadingScript=!1);var d=createjs.indexOf(this._scriptOrder,c);return-1==d?!1:(this._loadedScripts[d]=b===!0?!0:c,this._checkScriptLoadOrder(),!0)}return!1},b._checkScriptLoadOrder=function(){for(var a=this._loadedScripts.length,b=0;a>b;b++){var c=this._loadedScripts[b];if(null===c)break;if(c!==!0){var d=this._loadedResults[c.id];c.type==createjs.LoadQueue.JAVASCRIPT&&(document.body||document.getElementsByTagName("body")[0]).appendChild(d);var e=c._loader;this._processFinishedLoad(c,e),this._loadedScripts[b]=!0}}},b._processFinishedLoad=function(a,b){if(a.type==createjs.LoadQueue.MANIFEST){var c=b.getResult();null!=c&&void 0!==c.manifest&&this.loadManifest(c,!0)}this._numItemsLoaded++,this._updateProgress(),this._sendFileComplete(a,b),this._loadNext()},b._canStartLoad=function(a){if(!this.maintainScriptOrder||a instanceof createjs.XHRLoader)return!0;var b=a.getItem();if(b.type!=createjs.LoadQueue.JAVASCRIPT)return!0;if(this._currentlyLoadingScript)return!1;for(var c=this._scriptOrder.indexOf(b),d=0;c>d;){var e=this._loadedScripts[d];if(null==e)return!1;d++}return this._currentlyLoadingScript=!0,!0},b._removeLoadItem=function(a){var b=a.getItem();delete b._loader,delete b._loadAsJSONP;for(var c=this._currentLoads.length,d=0;c>d;d++)if(this._currentLoads[d]==a){this._currentLoads.splice(d,1);break}},b._handleProgress=function(a){var b=a.target;this._sendFileProgress(b.getItem(),b.progress),this._updateProgress()},b._updateProgress=function(){var a=this._numItemsLoaded/this._numItems,b=this._numItems-this._numItemsLoaded;if(b>0){for(var c=0,d=0,e=this._currentLoads.length;e>d;d++)c+=this._currentLoads[d].progress;a+=c/b*(b/this._numItems)}this._sendProgress(a)},b._disposeItem=function(a){delete this._loadedResults[a.id],delete this._loadedRawResults[a.id],delete this._loadItemsById[a.id],delete this._loadItemsBySrc[a.src]},b._createTag=function(a){var b=null;switch(a.type){case createjs.LoadQueue.IMAGE:return b=document.createElement("img"),""==this._crossOrigin||this._isLocal(a)||(b.crossOrigin=this._crossOrigin),b;case createjs.LoadQueue.SOUND:return b=document.createElement("audio"),b.autoplay=!1,b;case createjs.LoadQueue.JSON:case createjs.LoadQueue.JSONP:case createjs.LoadQueue.JAVASCRIPT:case createjs.LoadQueue.MANIFEST:return b=document.createElement("script"),b.type="text/javascript",b;case createjs.LoadQueue.CSS:return b=document.createElement(this.useXHR?"style":"link"),b.rel="stylesheet",b.type="text/css",b;case createjs.LoadQueue.SVG:return this.useXHR?b=document.createElement("svg"):(b=document.createElement("object"),b.type="image/svg+xml"),b}return null},b._getTypeByExtension=function(a){if(null==a)return createjs.LoadQueue.TEXT;switch(a.toLowerCase()){case"jpeg":case"jpg":case"gif":case"png":case"webp":case"bmp":return createjs.LoadQueue.IMAGE;case"ogg":case"mp3":case"wav":return createjs.LoadQueue.SOUND;case"json":return createjs.LoadQueue.JSON;case"xml":return createjs.LoadQueue.XML;case"css":return createjs.LoadQueue.CSS;case"js":return createjs.LoadQueue.JAVASCRIPT;case"svg":return createjs.LoadQueue.SVG;default:return createjs.LoadQueue.TEXT}},b._sendFileProgress=function(a,b){if(this._isCanceled())return void this._cleanUp();if(this.hasEventListener("fileprogress")){var c=new createjs.Event("fileprogress");c.progress=b,c.loaded=b,c.total=1,c.item=a,this.dispatchEvent(c)}},b._sendFileComplete=function(a,b){if(!this._isCanceled()){var c=new createjs.Event("fileload");c.loader=b,c.item=a,c.result=this._loadedResults[a.id],c.rawResult=this._loadedRawResults[a.id],a.completeHandler&&a.completeHandler(c),this.hasEventListener("fileload")&&this.dispatchEvent(c)}},b._sendFileStart=function(a){var b=new createjs.Event("filestart");b.item=a,this.hasEventListener("filestart")&&this.dispatchEvent(b)},b.toString=function(){return"[PreloadJS LoadQueue]"},createjs.LoadQueue=a;var d=function(){};d.init=function(){var a=navigator.userAgent;d.isFirefox=a.indexOf("Firefox")>-1,d.isOpera=null!=window.opera,d.isChrome=a.indexOf("Chrome")>-1,d.isIOS=a.indexOf("iPod")>-1||a.indexOf("iPhone")>-1||a.indexOf("iPad")>-1},d.init(),createjs.LoadQueue.BrowserDetect=d}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a){this.init(a)},b=a.prototype=new createjs.AbstractLoader;b._loadTimeout=null,b._tagCompleteProxy=null,b._isAudio=!1,b._tag=null,b._jsonResult=null,b.init=function(a){this._item=a,this._tag=a.tag,this._isAudio=window.HTMLAudioElement&&a.tag instanceof window.HTMLAudioElement,this._tagCompleteProxy=createjs.proxy(this._handleLoad,this)},b.getResult=function(){return this._item.type==createjs.LoadQueue.JSONP||this._item.type==createjs.LoadQueue.MANIFEST?this._jsonResult:this._tag},b.cancel=function(){this.canceled=!0,this._clean()},b.load=function(){var a=this._item,b=this._tag;clearTimeout(this._loadTimeout);var c=createjs.LoadQueue.LOAD_TIMEOUT;0==c&&(c=createjs.LoadQueue.loadTimeout),this._loadTimeout=setTimeout(createjs.proxy(this._handleTimeout,this),c),this._isAudio&&(b.src=null,b.preload="auto"),b.onerror=createjs.proxy(this._handleError,this),this._isAudio?(b.onstalled=createjs.proxy(this._handleStalled,this),b.addEventListener("canplaythrough",this._tagCompleteProxy,!1)):(b.onload=createjs.proxy(this._handleLoad,this),b.onreadystatechange=createjs.proxy(this._handleReadyStateChange,this));var d=this.buildPath(a.src,a.values);switch(a.type){case createjs.LoadQueue.CSS:b.href=d;break;case createjs.LoadQueue.SVG:b.data=d;break;default:b.src=d}if(a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.JSON||a.type==createjs.LoadQueue.MANIFEST){if(null==a.callback)throw new Error("callback is required for loading JSONP requests.");if(null!=window[a.callback])throw new Error('JSONP callback "'+a.callback+'" already exists on window. You need to specify a different callback. Or re-name the current one.');window[a.callback]=createjs.proxy(this._handleJSONPLoad,this)}if(a.type==createjs.LoadQueue.SVG||a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.JSON||a.type==createjs.LoadQueue.MANIFEST||a.type==createjs.LoadQueue.JAVASCRIPT||a.type==createjs.LoadQueue.CSS){this._startTagVisibility=b.style.visibility,b.style.visibility="hidden";var e=document.body||document.getElementsByTagName("body")[0];if(null==e){if(a.type==createjs.LoadQueue.SVG)return void this._handleSVGError();e=document.head||document.getElementsByTagName("head")}e.appendChild(b)}null!=b.load&&b.load()},b._handleSVGError=function(){this._clean();var a=new createjs.Event("error");a.text="SVG_NO_BODY",this._sendError(a)},b._handleJSONPLoad=function(a){this._jsonResult=a},b._handleTimeout=function(){this._clean();var a=new createjs.Event("error");a.text="PRELOAD_TIMEOUT",this._sendError(a)},b._handleStalled=function(){},b._handleError=function(){this._clean();var a=new createjs.Event("error");this._sendError(a)},b._handleReadyStateChange=function(){clearTimeout(this._loadTimeout);var a=this.getItem().tag;("loaded"==a.readyState||"complete"==a.readyState)&&this._handleLoad()},b._handleLoad=function(){if(!this._isCanceled()){var a=this.getItem(),b=a.tag;if(!(this.loaded||this._isAudio&&4!==b.readyState)){switch(this.loaded=!0,a.type){case createjs.LoadQueue.SVG:case createjs.LoadQueue.JSON:case createjs.LoadQueue.JSONP:case createjs.LoadQueue.MANIFEST:case createjs.LoadQueue.CSS:b.style.visibility=this._startTagVisibility,b.parentNode&&b.parentNode.contains(b)&&b.parentNode.removeChild(b)}this._clean(),this._sendComplete()}}},b._clean=function(){clearTimeout(this._loadTimeout);var a=this.getItem(),b=a.tag;null!=b&&(b.onload=null,b.removeEventListener&&b.removeEventListener("canplaythrough",this._tagCompleteProxy,!1),b.onstalled=null,b.onprogress=null,b.onerror=null,null!=b.parentNode&&a.type==createjs.LoadQueue.SVG&&a.type==createjs.LoadQueue.JSON&&a.type==createjs.LoadQueue.MANIFEST&&a.type==createjs.LoadQueue.CSS&&a.type==createjs.LoadQueue.JSONP&&b.parentNode.removeChild(b));var a=this.getItem();(a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.MANIFEST)&&(window[a.callback]=null)},b.toString=function(){return"[PreloadJS TagLoader]"},createjs.TagLoader=a}(),this.createjs=this.createjs||{},function(){"use strict";var XHRLoader=function(a,b){this.init(a,b)},s=XHRLoader;s.ACTIVEX_VERSIONS=["Msxml2.XMLHTTP.6.0","Msxml2.XMLHTTP.5.0","Msxml2.XMLHTTP.4.0","MSXML2.XMLHTTP.3.0","MSXML2.XMLHTTP","Microsoft.XMLHTTP"];var p=XHRLoader.prototype=new createjs.AbstractLoader;p._request=null,p._loadTimeout=null,p._xhrLevel=1,p._response=null,p._rawResponse=null,p._crossOrigin="",p.init=function(a,b){this._item=a,this._crossOrigin=b,!this._createXHR(a)},p.getResult=function(a){return a&&this._rawResponse?this._rawResponse:this._response},p.cancel=function(){this.canceled=!0,this._clean(),this._request.abort()},p.load=function(){if(null==this._request)return void this._handleError();if(this._request.onloadstart=createjs.proxy(this._handleLoadStart,this),this._request.onprogress=createjs.proxy(this._handleProgress,this),this._request.onabort=createjs.proxy(this._handleAbort,this),this._request.onerror=createjs.proxy(this._handleError,this),this._request.ontimeout=createjs.proxy(this._handleTimeout,this),1==this._xhrLevel){var a=createjs.LoadQueue.LOAD_TIMEOUT;if(0==a)a=createjs.LoadQueue.loadTimeout;else try{console.warn("LoadQueue.LOAD_TIMEOUT has been deprecated in favor of LoadQueue.loadTimeout")}catch(b){}this._loadTimeout=setTimeout(createjs.proxy(this._handleTimeout,this),a)}this._request.onload=createjs.proxy(this._handleLoad,this),this._request.onreadystatechange=createjs.proxy(this._handleReadyStateChange,this);try{this._item.values&&this._item.method!=createjs.LoadQueue.GET?this._item.method==createjs.LoadQueue.POST&&this._request.send(this._formatQueryString(this._item.values)):this._request.send()}catch(c){var d=new createjs.Event("error");d.error=c,this._sendError(d)}},p.getAllResponseHeaders=function(){return this._request.getAllResponseHeaders instanceof Function?this._request.getAllResponseHeaders():null},p.getResponseHeader=function(a){return this._request.getResponseHeader instanceof Function?this._request.getResponseHeader(a):null},p._handleProgress=function(a){if(a&&!(a.loaded>0&&0==a.total)){var b=new createjs.Event("progress");b.loaded=a.loaded,b.total=a.total,this._sendProgress(b)}},p._handleLoadStart=function(){clearTimeout(this._loadTimeout),this._sendLoadStart()},p._handleAbort=function(){this._clean();var a=new createjs.Event("error");a.text="XHR_ABORTED",this._sendError(a)},p._handleError=function(){this._clean();var a=new createjs.Event("error");this._sendError(a)},p._handleReadyStateChange=function(){4==this._request.readyState&&this._handleLoad()},p._handleLoad=function(){if(!this.loaded){if(this.loaded=!0,!this._checkError())return void this._handleError();this._response=this._getResponse(),this._clean();var a=this._generateTag();a&&this._sendComplete()}},p._handleTimeout=function(a){this._clean();var b=new createjs.Event("error");b.text="PRELOAD_TIMEOUT",this._sendError(a)},p._checkError=function(){var a=parseInt(this._request.status);switch(a){case 404:return!1;case 0:return!!this._getResponse()}return!0},p._getResponse=function(){if(null!=this._response)return this._response;if(null!=this._request.response)return this._request.response;try{if(null!=this._request.responseText)return this._request.responseText}catch(a){}try{if(null!=this._request.responseXML)return this._request.responseXML}catch(a){}return null},p._createXHR=function(a){var b=this._isCrossDomain(a),c={},d=null;if(window.XMLHttpRequest)d=new XMLHttpRequest,b&&void 0===d.withCredentials&&window.XDomainRequest&&(d=new XDomainRequest);else{for(var e=0,f=s.ACTIVEX_VERSIONS.length;f>e;e++){{s.ACTIVEX_VERSIONS[e]}try{d=new ActiveXObject(axVersions);break}catch(g){}}if(null==d)return!1}createjs.LoadQueue.isText(a.type)&&d.overrideMimeType&&d.overrideMimeType("text/plain; charset=utf-8"),this._xhrLevel="string"==typeof d.responseType?2:1;var h=null;if(h=a.method==createjs.LoadQueue.GET?this.buildPath(a.src,a.values):a.src,d.open(a.method||createjs.LoadQueue.GET,h,!0),b&&d instanceof XMLHttpRequest&&1==this._xhrLevel&&(c.Origin=location.origin),a.values&&a.method==createjs.LoadQueue.POST&&(c["Content-Type"]="application/x-www-form-urlencoded"),b||c["X-Requested-With"]||(c["X-Requested-With"]="XMLHttpRequest"),a.headers)for(var i in a.headers)c[i]=a.headers[i];createjs.LoadQueue.isBinary(a.type)&&(d.responseType="arraybuffer");for(i in c)d.setRequestHeader(i,c[i]);return this._request=d,!0},p._clean=function(){clearTimeout(this._loadTimeout);var a=this._request;a.onloadstart=null,a.onprogress=null,a.onabort=null,a.onerror=null,a.onload=null,a.ontimeout=null,a.onloadend=null,a.onreadystatechange=null},p._generateTag=function(){var type=this._item.type,tag=this._item.tag;switch(type){case createjs.LoadQueue.IMAGE:return tag.onload=createjs.proxy(this._handleTagReady,this),""!=this._crossOrigin&&(tag.crossOrigin="Anonymous"),tag.src=this.buildPath(this._item.src,this._item.values),this._rawResponse=this._response,this._response=tag,!1;case createjs.LoadQueue.JAVASCRIPT:return tag=document.createElement("script"),tag.text=this._response,this._rawResponse=this._response,this._response=tag,!0;case createjs.LoadQueue.CSS:var head=document.getElementsByTagName("head")[0];if(head.appendChild(tag),tag.styleSheet)tag.styleSheet.cssText=this._response;else{var textNode=document.createTextNode(this._response);tag.appendChild(textNode)}return this._rawResponse=this._response,this._response=tag,!0;case createjs.LoadQueue.XML:var xml=this._parseXML(this._response,"text/xml");return this._rawResponse=this._response,this._response=xml,!0;case createjs.LoadQueue.SVG:var xml=this._parseXML(this._response,"image/svg+xml");return this._rawResponse=this._response,null!=xml.documentElement?(tag.appendChild(xml.documentElement),this._response=tag):this._response=xml,!0;case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:var json;try{eval("json = "+this._response+";")}catch(error){json=error}return this._rawResponse=this._response,this._response=json,!0}return!0},p._parseXML=function(a,b){var c=null;try{if(window.DOMParser){var d=new DOMParser;c=d.parseFromString(a,b)}else c=new ActiveXObject("Microsoft.XMLDOM"),c.async=!1,c.loadXML(a)}catch(e){}return c},p._handleTagReady=function(){var a=this._item.tag;a&&(a.onload=null),this._sendComplete()},p.toString=function(){return"[PreloadJS XHRLoader]"},createjs.XHRLoader=XHRLoader}(),"object"!=typeof JSON&&(JSON={}),function(){"use strict";function f(a){return 10>a?"0"+a:a}function quote(a){return escapable.lastIndex=0,escapable.test(a)?'"'+a.replace(escapable,function(a){var b=meta[a];return"string"==typeof b?b:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function str(a,b){var c,d,e,f,g,h=gap,i=b[a];switch(i&&"object"==typeof i&&"function"==typeof i.toJSON&&(i=i.toJSON(a)),"function"==typeof rep&&(i=rep.call(b,a,i)),typeof i){case"string":return quote(i);case"number":return isFinite(i)?String(i):"null";case"boolean":case"null":return String(i);case"object":if(!i)return"null";if(gap+=indent,g=[],"[object Array]"===Object.prototype.toString.apply(i)){for(f=i.length,c=0;f>c;c+=1)g[c]=str(c,i)||"null";return e=0===g.length?"[]":gap?"[\n"+gap+g.join(",\n"+gap)+"\n"+h+"]":"["+g.join(",")+"]",gap=h,e}if(rep&&"object"==typeof rep)for(f=rep.length,c=0;f>c;c+=1)"string"==typeof rep[c]&&(d=rep[c],e=str(d,i),e&&g.push(quote(d)+(gap?": ":":")+e));else for(d in i)Object.prototype.hasOwnProperty.call(i,d)&&(e=str(d,i),e&&g.push(quote(d)+(gap?": ":":")+e));return e=0===g.length?"{}":gap?"{\n"+gap+g.join(",\n"+gap)+"\n"+h+"}":"{"+g.join(",")+"}",gap=h,e}}"function"!=typeof Date.prototype.toJSON&&(Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()});var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","	":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;"function"!=typeof JSON.stringify&&(JSON.stringify=function(a,b,c){var d;if(gap="",indent="","number"==typeof c)for(d=0;c>d;d+=1)indent+=" ";else"string"==typeof c&&(indent=c);if(rep=b,b&&"function"!=typeof b&&("object"!=typeof b||"number"!=typeof b.length))throw new Error("JSON.stringify");return str("",{"":a})}),"function"!=typeof JSON.parse&&(JSON.parse=function(text,reviver){function walk(a,b){var c,d,e=a[b];if(e&&"object"==typeof e)for(c in e)Object.prototype.hasOwnProperty.call(e,c)&&(d=walk(e,c),void 0!==d?e[c]=d:delete e[c]);return reviver.call(a,b,e)}var j;if(text=String(text),cx.lastIndex=0,cx.test(text)&&(text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})),/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return j=eval("("+text+")"),"function"==typeof reviver?walk({"":j},""):j;throw new SyntaxError("JSON.parse")})}();
+this.createjs=this.createjs||{},function(){"use strict";var a=createjs.PreloadJS=createjs.PreloadJS||{};a.version="0.4.3",a.buildDate="Tue, 17 Jun 2014 19:21:31 GMT"}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a,b,c){this.initialize(a,b,c)},b=a.prototype;b.type=null,b.target=null,b.currentTarget=null,b.eventPhase=0,b.bubbles=!1,b.cancelable=!1,b.timeStamp=0,b.defaultPrevented=!1,b.propagationStopped=!1,b.immediatePropagationStopped=!1,b.removed=!1,b.initialize=function(a,b,c){this.type=a,this.bubbles=b,this.cancelable=c,this.timeStamp=(new Date).getTime()},b.preventDefault=function(){this.defaultPrevented=!0},b.stopPropagation=function(){this.propagationStopped=!0},b.stopImmediatePropagation=function(){this.immediatePropagationStopped=this.propagationStopped=!0},b.remove=function(){this.removed=!0},b.clone=function(){return new a(this.type,this.bubbles,this.cancelable)},b.toString=function(){return"[Event (type="+this.type+")]"},createjs.Event=a}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(){},b=a.prototype;a.initialize=function(a){a.addEventListener=b.addEventListener,a.on=b.on,a.removeEventListener=a.off=b.removeEventListener,a.removeAllEventListeners=b.removeAllEventListeners,a.hasEventListener=b.hasEventListener,a.dispatchEvent=b.dispatchEvent,a._dispatchEvent=b._dispatchEvent,a.willTrigger=b.willTrigger},b._listeners=null,b._captureListeners=null,b.initialize=function(){},b.addEventListener=function(a,b,c){var d;d=c?this._captureListeners=this._captureListeners||{}:this._listeners=this._listeners||{};var e=d[a];return e&&this.removeEventListener(a,b,c),e=d[a],e?e.push(b):d[a]=[b],b},b.on=function(a,b,c,d,e,f){return b.handleEvent&&(c=c||b,b=b.handleEvent),c=c||this,this.addEventListener(a,function(a){b.call(c,a,e),d&&a.remove()},f)},b.removeEventListener=function(a,b,c){var d=c?this._captureListeners:this._listeners;if(d){var e=d[a];if(e)for(var f=0,g=e.length;g>f;f++)if(e[f]==b){1==g?delete d[a]:e.splice(f,1);break}}},b.off=b.removeEventListener,b.removeAllEventListeners=function(a){a?(this._listeners&&delete this._listeners[a],this._captureListeners&&delete this._captureListeners[a]):this._listeners=this._captureListeners=null},b.dispatchEvent=function(a,b){if("string"==typeof a){var c=this._listeners;if(!c||!c[a])return!1;a=new createjs.Event(a)}if(a.target=b||this,a.bubbles&&this.parent){for(var d=this,e=[d];d.parent;)e.push(d=d.parent);var f,g=e.length;for(f=g-1;f>=0&&!a.propagationStopped;f--)e[f]._dispatchEvent(a,1+(0==f));for(f=1;g>f&&!a.propagationStopped;f++)e[f]._dispatchEvent(a,3)}else this._dispatchEvent(a,2);return a.defaultPrevented},b.hasEventListener=function(a){var b=this._listeners,c=this._captureListeners;return!!(b&&b[a]||c&&c[a])},b.willTrigger=function(a){for(var b=this;b;){if(b.hasEventListener(a))return!0;b=b.parent}return!1},b.toString=function(){return"[EventDispatcher]"},b._dispatchEvent=function(a,b){var c,d=1==b?this._captureListeners:this._listeners;if(a&&d){var e=d[a.type];if(!e||!(c=e.length))return;a.currentTarget=this,a.eventPhase=b,a.removed=!1,e=e.slice();for(var f=0;c>f&&!a.immediatePropagationStopped;f++){var g=e[f];g.handleEvent?g.handleEvent(a):g(a),a.removed&&(this.off(a.type,g,1==b),a.removed=!1)}}},createjs.EventDispatcher=a}(),this.createjs=this.createjs||{},function(){"use strict";createjs.indexOf=function(a,b){for(var c=0,d=a.length;d>c;c++)if(b===a[c])return c;return-1}}(),this.createjs=this.createjs||{},function(){"use strict";createjs.proxy=function(a,b){var c=Array.prototype.slice.call(arguments,2);return function(){return a.apply(b,Array.prototype.slice.call(arguments,0).concat(c))}}}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(){this.init()};a.prototype=new createjs.EventDispatcher;var b=a.prototype,c=a;c.ABSOLUTE_PATT=/^(?:\w+:)?\/{2}/i,c.RELATIVE_PATT=/^[./]*?\//i,c.EXTENSION_PATT=/\/?[^/]+\.(\w{1,5})$/i,b.loaded=!1,b.canceled=!1,b.progress=0,b._item=null,b.getItem=function(){return this._item},b.init=function(){},b.load=function(){},b.close=function(){},b._sendLoadStart=function(){this._isCanceled()||this.dispatchEvent("loadstart")},b._sendProgress=function(a){if(!this._isCanceled()){var b=null;"number"==typeof a?(this.progress=a,b=new createjs.Event("progress"),b.loaded=this.progress,b.total=1):(b=a,this.progress=a.loaded/a.total,(isNaN(this.progress)||1/0==this.progress)&&(this.progress=0)),b.progress=this.progress,this.hasEventListener("progress")&&this.dispatchEvent(b)}},b._sendComplete=function(){this._isCanceled()||this.dispatchEvent("complete")},b._sendError=function(a){!this._isCanceled()&&this.hasEventListener("error")&&(null==a&&(a=new createjs.Event("error")),this.dispatchEvent(a))},b._isCanceled=function(){return null==window.createjs||this.canceled?!0:!1},b._parseURI=function(a){var b={absolute:!1,relative:!1};if(null==a)return b;var d=a.indexOf("?");d>-1&&(a=a.substr(0,d));var e;return c.ABSOLUTE_PATT.test(a)?b.absolute=!0:c.RELATIVE_PATT.test(a)&&(b.relative=!0),(e=a.match(c.EXTENSION_PATT))&&(b.extension=e[1].toLowerCase()),b},b._formatQueryString=function(a,b){if(null==a)throw new Error("You must specify data.");var c=[];for(var d in a)c.push(d+"="+escape(a[d]));return b&&(c=c.concat(b)),c.join("&")},b.buildPath=function(a,b){if(null==b)return a;var c=[],d=a.indexOf("?");if(-1!=d){var e=a.slice(d+1);c=c.concat(e.split("&"))}return-1!=d?a.slice(0,d)+"?"+this._formatQueryString(b,c):a+"?"+this._formatQueryString(b,c)},b._isCrossDomain=function(a){var b=document.createElement("a");b.href=a.src;var c=document.createElement("a");c.href=location.href;var d=""!=b.hostname&&(b.port!=c.port||b.protocol!=c.protocol||b.hostname!=c.hostname);return d},b._isLocal=function(a){var b=document.createElement("a");return b.href=a.src,""==b.hostname&&"file:"==b.protocol},b.toString=function(){return"[PreloadJS AbstractLoader]"},createjs.AbstractLoader=a}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a,b,c){this.init(a,b,c)},b=a.prototype=new createjs.AbstractLoader,c=a;c.loadTimeout=8e3,c.LOAD_TIMEOUT=0,c.BINARY="binary",c.CSS="css",c.IMAGE="image",c.JAVASCRIPT="javascript",c.JSON="json",c.JSONP="jsonp",c.MANIFEST="manifest",c.SOUND="sound",c.SVG="svg",c.TEXT="text",c.XML="xml",c.POST="POST",c.GET="GET",b._basePath=null,b._crossOrigin="",b.useXHR=!0,b.stopOnError=!1,b.maintainScriptOrder=!0,b.next=null,b._typeCallbacks=null,b._extensionCallbacks=null,b._loadStartWasDispatched=!1,b._maxConnections=1,b._currentlyLoadingScript=null,b._currentLoads=null,b._loadQueue=null,b._loadQueueBackup=null,b._loadItemsById=null,b._loadItemsBySrc=null,b._loadedResults=null,b._loadedRawResults=null,b._numItems=0,b._numItemsLoaded=0,b._scriptOrder=null,b._loadedScripts=null,b.init=function(a,b,c){this._numItems=this._numItemsLoaded=0,this._paused=!1,this._loadStartWasDispatched=!1,this._currentLoads=[],this._loadQueue=[],this._loadQueueBackup=[],this._scriptOrder=[],this._loadedScripts=[],this._loadItemsById={},this._loadItemsBySrc={},this._loadedResults={},this._loadedRawResults={},this._typeCallbacks={},this._extensionCallbacks={},this._basePath=b,this.setUseXHR(a),this._crossOrigin=c===!0?"Anonymous":c===!1||null==c?"":c},b.setUseXHR=function(a){return this.useXHR=0!=a&&null!=window.XMLHttpRequest,this.useXHR},b.removeAll=function(){this.remove()},b.remove=function(a){var b=null;if(!a||a instanceof Array){if(a)b=a;else if(arguments.length>0)return}else b=[a];var c=!1;if(b){for(;b.length;){var d=b.pop(),e=this.getResult(d);for(f=this._loadQueue.length-1;f>=0;f--)if(g=this._loadQueue[f].getItem(),g.id==d||g.src==d){this._loadQueue.splice(f,1)[0].cancel();break}for(f=this._loadQueueBackup.length-1;f>=0;f--)if(g=this._loadQueueBackup[f].getItem(),g.id==d||g.src==d){this._loadQueueBackup.splice(f,1)[0].cancel();break}if(e)delete this._loadItemsById[e.id],delete this._loadItemsBySrc[e.src],this._disposeItem(e);else for(var f=this._currentLoads.length-1;f>=0;f--){var g=this._currentLoads[f].getItem();if(g.id==d||g.src==d){this._currentLoads.splice(f,1)[0].cancel(),c=!0;break}}}c&&this._loadNext()}else{this.close();for(var h in this._loadItemsById)this._disposeItem(this._loadItemsById[h]);this.init(this.useXHR)}},b.reset=function(){this.close();for(var a in this._loadItemsById)this._disposeItem(this._loadItemsById[a]);for(var b=[],c=0,d=this._loadQueueBackup.length;d>c;c++)b.push(this._loadQueueBackup[c].getItem());this.loadManifest(b,!1)},c.isBinary=function(a){switch(a){case createjs.LoadQueue.IMAGE:case createjs.LoadQueue.BINARY:return!0;default:return!1}},c.isText=function(a){switch(a){case createjs.LoadQueue.TEXT:case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:case createjs.LoadQueue.XML:case createjs.LoadQueue.HTML:case createjs.LoadQueue.CSS:case createjs.LoadQueue.SVG:case createjs.LoadQueue.JAVASCRIPT:return!0;default:return!1}},b.installPlugin=function(a){if(null!=a&&null!=a.getPreloadHandlers){var b=a.getPreloadHandlers();if(b.scope=a,null!=b.types)for(var c=0,d=b.types.length;d>c;c++)this._typeCallbacks[b.types[c]]=b;if(null!=b.extensions)for(c=0,d=b.extensions.length;d>c;c++)this._extensionCallbacks[b.extensions[c]]=b}},b.setMaxConnections=function(a){this._maxConnections=a,!this._paused&&this._loadQueue.length>0&&this._loadNext()},b.loadFile=function(a,b,c){if(null==a){var d=new createjs.Event("error");return d.text="PRELOAD_NO_FILE",void this._sendError(d)}this._addItem(a,null,c),this.setPaused(b!==!1?!1:!0)},b.loadManifest=function(a,b,d){var e=null,f=null;if(a instanceof Array){if(0==a.length){var g=new createjs.Event("error");return g.text="PRELOAD_MANIFEST_EMPTY",void this._sendError(g)}e=a}else if("string"==typeof a)e=[{src:a,type:c.MANIFEST}];else{if("object"!=typeof a){var g=new createjs.Event("error");return g.text="PRELOAD_MANIFEST_NULL",void this._sendError(g)}if(void 0!==a.src){if(null==a.type)a.type=c.MANIFEST;else if(a.type!=c.MANIFEST){var g=new createjs.Event("error");g.text="PRELOAD_MANIFEST_ERROR",this._sendError(g)}e=[a]}else void 0!==a.manifest&&(e=a.manifest,f=a.path)}for(var h=0,i=e.length;i>h;h++)this._addItem(e[h],f,d);this.setPaused(b!==!1?!1:!0)},b.load=function(){this.setPaused(!1)},b.getItem=function(a){return this._loadItemsById[a]||this._loadItemsBySrc[a]},b.getResult=function(a,b){var c=this._loadItemsById[a]||this._loadItemsBySrc[a];if(null==c)return null;var d=c.id;return b&&this._loadedRawResults[d]?this._loadedRawResults[d]:this._loadedResults[d]},b.setPaused=function(a){this._paused=a,this._paused||this._loadNext()},b.close=function(){for(;this._currentLoads.length;)this._currentLoads.pop().cancel();this._scriptOrder.length=0,this._loadedScripts.length=0,this.loadStartWasDispatched=!1},b._addItem=function(a,b,c){var d=this._createLoadItem(a,b,c);if(null!=d){var e=this._createLoader(d);null!=e&&(d._loader=e,this._loadQueue.push(e),this._loadQueueBackup.push(e),this._numItems++,this._updateProgress(),(this.maintainScriptOrder&&d.type==createjs.LoadQueue.JAVASCRIPT||d.maintainOrder===!0)&&(this._scriptOrder.push(d),this._loadedScripts.push(null)))}},b._createLoadItem=function(a,b,c){var d=null;switch(typeof a){case"string":d={src:a};break;case"object":d=window.HTMLAudioElement&&a instanceof window.HTMLAudioElement?{tag:a,src:d.tag.src,type:createjs.LoadQueue.SOUND}:a;break;default:return null}var e=this._parseURI(d.src);e.extension&&(d.ext=e.extension),null==d.type&&(d.ext||(console.error("unable to get extension for "+d.src),console.error("RegEx results: "+e)),d.type=this._getTypeByExtension(d.ext));var f="",g=c||this._basePath,h=d.src;if(!e.absolute&&!e.relative)if(b){f=b;var i=this._parseURI(b);h=b+h,null==g||i.absolute||i.relative||(f=g+f)}else null!=g&&(f=g);if(d.src=f+d.src,d.path=f,(d.type==createjs.LoadQueue.JSON||d.type==createjs.LoadQueue.MANIFEST)&&(d._loadAsJSONP=null!=d.callback),d.type==createjs.LoadQueue.JSONP&&null==d.callback)throw new Error("callback is required for loading JSONP requests.");(void 0===d.tag||null===d.tag)&&(d.tag=this._createTag(d)),(void 0===d.id||null===d.id||""===d.id)&&(d.id=h);var j=this._typeCallbacks[d.type]||this._extensionCallbacks[d.ext];if(j){var k=j.callback.call(j.scope,d.src,d.type,d.id,d.data,f,this);if(k===!1)return null;k===!0||(null!=k.src&&(d.src=k.src),null!=k.id&&(d.id=k.id),null!=k.tag&&(d.tag=k.tag),null!=k.completeHandler&&(d.completeHandler=k.completeHandler),k.type&&(d.type=k.type),e=this._parseURI(d.src),null!=e.extension&&(d.ext=e.extension))}return this._loadItemsById[d.id]=d,this._loadItemsBySrc[d.src]=d,d},b._createLoader=function(a){var b=this.useXHR;switch(a.type){case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:b=!a._loadAsJSONP;break;case createjs.LoadQueue.XML:case createjs.LoadQueue.TEXT:b=!0;break;case createjs.LoadQueue.SOUND:case createjs.LoadQueue.JSONP:b=!1;break;case null:return null}return b?new createjs.XHRLoader(a,this._crossOrigin):new createjs.TagLoader(a)},b._loadNext=function(){if(!this._paused){this._loadStartWasDispatched||(this._sendLoadStart(),this._loadStartWasDispatched=!0),this._numItems==this._numItemsLoaded?(this.loaded=!0,this._sendComplete(),this.next&&this.next.load&&this.next.load()):this.loaded=!1;for(var a=0;a<this._loadQueue.length&&!(this._currentLoads.length>=this._maxConnections);a++){var b=this._loadQueue[a];this._canStartLoad(b)&&(this._loadQueue.splice(a,1),a--,this._loadItem(b))}}},b._loadItem=function(a){a.on("progress",this._handleProgress,this),a.on("complete",this._handleFileComplete,this),a.on("error",this._handleFileError,this),this._currentLoads.push(a),this._sendFileStart(a.getItem()),a.load()},b._handleFileError=function(a){var b=a.target;this._numItemsLoaded++,this._finishOrderedItem(b,!0),this._updateProgress();var c=new createjs.Event("error");c.text="FILE_LOAD_ERROR",c.item=b.getItem(),this._sendError(c),this.stopOnError||(this._removeLoadItem(b),this._loadNext())},b._handleFileComplete=function(a){var b=a.target,c=b.getItem();this._loadedResults[c.id]=b.getResult(),b instanceof createjs.XHRLoader&&(this._loadedRawResults[c.id]=b.getResult(!0)),this._removeLoadItem(b),this._finishOrderedItem(b)||this._processFinishedLoad(c,b)},b._finishOrderedItem=function(a,b){var c=a.getItem();if(this.maintainScriptOrder&&c.type==createjs.LoadQueue.JAVASCRIPT||c.maintainOrder){a instanceof createjs.TagLoader&&c.type==createjs.LoadQueue.JAVASCRIPT&&(this._currentlyLoadingScript=!1);var d=createjs.indexOf(this._scriptOrder,c);return-1==d?!1:(this._loadedScripts[d]=b===!0?!0:c,this._checkScriptLoadOrder(),!0)}return!1},b._checkScriptLoadOrder=function(){for(var a=this._loadedScripts.length,b=0;a>b;b++){var c=this._loadedScripts[b];if(null===c)break;if(c!==!0){var d=this._loadedResults[c.id];c.type==createjs.LoadQueue.JAVASCRIPT&&(document.body||document.getElementsByTagName("body")[0]).appendChild(d);var e=c._loader;this._processFinishedLoad(c,e),this._loadedScripts[b]=!0}}},b._processFinishedLoad=function(a,b){if(a.type==createjs.LoadQueue.MANIFEST){var c=b.getResult();null!=c&&void 0!==c.manifest&&this.loadManifest(c,!0)}this._numItemsLoaded++,this._updateProgress(),this._sendFileComplete(a,b),this._loadNext()},b._canStartLoad=function(a){if(!this.maintainScriptOrder||a instanceof createjs.XHRLoader)return!0;var b=a.getItem();if(b.type!=createjs.LoadQueue.JAVASCRIPT)return!0;if(this._currentlyLoadingScript)return!1;for(var c=this._scriptOrder.indexOf(b),d=0;c>d;){var e=this._loadedScripts[d];if(null==e)return!1;d++}return this._currentlyLoadingScript=!0,!0},b._removeLoadItem=function(a){var b=a.getItem();delete b._loader,delete b._loadAsJSONP;for(var c=this._currentLoads.length,d=0;c>d;d++)if(this._currentLoads[d]==a){this._currentLoads.splice(d,1);break}},b._handleProgress=function(a){var b=a.target;this._sendFileProgress(b.getItem(),b.progress),this._updateProgress()},b._updateProgress=function(){var a=this._numItemsLoaded/this._numItems,b=this._numItems-this._numItemsLoaded;if(b>0){for(var c=0,d=0,e=this._currentLoads.length;e>d;d++)c+=this._currentLoads[d].progress;a+=c/b*(b/this._numItems)}this._sendProgress(a)},b._disposeItem=function(a){delete this._loadedResults[a.id],delete this._loadedRawResults[a.id],delete this._loadItemsById[a.id],delete this._loadItemsBySrc[a.src]},b._createTag=function(a){var b=null;switch(a.type){case createjs.LoadQueue.IMAGE:return b=document.createElement("img"),""==this._crossOrigin||this._isLocal(a)||(b.crossOrigin=this._crossOrigin),b;case createjs.LoadQueue.SOUND:return b=document.createElement("audio"),b.autoplay=!1,b;case createjs.LoadQueue.JSON:case createjs.LoadQueue.JSONP:case createjs.LoadQueue.JAVASCRIPT:case createjs.LoadQueue.MANIFEST:return b=document.createElement("script"),b.type="text/javascript",b;case createjs.LoadQueue.CSS:return b=document.createElement(this.useXHR?"style":"link"),b.rel="stylesheet",b.type="text/css",b;case createjs.LoadQueue.SVG:return this.useXHR?b=document.createElement("svg"):(b=document.createElement("object"),b.type="image/svg+xml"),b}return null},b._getTypeByExtension=function(a){if(null==a)return createjs.LoadQueue.TEXT;switch(a.toLowerCase()){case"jpeg":case"jpg":case"gif":case"png":case"webp":case"bmp":return createjs.LoadQueue.IMAGE;case"ogg":case"mp3":case"wav":return createjs.LoadQueue.SOUND;case"json":return createjs.LoadQueue.JSON;case"xml":return createjs.LoadQueue.XML;case"css":return createjs.LoadQueue.CSS;case"js":return createjs.LoadQueue.JAVASCRIPT;case"svg":return createjs.LoadQueue.SVG;default:return createjs.LoadQueue.TEXT}},b._sendFileProgress=function(a,b){if(this._isCanceled())return void this._cleanUp();if(this.hasEventListener("fileprogress")){var c=new createjs.Event("fileprogress");c.progress=b,c.loaded=b,c.total=1,c.item=a,this.dispatchEvent(c)}},b._sendFileComplete=function(a,b){if(!this._isCanceled()){var c=new createjs.Event("fileload");c.loader=b,c.item=a,c.result=this._loadedResults[a.id],c.rawResult=this._loadedRawResults[a.id],a.completeHandler&&a.completeHandler(c),this.hasEventListener("fileload")&&this.dispatchEvent(c)}},b._sendFileStart=function(a){var b=new createjs.Event("filestart");b.item=a,this.hasEventListener("filestart")&&this.dispatchEvent(b)},b.toString=function(){return"[PreloadJS LoadQueue]"},createjs.LoadQueue=a;var d=function(){};d.init=function(){var a=navigator.userAgent;d.isFirefox=a.indexOf("Firefox")>-1,d.isOpera=null!=window.opera,d.isChrome=a.indexOf("Chrome")>-1,d.isIOS=a.indexOf("iPod")>-1||a.indexOf("iPhone")>-1||a.indexOf("iPad")>-1},d.init(),createjs.LoadQueue.BrowserDetect=d}(),this.createjs=this.createjs||{},function(){"use strict";var a=function(a){this.init(a)},b=a.prototype=new createjs.AbstractLoader;b._loadTimeout=null,b._tagCompleteProxy=null,b._isAudio=!1,b._tag=null,b._jsonResult=null,b.init=function(a){this._item=a,this._tag=a.tag,this._isAudio=window.HTMLAudioElement&&a.tag instanceof window.HTMLAudioElement,this._tagCompleteProxy=createjs.proxy(this._handleLoad,this)},b.getResult=function(){return this._item.type==createjs.LoadQueue.JSONP||this._item.type==createjs.LoadQueue.MANIFEST?this._jsonResult:this._tag},b.cancel=function(){this.canceled=!0,this._clean()},b.load=function(){var a=this._item,b=this._tag;clearTimeout(this._loadTimeout);var c=createjs.LoadQueue.LOAD_TIMEOUT;0==c&&(c=createjs.LoadQueue.loadTimeout),this._loadTimeout=setTimeout(createjs.proxy(this._handleTimeout,this),c),this._isAudio&&(b.src=null,b.preload="auto"),b.onerror=createjs.proxy(this._handleError,this),this._isAudio?(b.onstalled=createjs.proxy(this._handleStalled,this),b.addEventListener("canplaythrough",this._tagCompleteProxy,!1)):(b.onload=createjs.proxy(this._handleLoad,this),b.onreadystatechange=createjs.proxy(this._handleReadyStateChange,this));var d=this.buildPath(a.src,a.values);switch(a.type){case createjs.LoadQueue.CSS:b.href=d;break;case createjs.LoadQueue.SVG:b.data=d;break;default:b.src=d}if(a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.JSON||a.type==createjs.LoadQueue.MANIFEST){if(null==a.callback)throw new Error("callback is required for loading JSONP requests.");if(null!=window[a.callback])throw new Error('JSONP callback "'+a.callback+'" already exists on window. You need to specify a different callback. Or re-name the current one.');window[a.callback]=createjs.proxy(this._handleJSONPLoad,this)}if(a.type==createjs.LoadQueue.SVG||a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.JSON||a.type==createjs.LoadQueue.MANIFEST||a.type==createjs.LoadQueue.JAVASCRIPT||a.type==createjs.LoadQueue.CSS){this._startTagVisibility=b.style.visibility,b.style.visibility="hidden";var e=document.body||document.getElementsByTagName("body")[0];if(null==e){if(a.type==createjs.LoadQueue.SVG)return void this._handleSVGError();e=document.head||document.getElementsByTagName("head")}e.appendChild(b)}null!=b.load&&b.load()},b._handleSVGError=function(){this._clean();var a=new createjs.Event("error");a.text="SVG_NO_BODY",this._sendError(a)},b._handleJSONPLoad=function(a){this._jsonResult=a},b._handleTimeout=function(){this._clean();var a=new createjs.Event("error");a.text="PRELOAD_TIMEOUT",this._sendError(a)},b._handleStalled=function(){},b._handleError=function(){this._clean();var a=new createjs.Event("error");this._sendError(a)},b._handleReadyStateChange=function(){clearTimeout(this._loadTimeout);var a=this.getItem().tag;("loaded"==a.readyState||"complete"==a.readyState)&&this._handleLoad()},b._handleLoad=function(){if(!this._isCanceled()){var a=this.getItem(),b=a.tag;if(!(this.loaded||this._isAudio&&4!==b.readyState)){switch(this.loaded=!0,a.type){case createjs.LoadQueue.SVG:case createjs.LoadQueue.JSON:case createjs.LoadQueue.JSONP:case createjs.LoadQueue.MANIFEST:case createjs.LoadQueue.CSS:b.style.visibility=this._startTagVisibility,b.parentNode&&b.parentNode.contains(b)&&b.parentNode.removeChild(b)}this._clean(),this._sendComplete()}}},b._clean=function(){clearTimeout(this._loadTimeout);var a=this.getItem(),b=a.tag;null!=b&&(b.onload=null,b.removeEventListener&&b.removeEventListener("canplaythrough",this._tagCompleteProxy,!1),b.onstalled=null,b.onprogress=null,b.onerror=null,null!=b.parentNode&&a.type==createjs.LoadQueue.SVG&&a.type==createjs.LoadQueue.JSON&&a.type==createjs.LoadQueue.MANIFEST&&a.type==createjs.LoadQueue.CSS&&a.type==createjs.LoadQueue.JSONP&&b.parentNode.removeChild(b));var a=this.getItem();(a.type==createjs.LoadQueue.JSONP||a.type==createjs.LoadQueue.MANIFEST)&&(window[a.callback]=null)},b.toString=function(){return"[PreloadJS TagLoader]"},createjs.TagLoader=a}(),this.createjs=this.createjs||{},function(){"use strict";var XHRLoader=function(a,b){this.init(a,b)},s=XHRLoader;s.ACTIVEX_VERSIONS=["Msxml2.XMLHTTP.6.0","Msxml2.XMLHTTP.5.0","Msxml2.XMLHTTP.4.0","MSXML2.XMLHTTP.3.0","MSXML2.XMLHTTP","Microsoft.XMLHTTP"];var p=XHRLoader.prototype=new createjs.AbstractLoader;p._request=null,p._loadTimeout=null,p._xhrLevel=1,p._response=null,p._rawResponse=null,p._crossOrigin="",p.init=function(a,b){this._item=a,this._crossOrigin=b,!this._createXHR(a)},p.getResult=function(a){return a&&this._rawResponse?this._rawResponse:this._response},p.cancel=function(){this.canceled=!0,this._clean(),this._request.abort()},p.load=function(){if(null==this._request)return void this._handleError();if(this._request.onloadstart=createjs.proxy(this._handleLoadStart,this),this._request.onprogress=createjs.proxy(this._handleProgress,this),this._request.onabort=createjs.proxy(this._handleAbort,this),this._request.onerror=createjs.proxy(this._handleError,this),this._request.ontimeout=createjs.proxy(this._handleTimeout,this),1==this._xhrLevel){var a=createjs.LoadQueue.LOAD_TIMEOUT;if(0==a)a=createjs.LoadQueue.loadTimeout;else try{console.warn("LoadQueue.LOAD_TIMEOUT has been deprecated in favor of LoadQueue.loadTimeout")}catch(b){}this._loadTimeout=setTimeout(createjs.proxy(this._handleTimeout,this),a)}this._request.onload=createjs.proxy(this._handleLoad,this),this._request.onreadystatechange=createjs.proxy(this._handleReadyStateChange,this);try{this._item.values&&this._item.method!=createjs.LoadQueue.GET?this._item.method==createjs.LoadQueue.POST&&this._request.send(this._formatQueryString(this._item.values)):this._request.send()}catch(c){var d=new createjs.Event("error");d.error=c,this._sendError(d)}},p.getAllResponseHeaders=function(){return this._request.getAllResponseHeaders instanceof Function?this._request.getAllResponseHeaders():null},p.getResponseHeader=function(a){return this._request.getResponseHeader instanceof Function?this._request.getResponseHeader(a):null},p._handleProgress=function(a){if(a&&!(a.loaded>0&&0==a.total)){var b=new createjs.Event("progress");b.loaded=a.loaded,b.total=a.total,this._sendProgress(b)}},p._handleLoadStart=function(){clearTimeout(this._loadTimeout),this._sendLoadStart()},p._handleAbort=function(){this._clean();var a=new createjs.Event("error");a.text="XHR_ABORTED",this._sendError(a)},p._handleError=function(){this._clean();var a=new createjs.Event("error");this._sendError(a)},p._handleReadyStateChange=function(){4==this._request.readyState&&this._handleLoad()},p._handleLoad=function(){if(!this.loaded){if(this.loaded=!0,!this._checkError())return void this._handleError();this._response=this._getResponse(),this._clean();var a=this._generateTag();a&&this._sendComplete()}},p._handleTimeout=function(a){this._clean();var b=new createjs.Event("error");b.text="PRELOAD_TIMEOUT",this._sendError(a)},p._checkError=function(){var a=parseInt(this._request.status);switch(a){case 404:return!1;case 0:return!!this._getResponse()}return!0},p._getResponse=function(){if(null!=this._response)return this._response;if(null!=this._request.response)return this._request.response;try{if(null!=this._request.responseText)return this._request.responseText}catch(a){}try{if(null!=this._request.responseXML)return this._request.responseXML}catch(a){}return null},p._createXHR=function(a){var b=this._isCrossDomain(a),c={},d=null;if(window.XMLHttpRequest)d=new XMLHttpRequest,b&&void 0===d.withCredentials&&window.XDomainRequest&&(d=new XDomainRequest);else{for(var e=0,f=s.ACTIVEX_VERSIONS.length;f>e;e++){{s.ACTIVEX_VERSIONS[e]}try{d=new ActiveXObject(axVersions);break}catch(g){}}if(null==d)return!1}createjs.LoadQueue.isText(a.type)&&d.overrideMimeType&&d.overrideMimeType("text/plain; charset=utf-8"),this._xhrLevel="string"==typeof d.responseType?2:1;var h=null;if(h=a.method==createjs.LoadQueue.GET?this.buildPath(a.src,a.values):a.src,d.open(a.method||createjs.LoadQueue.GET,h,!0),b&&d instanceof XMLHttpRequest&&1==this._xhrLevel&&(c.Origin=location.origin),a.values&&a.method==createjs.LoadQueue.POST&&(c["Content-Type"]="application/x-www-form-urlencoded"),b||c["X-Requested-With"]||(c["X-Requested-With"]="XMLHttpRequest"),a.headers)for(var i in a.headers)c[i]=a.headers[i];createjs.LoadQueue.isBinary(a.type)&&(d.responseType="arraybuffer");for(i in c)d.setRequestHeader(i,c[i]);return this._request=d,!0},p._clean=function(){clearTimeout(this._loadTimeout);var a=this._request;a.onloadstart=null,a.onprogress=null,a.onabort=null,a.onerror=null,a.onload=null,a.ontimeout=null,a.onloadend=null,a.onreadystatechange=null},p._generateTag=function(){var type=this._item.type,tag=this._item.tag;switch(type){case createjs.LoadQueue.IMAGE:return tag.onload=createjs.proxy(this._handleTagReady,this),""!=this._crossOrigin&&(tag.crossOrigin="Anonymous"),tag.src=this.buildPath(this._item.src,this._item.values),this._rawResponse=this._response,this._response=tag,!1;case createjs.LoadQueue.JAVASCRIPT:return tag=document.createElement("script"),tag.text=this._response,this._rawResponse=this._response,this._response=tag,!0;case createjs.LoadQueue.CSS:var head=document.getElementsByTagName("head")[0];if(head.appendChild(tag),tag.styleSheet)tag.styleSheet.cssText=this._response;else{var textNode=document.createTextNode(this._response);tag.appendChild(textNode)}return this._rawResponse=this._response,this._response=tag,!0;case createjs.LoadQueue.XML:var xml=this._parseXML(this._response,"text/xml");return this._rawResponse=this._response,this._response=xml,!0;case createjs.LoadQueue.SVG:var xml=this._parseXML(this._response,"image/svg+xml");return this._rawResponse=this._response,null!=xml.documentElement?(tag.appendChild(xml.documentElement),this._response=tag):this._response=xml,!0;case createjs.LoadQueue.JSON:case createjs.LoadQueue.MANIFEST:var json;try{eval("json = "+this._response+";")}catch(error){json=error}return this._rawResponse=this._response,this._response=json,!0}return!0},p._parseXML=function(a,b){var c=null;try{if(window.DOMParser){var d=new DOMParser;c=d.parseFromString(a,b)}else c=new ActiveXObject("Microsoft.XMLDOM"),c.async=!1,c.loadXML(a)}catch(e){}return c},p._handleTagReady=function(){var a=this._item.tag;a&&(a.onload=null),this._sendComplete()},p.toString=function(){return"[PreloadJS XHRLoader]"},createjs.XHRLoader=XHRLoader}(),"object"!=typeof JSON&&(JSON={}),function(){"use strict";function f(a){return 10>a?"0"+a:a}function quote(a){return escapable.lastIndex=0,escapable.test(a)?'"'+a.replace(escapable,function(a){var b=meta[a];return"string"==typeof b?b:"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})+'"':'"'+a+'"'}function str(a,b){var c,d,e,f,g,h=gap,i=b[a];switch(i&&"object"==typeof i&&"function"==typeof i.toJSON&&(i=i.toJSON(a)),"function"==typeof rep&&(i=rep.call(b,a,i)),typeof i){case"string":return quote(i);case"number":return isFinite(i)?String(i):"null";case"boolean":case"null":return String(i);case"object":if(!i)return"null";if(gap+=indent,g=[],"[object Array]"===Object.prototype.toString.apply(i)){for(f=i.length,c=0;f>c;c+=1)g[c]=str(c,i)||"null";return e=0===g.length?"[]":gap?"[\n"+gap+g.join(",\n"+gap)+"\n"+h+"]":"["+g.join(",")+"]",gap=h,e}if(rep&&"object"==typeof rep)for(f=rep.length,c=0;f>c;c+=1)"string"==typeof rep[c]&&(d=rep[c],e=str(d,i),e&&g.push(quote(d)+(gap?": ":":")+e));else for(d in i)Object.prototype.hasOwnProperty.call(i,d)&&(e=str(d,i),e&&g.push(quote(d)+(gap?": ":":")+e));return e=0===g.length?"{}":gap?"{\n"+gap+g.join(",\n"+gap)+"\n"+h+"}":"{"+g.join(",")+"}",gap=h,e}}"function"!=typeof Date.prototype.toJSON&&(Date.prototype.toJSON=function(){return isFinite(this.valueOf())?this.getUTCFullYear()+"-"+f(this.getUTCMonth()+1)+"-"+f(this.getUTCDate())+"T"+f(this.getUTCHours())+":"+f(this.getUTCMinutes())+":"+f(this.getUTCSeconds())+"Z":null},String.prototype.toJSON=Number.prototype.toJSON=Boolean.prototype.toJSON=function(){return this.valueOf()});var cx=/[\u0000\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,escapable=/[\\\"\x00-\x1f\x7f-\x9f\u00ad\u0600-\u0604\u070f\u17b4\u17b5\u200c-\u200f\u2028-\u202f\u2060-\u206f\ufeff\ufff0-\uffff]/g,gap,indent,meta={"\b":"\\b","	":"\\t","\n":"\\n","\f":"\\f","\r":"\\r",'"':'\\"',"\\":"\\\\"},rep;"function"!=typeof JSON.stringify&&(JSON.stringify=function(a,b,c){var d;if(gap="",indent="","number"==typeof c)for(d=0;c>d;d+=1)indent+=" ";else"string"==typeof c&&(indent=c);if(rep=b,b&&"function"!=typeof b&&("object"!=typeof b||"number"!=typeof b.length))throw new Error("JSON.stringify");return str("",{"":a})}),"function"!=typeof JSON.parse&&(JSON.parse=function(text,reviver){function walk(a,b){var c,d,e=a[b];if(e&&"object"==typeof e)for(c in e)Object.prototype.hasOwnProperty.call(e,c)&&(d=walk(e,c),void 0!==d?e[c]=d:delete e[c]);return reviver.call(a,b,e)}var j;if(text=String(text),cx.lastIndex=0,cx.test(text)&&(text=text.replace(cx,function(a){return"\\u"+("0000"+a.charCodeAt(0).toString(16)).slice(-4)})),/^[\],:{}\s]*$/.test(text.replace(/\\(?:["\\\/bfnrt]|u[0-9a-fA-F]{4})/g,"@").replace(/"[^"\\\n\r]*"|true|false|null|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?/g,"]").replace(/(?:^|:|,)(?:\s*\[)+/g,"")))return j=eval("("+text+")"),"function"==typeof reviver?walk({"":j},""):j;throw new SyntaxError("JSON.parse")})}();
 /**
  * @license
  * pixi.js - v1.6.1
  * Copyright (c) 2012-2014, Mat Groves
  * http://goodboydigital.com/
  *
- * Compiled: 2014-09-16
+ * Compiled: 2014-08-29
  *
  * pixi.js is licensed under the MIT License.
  * http://www.opensource.org/licenses/mit-license.php
@@ -3957,6 +3957,8 @@ PIXI.InteractionManager.prototype.collectInteractiveSprite = function(displayObj
 	{
 		var child = children[i];
 		
+		if(!child.visible) continue;
+		
 		// push all interactive bits
 		if(child._interactive)
 		{
@@ -4051,8 +4053,6 @@ PIXI.InteractionManager.prototype.cleanup = PIXI.InteractionManager.prototype.re
 	oldDOM.removeEventListener('touchstart', this.onTouchStart, true);
 	oldDOM.removeEventListener('touchend', this.onTouchEnd, true);
 	oldDOM.removeEventListener('touchmove', this.onTouchMove, true);
-
-    oldDOM.style.cursor = 'inherit';
 
     this.interactionDOMElement = null;
 
@@ -4172,8 +4172,6 @@ PIXI.InteractionManager.prototype.rebuildInteractiveGraph = function()
 
 PIXI.InteractionManager.prototype.updateCursor = function(mode)
 {
-    if(!this.interactionDOMElement) return;
-
 	if(mode !== this.currentCursor)
 	{
 		this.currentCursor = mode;
@@ -17232,9 +17230,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
         root.PIXI = PIXI;
     }
 }).call(this);
-/*! CloudKidFramework 0.0.6 */
+/*! CloudKidFramework 0.0.5 */
 !function(){"use strict";/**
-*  @module Framework
+*  @module window
 */
 /**
 *  Static class for namespacing objects and adding
@@ -17280,7 +17278,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 
 /**
-*  @module Framework
+*  @module window
 */
 /**
 *  Used to include required classes by name
@@ -17341,108 +17339,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }(window));
 /**
-*  @module Framework
-*/
-(function(Object, undefined){
-
-	/**
-	*  Add methods to Object
-	*  @class Object
-	*/
-
-	/**
-	*  Merges two (or more) objects, giving the last one precedence
-	*  @method merge
-	*  @example
-		var obj1 = { id : 'foo', name : 'Hello!', value : 100 };
-		var obj2 = { id : 'bar', value : 200 };
-		Object.merge({}, obj1, obj2); // Returns: { id : 'bar', name : 'Hello!', value : 200 }
-	*  @static
-	*  @param {object} target The target object
-	*  @param {object} source* Additional objects to add
-	*/
-	Object.merge = function(target, source)
-	{		
-		if (typeof target !== 'object') 
-		{
-			target = {};
-		}
-		
-		for (var property in source)
-		{
-			if (source.hasOwnProperty(property))
-			{
-				var sourceProperty = source[property];
-				
-				if (typeof sourceProperty === 'object' && Object.isPlain(sourceProperty))
-				{
-					target[property] = Object.merge(target[property], sourceProperty);
-					continue;
-				}
-				target[property] = sourceProperty;
-			}
-		}
-		
-		for (var i = 2, l = arguments.length; i < l; i++)
-		{
-			Object.merge(target, arguments[i]);
-		}
-		return target;
-	};
-
-	/**
-	*  Check to see if an object is a plain object definition
-	*  @method isPlain
-	*  @static
-	*  @param {object} target The target object
-	*  @return {boolean} If the object is plain
-	*/
-	Object.isPlain = function(obj)
-	{
-		var key;
-
-		// Must be an Object.
-		// Because of IE, we also have to check the presence of the constructor property.
-		// Make sure that DOM nodes and window objects don't pass through, as well
-		if (!obj || typeof obj !== "object" || obj.nodeType || obj === window)
-		{
-			return false;
-		}
-
-		try {
-			// Not own constructor property must be Object
-			if ( obj.constructor &&
-				!hasOwn.call(obj, "constructor") &&
-				!hasOwn.call(obj.constructor.prototype, "isPrototypeOf") ) {
-				return false;
-			}
-		} 
-		catch (e) 
-		{
-			// IE8,9 Will throw exceptions on certain host objects #9897
-			return false;
-		}
-
-		// Support: IE<9
-		// Handle iteration over inherited properties before own properties.
-		if (support.ownLast)
-		{
-			for (key in obj)
-			{
-				return hasOwn.call(obj, key);
-			}
-		}
-
-		// Own properties are enumerated firstly, so to speed up,
-		// if last one is own, then all properties are own.
-		for (key in obj) {}
-
-		return key === undefined || hasOwn.call(obj, key);
-	};
-
-}(Object));
-/**
-*  @module Framework
+*  @module window
 */
 (function(window, undefined){
 	
@@ -17450,11 +17347,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  A static closure to provide easy access to the console
 	*  without having errors if the console doesn't exist
 	*  to use call: Debug.log('Your log here')
-	*
+	*  
 	*  @class Debug
 	*  @static
 	*/
-	var Debug = function(){};
+	var Debug = function(){};	
 	
 	/**
 	*  If we have a console
@@ -17464,7 +17361,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var hasConsole = (window.console !== undefined);
 	
-	/**
+	/** 
 	* The most general default debug level
 	* @static
 	* @final
@@ -17472,15 +17369,15 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.GENERAL = 0;
 	
-	/**
+	/** 
 	* Log level for debug messages
 	* @static
 	* @final
 	* @property {int} true
 	*/
-	Debug['DE'+'BUG'] = 1; // jshint ignore:line
+	Debug.true = 1;
 	
-	/**
+	/** 
 	* Log level for debug messages
 	* @static
 	* @final
@@ -17488,7 +17385,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.INFO = 2;
 	
-	/**
+	/** 
 	* Log level for warning messages
 	* @static
 	* @final
@@ -17496,7 +17393,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.WARN = 3;
 	
-	/**
+	/** 
 	* Log level for error messages
 	* @static
 	* @final
@@ -17506,14 +17403,14 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 	/**
 	* The minimum log level to show, by default it's set to
-	* show all levels of logging.
+	* show all levels of logging. 
 	* @public
 	* @static
 	* @property {int} minLogLevel
 	*/
 	Debug.minLogLevel = Debug.GENERAL;
 	
-	/**
+	/** 
 	* Boolean to turn on or off the debugging
 	* @public
 	* @static
@@ -17538,8 +17435,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug._isJSConsole = window.remote === window.console;//The JSConsole script sets one object as 'remote' and trys to overwrite 'console'
 	
-	/**
-	* Browser port for the websocket browsers tend to block ports
+	/** 
+	* Browser port for the websocket browsers tend to block ports 
 	*  @static
 	*  @private
 	*  @property {int} _NET_PORT
@@ -17547,8 +17444,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug._NET_PORT = 1025;
 	
-	/**
-	* If the web socket is connected
+	/** 
+	* If the web socket is connected 
 	* @static
 	* @private
 	* @default false
@@ -17556,7 +17453,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug._isConnected = false;
 	
-	/**
+	/** 
 	* The socket connection
 	* @static
 	* @private
@@ -17564,7 +17461,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug._socket = null;
 	
-	/**
+	/** 
 	* The current message object being sent to the `WebSocket`
 	* @static
 	* @private
@@ -17572,8 +17469,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug._messageObj = null;
 	
-	/**
-	* The `WebSocket` message queue
+	/** 
+	* The `WebSocket` message queue 
 	* @static
 	* @private
 	* @property {Array} _messageQueue
@@ -17585,18 +17482,18 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @public
 	*  @static
 	*  @method connect
-	*  @param {string} host The remote address to connect to, IP address or host name
+	*  @param {string} The IP address to connect to
 	*/
-	Debug.connect = function(host)
+	Debug.connect = function(ipAddr)
 	{
 		// Make sure WebSocket exists without prefixes for us
 		if(!("WebSocket" in window) && !("MozWebSocket" in window)) return false;
 		
-		window.WebSocket = WebSocket || MozWebSocket;
+		window.WebSocket = WebSocket || MozWebSocket; 
 		
 		try
 		{
-			var s = Debug._socket = new WebSocket("ws://" + host + ":" + Debug._NET_PORT);
+			var s = Debug._socket = new WebSocket("ws://" + ipAddr + ":" + Debug._NET_PORT);
 			s.onopen = onConnect;
 			s.onmessage = function(){};
 			s.onclose = onClose;
@@ -17651,24 +17548,17 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	};
 	
 	/**
-	*  Global window error handler, used for remote connections.
+	*  Global window error handler
 	*  @static
 	*  @private
 	*  @method globalErrorHandler
-	*  @param {String} message The error message
-	*  @param {String} file The url of the file
-	*  @param {int} line The line within the file
-	*  @param {int} column The column within the line
-	*  @param {Error} error The error itself
+	*  @param THe error message
+	*  @param The url of the file
+	*  @param The line within the file
 	*/
-	var globalErrorHandler = function(message, file, line, column, error)
+	var globalErrorHandler = function(errorMsg, url, lineNumber)
 	{
-		var logMessage = "Error: " + message + " in " + file + " at line " + line;
-		if(column !== undefined)
-			logMessage += ":" + column;
-		if(error)
-			logMessage += "\n" + error.stack;
-		Debug.remoteLog(logMessage, "ERROR");
+		Debug.remoteLog("Error: " + errorMsg + " in " + url + " at line " + lineNumber, "ERROR");
 		return false;
 	};
 	
@@ -17713,7 +17603,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @public
 	*  @static
 	*  @method remoteLog
-	*  @param {string} message The message to send
+	*  @param {string} message The message to send 
 	*  @param {level} level The log level to send
 	*/
 	Debug.remoteLog = function(message, level)
@@ -17793,7 +17683,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	/**
 	*  Log something in the console or remote
 	*  @static
-	*  @public
+	*  @public 
 	*  @method log
 	*  @param {*} params The statement or object to log
 	*/
@@ -17804,17 +17694,17 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		{
 			Debug.remoteLog(params, "GENERAL");
 		}
-		else if (Debug.minLogLevel == Debug.GENERAL && hasConsole)
+		else if (Debug.minLogLevel == Debug.GENERAL && hasConsole) 
 		{
 			console.log(Debug._isJSConsole ? JSC_format(params) : params);
 			output("general", params);
-		}
+		}	
 	};
 	
 	/**
 	*  Debug something in the console or remote
 	*  @static
-	*  @public
+	*  @public 
 	*  @method debug
 	*  @param {*} params The statement or object to debug
 	*/
@@ -17823,9 +17713,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		if(!Debug.enabled) return;
 		if(Debug._isConnected)
 		{
-			Debug.remoteLog(params, 'DE'+'BUG');
+			Debug.remoteLog(params, "true");
 		}
-		else if (Debug.minLogLevel <= Debug['DE'+'BUG'] && hasConsole) // jshint ignore:line
+		else if (Debug.minLogLevel <= Debug.true && hasConsole) 
 		{
 			console.debug(Debug._isJSConsole ? JSC_format(params) : params);
 			output("debug", params);
@@ -17835,7 +17725,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	/**
 	*  Info something in the console or remote
 	*  @static
-	*  @public
+	*  @public 
 	*  @method info
 	*  @param {*} params The statement or object to info
 	*/
@@ -17846,17 +17736,17 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		{
 			Debug.remoteLog(params, "INFO");
 		}
-		else if (Debug.minLogLevel <= Debug.INFO && hasConsole)
+		else if (Debug.minLogLevel <= Debug.INFO && hasConsole) 
 		{
 			console.info(Debug._isJSConsole ? JSC_format(params) : params);
 			output("info", params);
-		}
+		}	
 	};
 	
 	/**
 	*  Warn something in the console or remote
 	*  @static
-	*  @public
+	*  @public 
 	*  @method warn
 	*  @param {*} params The statement or object to warn
 	*/
@@ -17867,17 +17757,17 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		{
 			Debug.remoteLog(params, "WARNING");
 		}
-		else if (Debug.minLogLevel <= Debug.WARN && hasConsole)
+		else if (Debug.minLogLevel <= Debug.WARN && hasConsole) 
 		{
 			console.warn(Debug._isJSConsole ? JSC_format(params) : params);
 			output("warn", params);
-		}
+		}	
 	};
 	
 	/**
 	*  Error something in the console or remote
 	*  @static
-	*  @public
+	*  @public 
 	*  @method error
 	*  @param {*} params The statement or object to error
 	*/
@@ -17888,11 +17778,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		{
 			Debug.remoteLog(params, "ERROR");
 		}
-		else if (hasConsole)
+		else if (hasConsole) 
 		{
 			console.error(Debug._isJSConsole ? JSC_format(params) : params);
 			output("error", params);
-		}
+		}	
 	};
 	
 	/**
@@ -17905,11 +17795,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.assert = function(truth, params)
 	{
-		if (hasConsole && Debug.enabled && console.assert)
+		if (hasConsole && Debug.enabled && console.assert) 
 		{
 			console.assert(truth, Debug._isJSConsole ? JSC_format(params) : params);
 			if (!truth) output("error", params);
-		}
+		}	
 	};
 	
 	/**
@@ -17921,10 +17811,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.dir = function(params)
 	{
-		if (Debug.minLogLevel == Debug.GENERAL && hasConsole && Debug.enabled)
+		if (Debug.minLogLevel == Debug.GENERAL && hasConsole && Debug.enabled) 
 		{
 			console.dir(Debug._isJSConsole ? JSC_format(params) : params);
-		}
+		}	
 	};
 	
 	/**
@@ -17936,11 +17826,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.clear = function()
 	{
-		if (hasConsole && Debug.enabled)
+		if (hasConsole && Debug.enabled) 
 		{
 			console.clear();
 			if (Debug.output) Debug.output.html("");
-		}
+		}	
 	};
 	
 	/**
@@ -17952,10 +17842,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Debug.trace = function(params)
 	{
-		if (Debug.minLogLevel == Debug.GENERAL && hasConsole && Debug.enabled)
+		if (Debug.minLogLevel == Debug.GENERAL && hasConsole && Debug.enabled) 
 		{
 			console.trace(Debug._isJSConsole ? JSC_format(params) : params);
-		}
+		}	
 	};
 	
 	// Make the debug class globally accessible
@@ -17963,9 +17853,388 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	window.Debug = Debug;
 	
 }(window));
+(function(){
+
+	// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
+	// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
+	// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
+	// MIT license
+	var vendors = ['ms', 'moz', 'webkit', 'o'];
+	for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x)
+	{
+		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
+		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
+	}
+
+	// create a setTimeout based fallback if there wasn't an official or prefixed version
+	if (!window.requestAnimationFrame)
+	{
+		var lastTime = 0;
+		// Create the polyfill
+		window.requestAnimationFrame = function(callback)
+		{
+			var currTime = nowFunc();//use the now function from down below
+			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
+			var id = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
+			lastTime = currTime + timeToCall;
+			return id;
+		};
+
+		// Only set this up if the corresponding requestAnimationFrame was set up
+		window.cancelAnimationFrame = function(id) {
+			clearTimeout(id);
+		};
+	}
+
+	// Short alias
+	window.requestAnimFrame = window.requestAnimationFrame;
+
+}());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
+*/
+(function(undefined){
+		
+	/**
+	*  The EventDispatcher mirrors the functionality of AS3 and CreateJS's EventDispatcher, 
+	*  but is more robust in terms of inputs for the `on()` and `off()` methods.
+	*  
+	*  @class EventDispatcher
+	*  @constructor
+	*/
+	var EventDispatcher = function()
+	{
+		/**
+		* The collection of listeners
+		* @property {Array} _listeners
+		* @private
+		*/
+		this._listeners = [];
+	},
+	
+	// Reference to the prototype 
+	p = EventDispatcher.prototype;
+	
+	/**
+	*  Dispatch an event
+	*  @method trigger
+	*  @param {String} type The event string name, 
+	*  @param {*} arguments Additional parameters for the listener functions.
+	*/
+	p.trigger = function(type)
+	{
+		if (this._listeners[type] !== undefined) 
+		{	
+			var listeners = this._listeners[type];
+
+			var args;
+			if(arguments.length > 1)
+				args = Array.prototype.slice.call(arguments, 1);
+			
+			for(var i = listeners.length - 1; i >= 0; --i) 
+			{
+				if(args)
+					listeners[i].apply(this, args);
+				else
+					listeners[i]();
+			}
+		}
+	};
+	
+	/**
+	*  Add an event listener. The parameters for the listener functions depend on the event.
+	*  
+	*  @method on
+	*  @param {String|object} name The type of event (can be multiple events separated by spaces), 
+	*          or a map of events to handlers
+	*  @param {Function|Array*} callback The callback function when event is fired or an array of callbacks.
+	*  @return {EventDispatcher} Return this EventDispatcher for chaining calls.
+	*/
+	p.on = function(name, callback)
+	{
+		// Callbacks map
+		if (type(name) === 'object')
+		{
+			for (var key in name)
+			{
+				if (name.hasOwnProperty(key))
+				{
+					this.on(key, name[key]);
+				}
+			}
+		}
+		// Callback
+		else if (type(callback) === 'function')
+		{
+			var names = name.split(' '), n = null;
+			for (var i = 0, nl = names.length; i < nl; i++)
+			{
+				n = names[i];
+				this._listeners[n] = this._listeners[n] || [];
+				
+				if (this._listeners[n].indexOf(callback) === -1)
+				{
+					this._listeners[n].push(callback);
+				}
+			}
+		}
+		// Callbacks array
+		else if (type(callback) === 'array')
+		{
+			for (var f = 0, fl = callback.length; f < fl; f++)
+			{
+				this.on(name, callback[f]);
+			}
+		}
+		return this;
+	};
+	
+	/**
+	*  Remove the event listener
+	*  
+	*  @method off
+	*  @param {String*} name The type of event string separated by spaces, if no name is specifed remove all listeners.
+	*  @param {Function|Array*} callback The listener function or collection of callback functions
+	*  @return {EventDispatcher} Return this EventDispatcher for chaining calls.
+	*/
+	p.off = function(name, callback)
+	{	
+		// remove all 
+		if (name === undefined)
+		{
+			this._listeners = [];
+		}
+		// remove multiple callbacks
+		else if (type(callback) === 'array')
+		{
+			for (var f = 0, fl = callback.length; f < fl; f++) 
+			{
+				this.off(name, callback[f]);
+			}
+		}
+		else
+		{
+			var names = name.split(' '), n = null;
+			for (var i = 0, nl = names.length; i < nl; i++)
+			{
+				n = names[i];
+				this._listeners[n] = this._listeners[n] || [];
+				
+				// remove all by time
+				if (callback === undefined)
+				{
+					this._listeners[n].length = 0;
+				}
+				else
+				{
+					var index = this._listeners[n].indexOf(callback);
+					if (index !== -1)
+					{
+						this._listeners[n].splice(index, 1);
+					}
+				}
+			}
+		}
+		return this;
+	};
+
+	/**
+	*  Checks if the EventDispatcher has a specific listener or any listener for a given event.
+	*  
+	*  @method has
+	*  @param {String} name The name of the single event type to check for
+	*  @param {Function} [callback] The listener function to check for. If omitted, checks for any listener.
+	*  @return {Boolean} If the EventDispatcher has the specified listener.
+	*/
+	p.has = function(name, callback)
+	{
+		if(!name) return false;
+
+		var listeners = this._listeners[name];
+		if(!listeners) return false;
+		if(!callback)
+			return listeners.length > 0;
+		return listeners.indexOf(callback) >= 0;
+	};
+	
+	/**
+	*  Return type of the value.
+	*  
+	*  @private
+	*  @method type
+	*  @param  {*} value
+	*  @return {String} The type
+	*/
+	function type(value)
+	{
+		if (value === null)
+		{
+			return String(value);
+		}
+		if (typeof value === 'object' || typeof value === 'function')
+		{
+			return Object.prototype.toString.call(value).match(/\s([a-z]+)/i)[1].toLowerCase() || 'object';
+		}
+		return typeof value;
+	}
+
+	/**
+	*  Adds EventDispatcher methods and properties to an object or object prototype.
+	*  @method mixIn
+	*  @param {Object} object The object or prototype
+	*  @param {Boolean} [callConstructor=false] If the EventDispatcher constructor should be called as well.
+	*  @static
+	*  @public
+	*/
+	EventDispatcher.mixIn = function(object, callConstructor)
+	{
+		object.trigger = p.trigger;
+		object.on = p.on;
+		object.off = p.off;
+		object.has = p.has;
+		if(callConstructor)
+			EventDispatcher.call(object);
+	};
+	
+	// Assign to name space
+	namespace('cloudkid').EventDispatcher = EventDispatcher;
+	
+}());
+/**
+*  @module cloudkid
+*/
+(function(global, doc, undefined){
+		
+	/**
+	*  Handle the page visiblity change, if supported. Application uses one of these to
+	*  monitor page visibility. It is suggested that you listen to "pause", "paused", 
+	*  or "unpaused" events on the application instead of using one of these yourself.
+	*  
+	*  @class PageVisibility
+	*  @constructor
+	*  @param {function} onFocus Callback when the page becomes visible
+	*  @param {function} onBlur Callback when the page loses visibility
+	*/
+	var PageVisibility = function(onFocus, onBlur)
+	{
+		this.initialize(onFocus, onBlur);
+	},
+	
+	// Reference to the prototype 
+	p = PageVisibility.prototype,
+	
+	/** 
+	* The name of the visibility change event for the browser
+	* 
+	* @property {String} _visibilityChange
+	* @private
+	*/
+	_visibilityChange = null;
+	
+	/**
+	* Callback when the page becomes visible
+	* @property {function} _onFocus
+	* @private
+	*/
+	p._onFocus = null;
+	
+	/**
+	* Callback when the page loses visibility
+	* @property {function} _onBlur
+	* @private
+	*/
+	p._onBlur = null;
+	
+	/**
+	* The visibility toggle function
+	* @property {function} _onToggle
+	* @private
+	*/
+	p._onToggle = null;
+	
+	// Select the visiblity change event name
+	if (doc.hidden !== undefined)
+	{
+		_visibilityChange = "visibilitychange";
+	} 
+	else if (doc.mozHidden !== undefined)
+	{
+		_visibilityChange = "mozvisibilitychange";
+	} 
+	else if (doc.msHidden !== undefined)
+	{
+		_visibilityChange = "msvisibilitychange";
+	} 
+	else if (doc.webkitHidden !== undefined)
+	{
+		_visibilityChange = "webkitvisibilitychange";
+	}
+	
+	/**
+	*  Create new Page visibility
+	*  
+	*  @method initialize
+	*  @param {function} onFocus The callback when the page comes into focus
+	*  @param {function} onBlur The callback when the page loses focus
+	*/
+	p.initialize = function(onFocus, onBlur)
+	{
+		// If this browser doesn't support visibility
+		if (!_visibilityChange) return;
+		
+		this._onBlur = onBlur;
+		this._onFocus = onFocus;
+		
+		// The visibility toggle function
+		var onVisibilityChange = function() 
+		{
+			if (doc.hidden || doc.webkitHidden || doc.msHidden || doc.mozHidden)
+				onBlur();
+			else 
+				onFocus();
+		};
+		
+		// Listen to visibility change
+		// see https://developer.mozilla.org/en/API/PageVisibility/Page_Visibility_API
+		doc.addEventListener(_visibilityChange, onVisibilityChange, false);
+		
+		// Listen for page events (when clicking the home button on iOS)
+		global.addEventListener("pagehide", onBlur);
+		global.addEventListener("pageshow", onFocus);
+		global.addEventListener("blur", onBlur);
+		global.addEventListener("focus", onFocus);
+		global.addEventListener("visibilitychange", onVisibilityChange, false);
+		
+		this._onToggle = onVisibilityChange;
+	};
+	
+	/**
+	*  Disable the detection
+	*  @method destroy
+	*/
+	p.destroy = function()
+	{
+		// If this browser doesn't support visibility
+		if (!_visibilityChange) return;
+		
+		global.removeEventListener("pagehide", this._onBlur);
+		global.removeEventListener("pageshow", this._onFocus);
+		global.removeEventListener("blur", this._onBlur);
+		global.removeEventListener("focus", this._onFocus);
+		global.removeEventListener("visibilitychange", this._onToggle);
+		
+		doc.removeEventListener(_visibilityChange, this._onToggle, false);
+		
+		this._onFocus = null;
+		this._onBlur = null;
+	};
+	
+	// Assign to the global space
+	namespace('cloudkid').PageVisibility = PageVisibility;
+	
+}(window, document));
+/**
+*  @module cloudkid
 */
 (function(window){
 		
@@ -18009,452 +18278,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid').TimeUtils = TimeUtils;
 	
 }(window));
-(function(){
-
-	// http://paulirish.com/2011/requestanimationframe-for-smart-animating/
-	// http://my.opera.com/emoller/blog/2011/12/20/requestanimationframe-for-smart-er-animating
-	// requestAnimationFrame polyfill by Erik Möller. fixes from Paul Irish and Tino Zijdel
-	// MIT license
-	var vendors = ['ms', 'moz', 'webkit', 'o'];
-	for(var x = 0; x < vendors.length && !window.requestAnimationFrame; ++x)
-	{
-		window.requestAnimationFrame = window[vendors[x]+'RequestAnimationFrame'];
-		window.cancelAnimationFrame = window[vendors[x]+'CancelAnimationFrame'] || window[vendors[x]+'CancelRequestAnimationFrame'];
-	}
-
-	// create a setTimeout based fallback if there wasn't an official or prefixed version
-	if (!window.requestAnimationFrame)
-	{
-		var TimeUtils = include('cloudkid.TimeUtils');
-		var lastTime = 0;
-		// Create the polyfill
-		window.requestAnimationFrame = function(callback)
-		{
-			var currTime = TimeUtils.now();//use the now function from down below
-			var timeToCall = Math.max(0, 16 - (currTime - lastTime));
-			var id = window.setTimeout(function() { callback(currTime + timeToCall); }, timeToCall);
-			lastTime = currTime + timeToCall;
-			return id;
-		};
-
-		// Only set this up if the corresponding requestAnimationFrame was set up
-		window.cancelAnimationFrame = function(id) {
-			clearTimeout(id);
-		};
-	}
-
-	// Short alias
-	window.requestAnimFrame = window.requestAnimationFrame;
-
-}());
 /**
-*  @module Framework
-*  @namespace cloudkid
-*/
-(function(undefined){
-		
-	/**
-	*  The EventDispatcher mirrors the functionality of AS3 and CreateJS's EventDispatcher, 
-	*  but is more robust in terms of inputs for the `on()` and `off()` methods.
-	*  
-	*  @class EventDispatcher
-	*  @constructor
-	*/
-	var EventDispatcher = function()
-	{
-		/**
-		* The collection of listeners
-		* @property {Array} _listeners
-		* @private
-		*/
-		this._listeners = [];
-
-		/**
-		 * If the dispatcher is destroyed
-		 * @property {Boolean} _destroyed
-		 * @protected
-		 */
-		this._destroyed = false;
-	},
-	
-	// Reference to the prototype 
-	p = EventDispatcher.prototype;
-	
-	/**
-	*  Dispatch an event
-	*  @method trigger
-	*  @param {String} type The type of event to trigger
-	*  @param {*} arguments Additional parameters for the listener functions.
-	*/
-	p.trigger = function(type)
-	{
-		if (this._destroyed) return;
-		
-		if (this._listeners[type] !== undefined) 
-		{	
-			// copy the listeners array
-			var listeners = this._listeners[type].slice();
-
-			var args;
-
-			if(arguments.length > 1)
-			{
-				args = Array.prototype.slice.call(arguments, 1);
-			}
-			
-			for(var i = listeners.length - 1; i >= 0; --i) 
-			{
-				listeners[i].apply(this, args);
-
-				if (listeners[i]._eventDispatcherOnce)
-				{
-					delete listeners[i]._eventDispatcherOnce;
-					this.off(type, listeners[i]);
-				}
-			}
-		}
-	};
-
-	/**
-	*  Add an event listener but only handle it one time.
-	*  
-	*  @method once
-	*  @param {String|object} name The type of event (can be multiple events separated by spaces), 
-	*          or a map of events to handlers
-	*  @param {Function|Array*} callback The callback function when event is fired or an array of callbacks.
-	*  @param {int} [priority=0] The priority of the event listener. Higher numbers are handled first.
-	*  @return {EventDispatcher} Return this EventDispatcher for chaining calls.
-	*/
-	p.once = function(name, callback, priority)
-	{
-		return this.on(name, callback, priority, true);
-	};
-	
-	/**
-	*  Add an event listener. The parameters for the listener functions depend on the event.
-	*  
-	*  @method on
-	*  @param {String|object} name The type of event (can be multiple events separated by spaces), 
-	*          or a map of events to handlers
-	*  @param {Function|Array*} callback The callback function when event is fired or an array of callbacks.
-	*  @param {int} [priority=0] The priority of the event listener. Higher numbers are handled first.
-	*  @return {EventDispatcher} Return this EventDispatcher for chaining calls.
-	*/
-	p.on = function(name, callback, priority, once)
-	{
-		if (this._destroyed) return;
-
-		// Callbacks map
-		if (type(name) === 'object')
-		{
-			for (var key in name)
-			{
-				if (name.hasOwnProperty(key))
-				{
-					this.on(key, name[key], priority, once);
-				}
-			}
-		}
-		// Callback
-		else if (type(callback) === 'function')
-		{
-			var names = name.split(' '), n = null;
-			for (var i = 0, nl = names.length; i < nl; i++)
-			{
-				n = names[i];
-				var listener = this._listeners[n];
-				if(!listener)
-					listener = this._listeners[n] = [];
-				
-				if (once)
-				{
-					callback._eventDispatcherOnce = true;
-				}
-				callback._priority = parseInt(priority) || 0;
-
-				if (listener.indexOf(callback) === -1)
-				{
-					listener.push(callback);
-					if(listener.length > 1)
-						listener.sort(listenerSorter);
-				}
-			}
-		}
-		// Callbacks array
-		else if (Array.isArray(callback))
-		{
-			for (var f = 0, fl = callback.length; f < fl; f++)
-			{
-				this.on(name, callback[f], priority, once);
-			}
-		}
-		return this;
-	};
-
-	function listenerSorter(a, b)
-	{
-		return a._priority - b._priority;
-	}
-	
-	/**
-	*  Remove the event listener
-	*  
-	*  @method off
-	*  @param {String*} name The type of event string separated by spaces, if no name is specifed remove all listeners.
-	*  @param {Function|Array*} callback The listener function or collection of callback functions
-	*  @return {EventDispatcher} Return this EventDispatcher for chaining calls.
-	*/
-	p.off = function(name, callback)
-	{
-		if (this._destroyed) return;
-
-		// remove all 
-		if (name === undefined)
-		{
-			this._listeners = [];
-		}
-		// remove multiple callbacks
-		else if (Array.isArray(callback))
-		{
-			for (var f = 0, fl = callback.length; f < fl; f++) 
-			{
-				this.off(name, callback[f]);
-			}
-		}
-		else
-		{
-			var names = name.split(' '), n = null;
-			for (var i = 0, nl = names.length; i < nl; i++)
-			{
-				n = names[i];
-				var listener = this._listeners[n];
-				if(listener)
-				{
-					// remove all listeners for that event
-					if (callback === undefined)
-					{
-						listener.length = 0;
-					}
-					else
-					{
-						//remove single listener
-						var index = listener.indexOf(callback);
-						if (index !== -1)
-						{
-							listener.splice(index, 1);
-						}
-					}
-				}
-			}
-		}
-		return this;
-	};
-
-	/**
-	*  Checks if the EventDispatcher has a specific listener or any listener for a given event.
-	*  
-	*  @method has
-	*  @param {String} name The name of the single event type to check for
-	*  @param {Function} [callback] The listener function to check for. If omitted, checks for any listener.
-	*  @return {Boolean} If the EventDispatcher has the specified listener.
-	*/
-	p.has = function(name, callback)
-	{
-		if(!name) return false;
-
-		var listeners = this._listeners[name];
-		if(!listeners) return false;
-		if(!callback)
-			return listeners.length > 0;
-		return listeners.indexOf(callback) >= 0;
-	};
-	
-	/**
-	*  Destroy and don't use after this
-	*  @method destroy
-	*/
-	p.destroy = function()
-	{
-		this._destroyed = true;
-		this._listeners = null;
-	};
-
-	/**
-	*  Return type of the value.
-	*  
-	*  @private
-	*  @method type
-	*  @param  {*} value
-	*  @return {String} The type
-	*/
-	function type(value)
-	{
-		if (value === null)
-		{
-			return 'null';
-		}
-		var typeOfValue = typeof value;
-		if (typeOfValue === 'object' || typeOfValue === 'function')
-		{
-			return Object.prototype.toString.call(value).match(/\s([a-z]+)/i)[1].toLowerCase() || 'object';
-		}
-		return typeOfValue;
-	}
-
-	/**
-	*  Adds EventDispatcher methods and properties to an object or object prototype.
-	*  @method mixIn
-	*  @param {Object} object The object or prototype
-	*  @param {Boolean} [callConstructor=false] If the EventDispatcher constructor should be called as well.
-	*  @static
-	*  @public
-	*/
-	EventDispatcher.mixIn = function(object, callConstructor)
-	{
-		object.trigger = p.trigger;
-		object.on = p.on;
-		object.off = p.off;
-		object.has = p.has;
-		if(callConstructor)
-			EventDispatcher.call(object);
-	};
-	
-	// Assign to name space
-	namespace('cloudkid').EventDispatcher = EventDispatcher;
-	
-}());
-/**
-*  @module Framework
-*  @namespace cloudkid
-*/
-(function(global, doc, undefined){
-		
-	/**
-	*  Handle the page visiblity change, if supported. Application uses one of these to
-	*  monitor page visibility. It is suggested that you listen to "pause", "paused", 
-	*  or "unpaused" events on the application instead of using one of these yourself.
-	*  
-	*  @class PageVisibility
-	*  @constructor
-	*  @param {function} onFocus Callback when the page becomes visible
-	*  @param {function} onBlur Callback when the page loses visibility
-	*/
-	var PageVisibility = function(onFocus, onBlur)
-	{
-		/**
-		* Callback when the page becomes visible
-		* @property {function} _onFocus
-		* @private
-		*/
-		this._onFocus = onFocus;
-		
-		/**
-		* Callback when the page loses visibility
-		* @property {function} _onBlur
-		* @private
-		*/
-		this._onBlur = onBlur;
-		
-		/**
-		* The visibility toggle function
-		* @property {function} _onToggle
-		* @private
-		*/
-		this._onToggle = null;
-
-		this.initialize();
-	},
-	
-	// Reference to the prototype 
-	p = PageVisibility.prototype,
-	
-	/** 
-	* The name of the visibility change event for the browser
-	* 
-	* @property {String} _visibilityChange
-	* @private
-	*/
-	_visibilityChange = null;
-	
-	// Select the visiblity change event name
-	if (doc.hidden !== undefined)
-	{
-		_visibilityChange = "visibilitychange";
-	} 
-	else if (doc.mozHidden !== undefined)
-	{
-		_visibilityChange = "mozvisibilitychange";
-	} 
-	else if (doc.msHidden !== undefined)
-	{
-		_visibilityChange = "msvisibilitychange";
-	} 
-	else if (doc.webkitHidden !== undefined)
-	{
-		_visibilityChange = "webkitvisibilitychange";
-	}
-	
-	/**
-	*  Create new Page visibility
-	*  
-	*  @method initialize
-	*/
-	p.initialize = function()
-	{
-		// If this browser doesn't support visibility
-		if (!_visibilityChange) return;
-		
-		// The visibility toggle function
-		var onVisibilityChange = function() 
-		{
-			if (doc.hidden || doc.webkitHidden || doc.msHidden || doc.mozHidden)
-				this._onBlur();
-			else 
-				this._onFocus();
-		}.bind(this);
-		
-		// Listen to visibility change
-		// see https://developer.mozilla.org/en/API/PageVisibility/Page_Visibility_API
-		doc.addEventListener(_visibilityChange, onVisibilityChange, false);
-		
-		// Listen for page events (when clicking the home button on iOS)
-		global.addEventListener("pagehide", this._onBlur);
-		global.addEventListener("pageshow", this._onFocus);
-		global.addEventListener("blur", this._onBlur);
-		global.addEventListener("focus", this._onFocus);
-		global.addEventListener("visibilitychange", onVisibilityChange, false);
-		
-		this._onToggle = onVisibilityChange;
-	};
-	
-	/**
-	*  Disable the detection
-	*  @method destroy
-	*/
-	p.destroy = function()
-	{
-		// If this browser doesn't support visibility
-		if (!_visibilityChange) return;
-		
-		global.removeEventListener("pagehide", this._onBlur);
-		global.removeEventListener("pageshow", this._onFocus);
-		global.removeEventListener("blur", this._onBlur);
-		global.removeEventListener("focus", this._onFocus);
-		global.removeEventListener("visibilitychange", this._onToggle);
-		
-		doc.removeEventListener(_visibilityChange, this._onToggle, false);
-		
-		this._onFocus = null;
-		this._onBlur = null;
-	};
-	
-	// Assign to the global space
-	namespace('cloudkid').PageVisibility = PageVisibility;
-	
-}(window, document));
-/**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(undefined){
 
@@ -18477,32 +18302,27 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @param {Object} [options] The options for creating the application
 	*  @param {int} [options.fps=60] The framerate to use for rendering the stage
 	*  @param {Boolean} [options.raf=true] Use request animation frame
-	*  @param {String|int} [options.version] The current version number for your application. This 
-	*       number will automatically be appended to all file requests. For instance, if the version
-	*       is "0.0.1" all file requests will be appended with "?v=0.0.1"
 	*  @param {String} [options.versionsFile] Path to a text file which contains explicit version
 	*		numbers for each asset. This is useful for controlling the live browser cache.
-	*		For instance, this text file would have an asset on each line followed by a number:
-	*		`assets/config/config.json 2` this would load `assets/config/config.json?v=2`
-	*  @param {Boolean} [options.cacheBust=false] Override the end-user browser cache by adding "?v="
+	*		For instance, this text file would have an asset on each line followed by a number: 
+	* 		`assets/config/config.json 2` this would load `assets/config/config.json?v=2`
+	*  @param {Boolean} [options.cacheBust=false] Override the end-user browser cache by adding "?v=" 
 	*		to the end of each file path requested. Use for developmently, debugging only!
 	*  @param {String} [options.basePath] The optional file path to prefix to any relative file requests
 	*		this is a great way to load all load requests with a CDN path.
 	*  @param {String|DOMElement|Window} [options.resizeElement] The element to resize the canvas to
 	*  @param {Boolean} [options.uniformResize=true] Whether to resize the displays to the original aspect ratio
-	*  @param {Number} [options.maxAspectRatio] If doing uniform resizing, optional parameter to add a maximum aspect ratio.
-	*         This allows for "title-safe" responsiveness. Must be greater than the original aspect ratio of the canvas.
 	*  @param {Boolean} [options.queryStringParameters=false] Parse the query string paramenters as options
-	*  @param {Boolean} [options.debug=false] Enable the Debug class
+	*  @param {Boolean} [options.debug=false] Enable the Debugger,
+	*		the debug module must be included to use this feature.
 	*  @param {int} [options.minLogLevel=0] The minimum log level to show debug messages for from 0 (general) to 4 (error),
-	*		the `Debug` class must be used for this feature.
-	*  @param {String} [options.debugRemote] The host computer for remote debugging,
-	*		the debug module must be included to use this feature. Can be an IP address or host name.
+	*		the debug module must be included to use this feature.
+	*  @param {String} [options.ip] The host computer for IP remote debugging,
+	*		the debug module must be included to use this feature.
 	*  @param {Boolean} [options.updateTween=false] If using TweenJS, the Application will update the Tween itself
 	*  @param {String} [options.canvasId] The default display DOM ID name
-	*  @param {Function} [options.display] The name of the class to instaniate as the display (e.g. `cloudkid.PixiDisplay`)
+	*  @param {Function} [options.display] The name of the class to instaniate as the display (e.g. cloudkid.PixiDisplay)
 	*  @param {Object} [options.displayOptions] Display-specific options
-	*  @param {Boolean} [options.crossOrigin=false] Used by `cloudkid.PixiTask`, default behavior is to load assets from the same domain.
 	*/
 	var Application = function(options)
 	{
@@ -18534,17 +18354,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		*  Primary renderer for the application, for simply accessing Application.instance.display.stage;
 		*  The first display added becomes the primary display automatically.
 		*  @property {Display} display
-		*  @public
+		*  @public 
 		*/
 		this.display = null;
-
-		/**
-		*  If we should wait to init the Application, this is useful is something is inheriting
-		*  Application but want to do some extra stuff before init is actually called.
-		*  @property {Boolean} _readyToInit
-		*  @protected
-		*/
-		this._readyToInit = true;
 
 		_displays = {};
 		_tickCallback = this._tick.bind(this);
@@ -18556,8 +18368,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	};
 
 	// Reference to the prototype
-	var s = EventDispatcher.prototype;
-	var p = Application.prototype = Object.create(s);
+	var p = Application.prototype = Object.create(EventDispatcher.prototype);
 
 	/**
 	*  The collection of function references to call when initializing the application
@@ -18636,7 +18447,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	_useRAF = false,
 
-	/**
+	/** 
 	*  The current internal frames per second
 	*  @property {Number} _fps
 	*  @private
@@ -18686,7 +18497,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @property {dictionary} _defaultOptions
 	*  @private
 	*/
-	_defaultOptions =
+	_defaultOptions = 
 	{
 		//application properties
 		raf: true,
@@ -18716,13 +18527,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @event init
 	*/
 	INIT = 'init',
-
-	/**
-	*  Event when everything's done but we haven't actually inited
-	*  @event preInit
-	*  @protected
-	*/
-	BEFORE_INIT = 'beforeInit',
 
 	/**
 	*  Fired when an update is called, every frame update
@@ -18797,7 +18601,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var _instance = null;
 	Object.defineProperty(Application, "instance", {
-		get: function() {
+		get: function() { 
 			return _instance;
 		}
 	});
@@ -18810,10 +18614,15 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	p._internalInit = function()
 	{
 		//grab the query string parameters if we should be doing so
-		var query = !!this.options.parseQueryString ? parseQueryStringParams() : {};
+		if(this.options.parseQueryString)
+			parseQueryStringParams(this.options);
 		
-		// Assemble all of the options, the last takes precedence
-		this.options = Object.merge({}, _defaultOptions, this.options, query);
+		//set up default options
+		for(var key in _defaultOptions)
+		{
+			if(!this.options.hasOwnProperty(key))
+				this.options[key] = _defaultOptions[key];
+		}
 
 		// Call any global libraries to initialize
 		for(var i = 0; i < Application._globalInit.length; ++i)
@@ -18838,8 +18647,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 				_resizeElement = document.getElementById(resizeElement);
 			else
 				_resizeElement = resizeElement;
-			this.triggerResize = this.triggerResize.bind(this);
-			window.addEventListener("resize", this.triggerResize);
+			this._resize = this._resize.bind(this);
+			window.addEventListener("resize", this._resize);
 		}
 
 		// Turn on debugging
@@ -18850,8 +18659,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			Debug.minLogLevel = parseInt(this.options.minLogLevel, 10);
 
 		//if we were supplied with an IP address, connect to it with the Debug class for logging
-		if(typeof this.options.debugRemote == "string")
-			Debug.connect(this.options.debugRemote);
+		if(typeof this.options.ip == "string")
+			Debug.connect(this.options.ip);
 
 		// If tween and/or ticker are included
 		var Tween = include('createjs.Tween', false),
@@ -18873,9 +18682,21 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		if(this.options.canvasId && this.options.display)
 			this.addDisplay(this.options.canvasId, this.options.display, this.options.displayOptions);
 
+		var versionsLoaded = function()
+		{
+			// Call the init function
+			if (this.init) this.init();
 
-		// Bind the do init
-		this._doInit = this._doInit.bind(this);
+			//do an initial resize to make sure everything is sized properly
+			this._resize();
+
+			//start update loop
+			this.paused = false;
+
+			// Dispatch the init event
+			this.trigger(INIT);
+
+		}.bind(this);
 
 		// Check to see if we should load a versions file
 		// The versions file keeps track of file versions to avoid cache issues
@@ -18884,52 +18705,26 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			// Try to load the default versions file
 			// callback should be made with a scope in mind
 			Loader.instance.cacheManager.addVersionsFile(
-				this.options.versionsFile,
-				this._doInit
+				this.options.versionsFile, 
+				versionsLoaded
 			);
 		}
 		else
 		{
 			// Wait until the next execution sequence
 			// so that init can be added after construction
-			setTimeout(this._doInit, 0);
+			setTimeout(versionsLoaded, 0);
 		}
-	};
-
-	/**
-	*  Initialize the application
-	*  @method _doInit
-	*  @protected
-	*/
-	p._doInit = function()
-	{
-		this.trigger(BEFORE_INIT);
-
-		// If a sub-class will manually try to init later on
-		if (!this._readyToInit) return;
-
-		// Call the init function
-		if (this.init) this.init();
-
-		//do an initial resize to make sure everything is sized properly
-		this.triggerResize();
-
-		//start update loop
-		this.paused = false;
-
-		// Dispatch the init event
-		this.trigger(INIT);
 	};
 
 	/**
 	*  Define all of the query string parameters
 	*  @private
 	*  @method parseQueryStringParams
-	*  @return {object} The object reference to update
+	*  @param {object} output The object reference to update
 	*/
-	var parseQueryStringParams = function()
+	var parseQueryStringParams = function(output)
 	{
-		var output = {};
 		var href = window.location.search;
 		if(!href)//empty string is false
 			return output;
@@ -19009,8 +18804,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			{
 				if(_tickId == -1)
 				{
-					_tickId = _useRAF ?
-						requestAnimFrame(_tickCallback):
+					_tickId = _useRAF ? 
+						requestAnimFrame(_tickCallback): 
 						setTargetedTimeout(_tickCallback);
 				}
 				_lastFPSUpdateTime = _lastFrameTime = TimeUtils.now();
@@ -19036,10 +18831,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	};
 
 	/**
-	*  Fire a resize event with the current width and height of the display
-	*  @method triggerResize
+	*  Resize listener function, handles default resize behavior on all displays and dispatches a resize event
+	*  @method _resize
+	*  @private
 	*/
-	p.triggerResize = function()
+	p._resize = function()
 	{
 		if(!_resizeElement) return;
 
@@ -19063,7 +18859,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	};
 
 	/**
-	*  Calculates the resizing of displays. By default, this limits the new size
+	*  Calculates the resizing of displays. By default, this limits the new size 
 	*  to the initial aspect ratio of the primary display. Override this function
 	*  if you need variable aspect ratios.
 	*  @method calculateDisplaySize
@@ -19075,20 +18871,16 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.calculateDisplaySize = function(size)
 	{
-		if (!_aspectRatio || !this.options.uniformResize) return;
-
-		var maxAspectRatio = this.options.maxAspectRatio || _aspectRatio,
-			currentAspect = size.width / size.height;
-
-		if (currentAspect < _aspectRatio)
+		if(!_aspectRatio || !this.options.uniformResize) return;
+		if(size.width / size.height < _aspectRatio)
 		{
 			//limit to the narrower width
 			size.height = size.width / _aspectRatio;
 		}
-		else if (currentAspect > maxAspectRatio)
+		else
 		{
 			//limit to the shorter height
-			size.width = size.height * maxAspectRatio;
+			size.width = size.height * _aspectRatio;
 		}
 	};
 
@@ -19097,7 +18889,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @method addDisplay
 	*  @param {String} id The id of the canvas element, this will be used to grab the Display later
 	*                also the Display should be the one to called document.getElementById(id)
-	*                and not the application sinc we don't care about the DOMElement as this point
+	*                and not the application sinc we don't care about the DOMElement as this point            
 	*  @param {function} displayConstructor The function to call to create the display instance
 	*  @param {Object} [options] Optional Display specific options
 	*  @return {Display} The created display.
@@ -19113,23 +18905,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			return;
 		}
 		var display = _displays[id] = new displayConstructor(id, options);
-		if (!this.display)
+		if(!this.display)
 		{
 			this.display = display;
 			_aspectRatio = display.width / display.height;
-			var maxAspectRatio = this.options.maxAspectRatio || _aspectRatio;
-
-			if (maxAspectRatio < _aspectRatio)
-			{
-				if (true)
-				{
-					throw "Invalid 'maxAspectRatio': Must be greater than the original aspect ratio of the display";
-				}
-				else
-				{
-					throw "Invalid 'maxAspectRatio'";
-				}
-			}
 		}
 		return display;
 	};
@@ -19149,20 +18928,13 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  Gets a specific renderer by the canvas id.
 	*  @method getDisplays
 	*  @public
-	*  @param {function} [each] Optional looping method, callback takes a single parameter of the display
 	*  @return {Array} The collection of Display objects
 	*/
-	p.getDisplays = function(each)
+	p.getDisplays = function()
 	{
 		var output = [];
 		for(var key in _displays)
-		{
 			output.push(_displays[key]);
-			if (typeof each === "function")
-			{
-				each.call(this, _displays[key]);
-			}
-		}
 		return output;
 	};
 
@@ -19189,7 +18961,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	Object.defineProperty(p, "fps", {
 		get: function()
 		{
-			return _fps;
+			return _fps; 
 		},
 		set: function(value)
 		{
@@ -19206,8 +18978,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Object.defineProperty(p, "raf", {
 		get: function()
-		{
-			return _useRAF;
+		{ 
+			return _useRAF; 
 		},
 		set: function(value)
 		{
@@ -19257,8 +19029,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 		//request the next tick
 		//request the next animation frame
-		_tickId = _useRAF ?
-			requestAnimFrame(_tickCallback) :
+		_tickId = _useRAF ? 
+			requestAnimFrame(_tickCallback) : 
 			setTargetedTimeout(_tickCallback, TimeUtils.now() - _lastFrameTime);
 	};
 
@@ -19268,37 +19040,22 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.destroy = function()
 	{
-		this._readyToInit = false;
 		this.paused = true;
 		this.trigger(DESTROY);
-		
 		for(var key in _displays)
 		{
 			_displays[key].destroy();
 		}
 		_displays = null;
-
 		for(var i = 0; i < Application._globalDestroy.length; ++i)
-		{
 			Application._globalDestroy[i]();
-		}
-
 		if(_resizeElement)
-		{
-			window.removeEventListener("resize", this.triggerResize);
-		}
-
+			window.removeEventListener("resize", this._resize);
+		_framerate = _resizeElement = null;
 		_pageVisibility.destroy();
 		_pageVisibility = null;
-
-		_instance =
-		_tickCallback =
-		_framerate =
-		_resizeElement = null;
-
-		Debug.disconnect();
-
-		s.destroy.call(this);
+		this._listeners = null;
+		_tickCallback = null;
 	};
 
 	// Add to the name space
@@ -19306,200 +19063,11 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(undefined){
 
-	/**
-	*   The display provides the base properties for all custom display. A display
-	*   is a specialized view for the application. As the name suggests, this class
-	*   should not be instanciated directly.
-	*
-	*   @class AbstractDisplay
-	*	@constructor
-	*	@param {String} id The id of the canvas element on the page to draw to.
-	*	@param {Object} options The setup data for the display.
-	*   @param {String} [options.contextId="2d"] Valid options are "2d" and "webgl"
-	*/
-	var AbstractDisplay = function(id, options)
-	{
-		options = options || {};
-
-		/**
-		*  the canvas managed by this display
-		*  @property {DOMElement} canvas
-		*  @readOnly
-		*  @public
-		*/
-		this.canvas = document.getElementById(id);
-
-		/**
-		*  The DOM id for the canvas
-		*  @property {String} id
-		*  @readOnly
-		*  @public
-		*/
-		this.id = id;
-
-		/**
-		*  Convenience method for getting the width of the canvas element
-		*  would be the same thing as canvas.width
-		*  @property {int} width
-		*  @readOnly
-		*  @public
-		*/
-		this.width = this.canvas.width;
-
-		/**
-		*  Convenience method for getting the height of the canvas element
-		*  would be the same thing as canvas.height
-		*  @property {int} height
-		*  @readOnly
-		*  @public
-		*/
-		this.height = this.canvas.height;
-
-		/**
-		*  The main rendering context or the root display object or stage.
-		*  @property {mixed} stage
-		*  @readOnly
-		*  @public
-		*/
-		this.stage = null;
-
-		/**
-		*  If rendering is paused on this display only. Pausing all displays can be done
-		*  using Application.paused setter.
-		*  @property {Boolean} paused
-		*  @public
-		*/
-		this.paused = false;
-
-		/**
-		*  If input is enabled on the stage.
-		*  @property {Boolean} _enabled
-		*  @private
-		*/
-		this._enabled = false;
-
-		/**
-		*  If the display is visible.
-		*  @property {Boolean} _visible
-		*  @private
-		*/
-		this._visible = this.canvas.style.display != "none";
-
-		// prevent mouse down turning into text cursor
-		this.canvas.onmousedown = function(e)
-		{
-			e.preventDefault();
-		};
-
-		/**
-		*  The Animator class to use when using this display. Other modules
-		*  uses this to determine what Animator to use, for instance states
-		*  uses Animator when playing transition animations.
-		*  @property {Animator} animator
-		*  @readOnly
-		*  @public
-		*  @default null
-		*/
-		this.animator = null;
-
-		/**
-		*  Some of the modules require a special display adapter to provide
-		*  common methods for managing display objects.
-		*  @property {DisplayAdapter} adapter
-		*  @readOnly
-		*  @public
-		*  @default null
-		*/
-		this.adapter = null;
-	};
-
-	var p = AbstractDisplay.prototype;
-
-	/**
-	*  If input is enabled on the stage for this display. The default is true.
-	*  Without a rendering library, this does not actually have an effect.
-	*  @property {Boolean} enabled
-	*  @public
-	*/
-	Object.defineProperty(p, "enabled", {
-		get: function(){ return this._enabled; },
-		set: function(value)
-		{
-			this._enabled = value;
-		}
-	});
-
-	/**
-	*  If the display is visible, using "display: none" css on the canvas. Invisible displays won't render.
-	*  @property {Boolean} visible
-	*  @public
-	*/
-	Object.defineProperty(p, "visible", {
-		get: function(){ return this._visible; },
-		set: function(value)
-		{
-			this._visible = value;
-			this.canvas.style.display = value ? "block" : "none";
-		}
-	});
-
-	/**
-	* Resizes the canvas. This is only called by the Application.
-	* @method resize
-	* @internal
-	* @param {int} width The width that the display should be
-	* @param {int} height The height that the display should be
-	*/
-	p.resize = function(width, height)
-	{
-		this.width = this.canvas.width = width;
-		this.height = this.canvas.height = height;
-	};
-
-	/** 
-	* Updates the stage and draws it. This is only called by the Application. 
-	* This method does nothing if paused is true or visible is false.
-	* @method render
-	* @internal
-	* @param {int} elapsed The time elapsed since the previous frame.
-	*/
-	p.render = function(elapsed)
-	{
-		if(this.paused || !this._visible) return;
-	};
-
-	/**
-	*  Destroys the display. This method is called by the Application and should 
-	*  not be called directly, use Application.removeDisplay(id). 
-	*  The stage recursively removes all display objects here.
-	*  @method destroy
-	*  @internal
-	*/
-	p.destroy = function()
-	{
-		this.enabled = false;
-		this.animator = null;
-		this.adapter = null;
-		this.canvas.onmousedown = null;
-		this.canvas = null;
-	};
-
-	// Assign to the global namespace
-	namespace('cloudkid').AbstractDisplay = AbstractDisplay;
-
-}());
-/**
-*  @module Framework
-*  @namespace cloudkid
-*/
-(function(undefined){
-
-	// Classes to import
+	// Classes to import	
 	var Application,
 		Loader;
 
@@ -19508,7 +19076,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  can easily load version manifest and apply it to the media loader
 	*  supports cache busting all media load requests
 	*  uses the query string to bust browser versions.
-	*
+	* 
 	*  @class CacheManager
 	*/
 	var CacheManager = function()
@@ -19519,31 +19087,39 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			Loader = include('cloudkid.Loader');
 		}
 		
-		this._applySpecificVersion = this._applySpecificVersion.bind(this);
-		this._applyGlobalVersion = this._applyGlobalVersion.bind(this);
-
-		/**
-		*  The collection of version numbers
-		*  @protected
-		*  @property {Dictionary} _versions
-		*/
-		this._versions = {};
-		
-		/**
-		*  The list of URL filtering functions.
-		*  @protected
-		*  @property {Array} _filters
-		*/
-		this._filters = [];
-		
-		/**
-		*  A global version or cache busting string to apply to every url.
-		*  @property {String} _globalVersion
-		*/
-		this._globalVersion = null;
-		
+		this.initialize();
+	};
+	
+	/** Easy access to the prototype */
+	var p = CacheManager.prototype = {};
+	
+	/**
+	*  The collection of version numbers
+	*  @protected
+	*  @property {Dictionary} _versions
+	*/
+	p._versions = null;
+	
+	/**
+	*  If we are suppose to cache bust every file
+	*  @property {bool} cacheBust
+	*  @public
+	*  @default false
+	*/
+	p.cacheBust = false;
+	
+	/**
+	* The constructor for the Cache manager
+	* @public
+	* @constructor
+	* @method initialize
+	*/
+	p.initialize = function()
+	{
+		this._versions = [];
+				
 		var cb = Application.instance.options.cacheBust;
-		this.cacheBust = (cb === "true" || cb === true);
+		this.cacheBust = cb ? (cb === "true" || cb === true) : false;
 		
 		if(true)
 		{
@@ -19551,73 +19127,29 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		}
 	};
 	
-	/* Easy access to the prototype */
-	var p = CacheManager.prototype = {};
-	
 	/**
-	*  If we are suppose to cache bust every file
-	*  @property {Boolean} cacheBust
-	*  @public
-	*  @default false
-	*/
-	Object.defineProperty(p, "cacheBust",
-	{
-		get: function()
-		{
-			return !!(this._globalVersion && this._globalVersion.indexOf("cb=") === 0);
-		},
-		set: function(value)
-		{
-			if(value)
-			{
-				this._globalVersion = "cb=" + Date.now();
-				this.unregisterURLFilter(this._applySpecificVersion);
-				this.registerURLFilter(this._applyGlobalVersion);
-			}
-			else
-			{
-				var version = Application.instance.options.version;
-				this._globalVersion = version ? "v=" + version : null;
-				if(this._globalVersion)
-				{
-					this.unregisterURLFilter(this._applySpecificVersion);
-					this.registerURLFilter(this._applyGlobalVersion);
-				}
-				else
-				{
-					this.unregisterURLFilter(this._applyGlobalVersion);
-					this.registerURLFilter(this._applySpecificVersion);
-				}
-			}
-		}
-	});
-	
-	/**
-	*  Destroy the cache manager, don't use after this.
+	*  Destroy the cache manager, don't use after this
 	*  @public
 	*  @method destroy
 	*/
 	p.destroy = function()
 	{
 		this._versions = null;
-		this._filters = null;
-		this._applySpecificVersion = null;
-		this._applyGlobalVersion = null;
 	};
 	
 	/**
-	*  Adds a versions text file containing versions for different assets.
+	*  Add the versions
 	*  @public
 	*  @method addVersionsFile
-	*  @param {String} url The url of the versions file.
-	*  @param {Function} callback Callback when the versions file has been loaded.
-	*  @param {String} baseUrl A base url to prepend all lines of the file.
+	*  @param {string} url The url of the versions file
+	*  @param {function} callback Callback when the url has been laoded
+	*  @param {string} baseUrl A base url to prepend all lines of the file
 	*/
 	p.addVersionsFile = function(url, callback, baseUrl)
-	{
+	{		
 		Debug.assert(/^.*\.txt$/.test(url), "The versions file must be a *.txt file");
 				
-		var loader = Loader.instance;
+		var ml = Loader.instance;
 		
 		// If we already cache busting, we can ignore this
 		if (this.cacheBust)
@@ -19627,17 +19159,14 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		}
 		
 		// Add a random version number to never cache the text file
-		this.addVersion(url, Date.now().toString());
-		
-		//ensure that that cache busting version is applied
-		url = this._applySpecificVersion(url);
+		this.addVersion(url, Math.round(Math.random()*100000));
 		
 		var cm = this;
 		
 		// Load the version
-		loader.load(url,
+		ml.load(url, 
 			function(result)
-			{
+			{				
 				// check for a valid result content
 				if (result && result.content)
 				{
@@ -19647,7 +19176,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 					// Go line by line
 					for(i = 0; i < lines.length; i++)
-					{
+					{	
 						// Check for a valid line
 						if (!lines[i]) continue;
 
@@ -19670,120 +19199,68 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  Add a version number for a file
 	*  @method addVersion
 	*  @public
-	*  @param {String} url The url of the object
-	*  @param {String} version Version number or has of file
+	*  @param {string} url The url of the object
+	*  @param {string} version Version number or has of file
 	*/
 	p.addVersion = function(url, version)
 	{
-		if (!this._versions[url])
-			this._versions[url] = version;
+		var ver = this._getVersionByUrl(url);
+		if (!ver)
+			this._versions.push({'url': url, 'version': version});
 	};
 	
 	/**
-	*  Adds a function for running all urls through, to modify them if needed.
-	*  Functions used should accept one string parameter (the url), and return the
-	*  modified url.
-	*  @method registerURLFilter
-	*  @public
-	*  @param {Function} filter The function that will handle urls.
-	*/
-	p.registerURLFilter = function(filter)
-	{
-		if(this._filters.indexOf(filter) == -1)
-			this._filters.push(filter);
-	};
-	
-	/**
-	*  Removes a function from the list of filtering functions.
-	*  @method unregisterURLFilter
-	*  @public
-	*  @param {Function} filter The function to remove.
-	*/
-	p.unregisterURLFilter = function(filter)
-	{
-		var index = this._filters.indexOf(filter);
-		if(index > -1)
-			this._filters.splice(index, 1);
-	};
-	
-	/**
-	*  Applies a url specific version to a url from the versions file.
-	*  @method _applySpecificVersion
+	*  Search for a version number by url
+	*  @method _getVersionByUrl
 	*  @private
-	*  @param {String} url The url to apply versioning to.
-	*  @return {String} The modified url.
+	*  @param {string} url The url to search
+	*  @return {string} The version number as a string or null
 	*/
-	p._applySpecificVersion = function(url)
+	p._getVersionByUrl = function(url)
 	{
-		var ver = this._versions[url];
-		//if a version exists for this url, and the url doesn't already have 'v=' in it
-		//then apply the url specific version.
-		if(ver && /(\?|\&)v\=[0-9]*/.test(url) === false)
+		var i, len = this._versions.length;
+		for(i = 0; i < len; i++)
 		{
-			url = url + (url.indexOf("?") < 0 ? "?" : "&") + "v=" + ver.version;
+			if (url == this._versions[i].url)
+			{
+				return this._versions[i];
+			}
 		}
-		return url;
-	};
-	
-	/**
-	*  Applies cache busting or a global version to a url.
-	*  @method _applyGlobalVersion
-	*  @private
-	*  @param {String} url The url to apply versioning to.
-	*  @return {String} The modified url.
-	*/
-	p._applyGlobalVersion = function(url)
-	{
-		if(!this._globalVersion) return url;
-		var test = this._globalVersion.indexOf("cb=") === 0 ?
-			(/(\?|\&)cb\=[0-9]*/) : (/(\?|\&)v\=/);
-		if(test.test(url) === false)
-		{
-			url = url + (url.indexOf("?") < 0 ? "?" : "&") + this._globalVersion;
-		}
-		return url;
-	};
-	
-	/**
-	*  Applies a base path to a relative url. This is not used in the filtering
-	*  system because PreloadJS has its own method of prepending the base path
-	*  that we use. Instead, it is used with an extra parameter to prepare().
-	*  @method _applyBasePath
-	*  @private
-	*  @param {String} url The url to prepend the base path to.
-	*  @return {String} The modified url.
-	*/
-	p._applyBasePath = function(url)
-	{
-		var basePath = Application.instance.options.basePath;
-		if (/^http(s)?\:/.test(url) === false && basePath && url.search(basePath) == -1)
-		{
-			url = basePath + url;
-		}
-		return url;
+		return null;
 	};
 	
 	/**
 	*  Prepare a URL with the necessary cache busting and/or versioning
-	*  as well as the base directory.
+	*  as well as the base directoryr
 	*  @public
 	*  @method prepare
-	*  @param {String} url The url to prepare
-	*  @param {Boolean} [applyBasePath=false] If the global base path should be applied to the url.
-	*		This defaults to false because it can potentially interfere with later regular
+	*  @param {string} url The url to prepare
+	*  @param {bool} [applyBasePath=false] If the global base path should be applied to the url. 
+	*		This defaults to false because it can potentially interfere with later regular 
 	*		expression checks, particularly with PreloadJS
-	*  @return {String} The final url with version/cache and basePath added
+	*  @return {string} The final url with version/cache and basePath added
 	*/
 	p.prepare = function(url, applyBasePath)
 	{
-		for(var i = 0; i < this._filters.length; ++i)
-		{
-			url = this._filters[i](url);
-		}
+		var ver = this._getVersionByUrl(url);
 		
+		if (this.cacheBust && /(\?|\&)cb\=[0-9]*/.test(url) === false)
+		{
+			if(!this._cbVal)
+				this._cbVal = new Date().getTime().toString();
+			url = url + (url.indexOf("?") < 0 ? "?" : "&") + "cb=" + this._cbVal;
+		} 
+		else if (ver && /(\?|\&)v\=[0-9]*/.test(url) === false)
+		{
+			url = url + (url.indexOf("?") < 0 ? "?" : "&") + "v=" + ver.version;
+		}
 		if(applyBasePath)
 		{
-			url = this._applyBasePath(url);
+			var basePath = Application.instance.options.basePath;
+			if (/^http(s)?\:/.test(url) === false && basePath !== undefined && url.search(basePath) == -1)
+			{
+				url = basePath + url;
+			}
 		}
 		return url;
 	};
@@ -19793,8 +19270,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -19803,72 +19279,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*
 	*  @class LoaderQueueItem
 	*/
-	var LoaderQueueItem = function()
-	{
-		/**
-		*  The url of the load
-		*  @public
-		*  @property {string} url
-		*/
-		this.url = null;
-		
-		/**
-		*  Data associate with the load
-		*  @public
-		*  @property {*} data
-		*/
-		this.data = null;
-		
-		/**
-		*  The callback function of the load, to call when 
-		*  the load as finished, takes one argument as result
-		*  @public
-		*  @property {function} callback
-		*/
-		this.callback = null;
-		
-		/**
-		*  The priority of this item
-		*  @property {int} priority
-		*  @public
-		*/
-		this.priority = 0;
-		
-		/**
-		*  The amount we've loaded so far, from 0 to 1
-		*  @public
-		*  @property {Number} progress
-		*/
-		this.progress = 0;
-		
-		/**
-		*  The progress callback
-		*  @public
-		*  @proprty {function} updateCallback
-		*/
-		this.updateCallback = null;
-		
-		/**
-		*  The callback when a load queue item fails
-		*  @private
-		*  @proprty {function} _boundFail
-		*/
-		this._boundFail = null;
-
-		/**
-		*  The callback when a load queue item progresses
-		*  @private
-		*  @proprty {function} _boundProgress
-		*/
-		this._boundProgress = null;
-
-		/**
-		*  The callback when a load queue item completes
-		*  @private
-		*  @proprty {function} _boundComplete
-		*/
-		this._boundComplete = null;
-	};
+	var LoaderQueueItem = function(){};
 	
 	/** Reference to the prototype */
 	var p = LoaderQueueItem.prototype;
@@ -19901,6 +19312,53 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	LoaderQueueItem.PRIORITY_LOW = -1;
 	
 	/**
+	*  The url of the load
+	*  @public
+	*  @property {string} url
+	*/
+	p.url = null;
+	
+	/**
+	*  Data associate with the load
+	*  @public
+	*  @property {*} data
+	*/
+	p.data = null;
+	
+	/**
+	*  The callback function of the load, to call when 
+	*  the load as finished, takes one argument as result
+	*  @public
+	*  @property {function} callback
+	*/
+	p.callback = null;
+	
+	/**
+	*  The priority of this item
+	*  @property {int} priority
+	*  @public
+	*/
+	p.priority = 0;
+	
+	/**
+	*  The amount we've loaded so far, from 0 to 1
+	*  @public
+	*  @property {Number} progress
+	*/
+	p.progress = 0;
+	
+	/**
+	*  The progress callback
+	*  @public
+	*  @proprty {function} updateCallback
+	*/
+	p.updateCallback = null;
+	
+	p._boundFail = null;
+	p._boundProgress = null;
+	p._boundComplete = null;
+	
+	/**
 	*  Represent this object as a string
 	*  @public
 	*  @method toString
@@ -19928,11 +19386,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 	// Assign to the name space
 	namespace('cloudkid').LoaderQueueItem = LoaderQueueItem;
-	
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -19962,27 +19418,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			LoadQueue = include('createjs.LoadQueue');
 			Sound = include('createjs.Sound', false);
 		}
-
-		/**
-		*  If we can load
-		*  @private
-		*/
-		this._canLoad = true;
-		
-		/**
-		*  The maximum number of simulaneous loads
-		*  @public
-		*  @property {int} maxSimultaneousLoads
-		*  @default 2
-		*/
-		this.maxSimultaneousLoads = 2;
-		
-		/**
-		*  The reference to the cache manager
-		*  @public
-		*  @property {CacheManager} cacheManager
-		*/
-		this.cacheManager = null;
 	};
 	
 	/** The prototype */
@@ -20014,25 +19449,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var loaders = null;
 	
-	/**
-	*  The pool of queue items
-	*  @private
-	*  @property {array} loaders
-	*/
 	var qiPool = null;
-
-	/**
-	*  The pool of loader items
-	*  @private
-	*  @property {array} loaders
-	*/
 	var loaderPool = null;
-
-	/**
-	*  The pool of result items
-	*  @private
-	*  @property {array} loaders
-	*/
 	var resultPool = null;
 	
 	/**
@@ -20043,12 +19461,28 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var numLoads = 0;
 	
-	/**
-	*  The retry attempts
-	*  @private
-	*  @property {Object} retries
-	*/
 	var retries = null;
+	
+	/**
+	*  If we can load
+	*  @private
+	*/
+	p._canLoad = true;
+	
+	/**
+	*  The maximum number of simulaneous loads
+	*  @public
+	*  @property {int} maxSimultaneousLoads
+	*  @default 2
+	*/
+	p.maxSimultaneousLoads = 2;
+	
+	/**
+	*  The reference to the cache manager
+	*  @public
+	*  @property {CacheManager} cacheManager
+	*/
+	p.cacheManager = null;
 	
 	/**
 	*  Static constructor creating the singleton
@@ -20083,6 +19517,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	Object.defineProperty(Loader, "instance", {
 		get:function()
 		{
+			if (!_instance)
+			{
+				throw 'Call Loader.init()';
+			}
 			return _instance;
 		}
 	});
@@ -20405,8 +19843,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid').Loader = Loader;
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -20420,30 +19857,34 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var LoaderResult = function(content, url, loader)
 	{
-		/**
-		*  The contents of the load
-		*  @public
-		*  @property {*} content 
-		*/
 		this.content = content;
-
-		/**
-		*  The url of the load
-		*  @public
-		*  @property {string} url
-		*/
 		this.url = url;
-
-		/**
-		*  Reference to the preloader object
-		*  @public
-		*  @property {createjs.LoaderQueue} loader
-		*/
 		this.loader = loader;
 	};
 	
 	/** Reference to the prototype */
 	var p = LoaderResult.prototype;
+	
+	/**
+	*  The contents of the load
+	*  @public
+	*  @property {*} content 
+	*/
+	p.content = null;
+	
+	/**
+	*  The url of the load
+	*  @public
+	*  @property {string} url
+	*/
+	p.url = null;
+	
+	/**
+	*  Reference to the preloader object
+	*  @public
+	*  @property {createjs.LoaderQueue} loader
+	*/
+	p.loader = null;
 	
 	/**
 	* A to string method
@@ -20475,8 +19916,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function() {
 	
@@ -20524,8 +19964,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid').CombinedCallback = CombinedCallback;
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(undefined){
 		
@@ -20645,8 +20084,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Framework
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(undefined) {
 
@@ -20812,10 +20250,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 	namespace('cloudkid').DelayedCall = DelayedCall;
 }());}();
-/*! CloudKidFramework 0.0.6 */
+/*! CloudKidFramework 0.0.5 */
 !function(){"use strict";/**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -20831,28 +20268,12 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var TaskEvent = function(type, task, data)
 	{
-		/**
-		* Task this event pertains to
-		* 
-		* @property {Task} task
-		*/
-		this.task = task;
-		
-		/**
-		* The task result
-		* 
-		* @property {*} data
-		*/
-		this.data = data;
-		
-		/**
-		* The type of event
-		* 
-		* @property {String} type
-		*/
-		this.type = type;
+		this.initialize(type, task, data);
 	};
-		
+	
+	// Reference to the prototype
+	var p = TaskEvent.prototype;
+	
 	/**
 	 * A task is about to start
 	 * @event onItemAboutToLoad
@@ -20871,13 +20292,47 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	 */
 	TaskEvent.TASK_DONE = "onItemLoaded";
 	
+	/**
+	* Task this event pertains to
+	* 
+	* @property {Task} task
+	*/
+	p.task = null;
+	
+	/**
+	* The task result
+	* 
+	* @property {*} data
+	*/
+	p.data = null;
+	
+	/**
+	* The type of event
+	* 
+	* @property {String} type
+	*/
+	p.type = null;
+
+	/**
+	*  Init the event
+	*  
+	*  @function initialize
+	*  @param {String} type The type of event
+	*  @param {Task} task The task attached to this event
+	*  @param {*} data The data result associated with this task
+	*/
+	p.initialize = function(type, task, data)
+	{
+		this.type = type;
+		this.task = task;
+		this.data = data;
+	};
+	
 	// Assign to the namespace
 	namespace('cloudkid').TaskEvent = TaskEvent;
-
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -20892,31 +20347,46 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var Task = function(id, callback)
 	{
-		/**
-		* The unique id of the task
-		* 
-		* @property {String} id
-		*/
-		this.id = id;
-		
-		/**
-		* Callback to call when the task is completed
-		* 
-		* @property {function} callback
-		*/
-		this.callback = callback;
-		
-		/**
-		* Bool to keep track if this has been destroyed
-		* 
-		* @property {bool} _isDestroyed
-		* @protected
-		*/
-		this._isDestroyed = false;
+		this.initialize(id, callback);
 	};
 	
 	/** Prototype reference */
 	var p = Task.prototype;
+	
+	/**
+	* The unique id of the task
+	* 
+	* @property {String} id
+	*/
+	p.id = null;
+	
+	/**
+	* Callback to call when the task is completed
+	* 
+	* @property {function} callback
+	*/
+	p.callback = null;
+	
+	/**
+	* Bool to keep track if this has been destroyed
+	* 
+	* @property {bool} _isDestroyed
+	* @protected
+	*/
+	p._isDestroyed = false;
+	
+	/**
+	*   Make a task but don't load
+	*   @function initialize
+	*   @param {String} id ID of the task
+	*   @param {function} callback Callback to to call with the result, this task, and the
+	*          TaskManager that started it
+	*/
+	p.initialize = function(id, callback)
+	{
+		this.id = id;
+		this.callback = callback;
+	};
 	
 	/**
 	*   Called from the task manager when a Task is finished
@@ -20984,8 +20454,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -20993,59 +20462,76 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	var Task = include('cloudkid.Task');
 	
 	/**
-	*   A task to do a generic asynchronous function task.
+	*   A task to do some generic async function task
 	*   
 	*   @class FunctionTask
 	*   @constructor
 	*   @extends Task
 	*   @param {String} id Alias for this task
-	*   @param {Function} serviceCall The function to start the asynchronous task. It should take a 
-	*                                 callback function as the first parameter, so the task knows 
-	*                                 when the asynchronous call has been completed.
-	*   @param {Function} callback Function to call when the task is completed
-	*   @param {*} arguments The additional arguments passed to the service call, after the callback
+	*   @param {function} serviceCall Function the service call
+	*   @param {function} callback Function to call when the task is completed
+	*   @param {*} args The arguments passed to the service call
 	*/
-	var FunctionTask = function(id, serviceCall, callback)
+	var FunctionTask = function(id, serviceCall, callback, args)
 	{
-		Task.call(this, id, callback);
-
-		/**
-		* The url of the file to load
-		* 
-		* @property {Function} serviceCall
-		*/
-		this.serviceCall = serviceCall;
-		
-		/**
-		* The media loader priorty of the load
-		* @property {Array} args
-		*/
-		this.args = null;
-
-		// Get the additional arguments as an array
-		if(arguments.length > 3)
-		{
-			this.args = Array.prototype.slice.call(arguments, 3);
-		}
+		this.initialize(id, serviceCall, callback, args);
 	};
 	
-	// Super prototype
-	var s = Task.prototype;
-
-	// Reference to the inherieted task
-	var p = FunctionTask.prototype = Object.create(s);
+	/** Reference to the inherieted task */
+	var p = FunctionTask.prototype = new Task();
+	
+	/** Super for the constructor */
+	p.Task_initialize = p.initialize;
+	
+	/** Super for the destroy function */
+	p.Task_destroy = p.destroy;
+	
+	/**
+	* The url of the file to load
+	* 
+	* @property {function} serviceCall
+	*/
+	p.serviceCall = null;
+	
+	/**
+	* The media loader priorty of the load
+	* @property {*} args
+	*/
+	p.args = null;
+	
+	/**
+	*   Create the service task
+	*   
+	*   @function initialize
+	*   @param {String} id The key for the task
+	*   @param {function} serviceCall Function the service call
+	*   @param {function} callback The function to callback when done
+	*   @param {*} args The arguments passed to the service call, (callback is first)
+	*/
+	p.initialize = function(id, serviceCall, callback, args)
+	{
+		this.Task_initialize(id, callback);
+		
+		this.serviceCall = serviceCall;
+		
+		this.args = [];
+		
+		// Get the additional arguments as an array
+		if (args)
+		{
+			var a = Array.prototype.slice.call(arguments);
+			this.args = a.slice(3);
+		}
+	};
 	
 	/**
 	*   Start the load
 	*   @function start
-	*   @param {Function} callback Callback to call when the asynchronous function is done
+	*   @param {function} callback Callback to call when the load is done
 	*/
 	p.start = function(callback)
 	{
-		if(this.args)
-			this.serviceCall.apply(null, [callback].concat(this.args));
-		else
-			this.serviceCall.call(null, callback);
+		this.serviceCall.apply(null, [callback].concat(this.args));
 	};
 	
 	/**
@@ -21068,7 +20554,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	{
 		if (this._isDestroyed) return;
 		
-		s.destroy.call(this);
+		this.Task_destroy();
 		
 		this.serviceCall = null;
 		this.args = null;
@@ -21079,8 +20565,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(undefined){
 	
@@ -21111,43 +20596,68 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			LoaderQueueItem = include('cloudkid.LoaderQueueItem');
 		}
 
-		// Construct the parent
-		Task.call(this, id, callback);
-
-		/**
-		* The url of the file to load 
-		* 
-		* @property {String} url
-		*/
-		this.url = url;
-		
-		/**
-		* Loading options
-		* 
-		* @property {*} data
-		*/
-		this.data = data;
-		
-		/**
-		* The media loader priorty of the load
-		* 
-		* @property {int} priority
-		*/
-		this.priority = priority === undefined ? LoaderQueueItem.PRIORITY_NORMAL : priority;
-		
-		/**
-		* The optional callback to get updates (to show load progress)
-		* 
-		* @property {function} updateCallback
-		*/
-		this.updateCallback = updateCallback;
+		this.initialize(id, url, callback, updateCallback, priority, data);
 	};
 	
-	// Super prototype
-	var s = Task.prototype;
+	/** Reference to the inherieted task */
+	var p = LoadTask.prototype = new Task();
+	
+	/** Super for the constructor */
+	p.Task_initialize = p.initialize;
+	
+	/** Super for the destroy function */
+	p.Task_destroy = p.destroy;
+	
+	/**
+	* The url of the file to load 
+	* 
+	* @property {String} url
+	*/
+	p.url = null;
+	
+	/**
+	* Loading options
+	* 
+	* @property {*} data
+	*/
+	p.data = null;
+	
+	/**
+	* The media loader priorty of the load
+	* 
+	* @property {int} priority
+	*/
+	p.priority = null;
+	
+	/**
+	* The optional callback to get updates (to show load progress)
+	* 
+	* @property {function} updateCallback
+	*/
+	p.updateCallback = null;
+	
+	/**
+	*  Init the laod task
+	*  
+	*  @function initialize
+	*  @param {String} id The id of the task
+	*  @param {String} url The url to load
+	*  @param {function} callback The callback to call when the load is completed
+	*  @param {function} updateCallback The optional callback to get updates (to show load progress)
+	*  @param {int} priority The optional priority, defaults to normal
+	*  @param {*} data The optional data object, for any loading options that may have been added to the preloader
+	*/
+	p.initialize = function(id, url, callback, updateCallback, priority, data)
+	{
+		this.url = url;
+		this.updateCallback = updateCallback;
+		this.priority = priority === undefined ? 
+			LoaderQueueItem.PRIORITY_NORMAL : priority;
+		
+		this.data = data;
 
-	// Reference to the inherieted task
-	var p = LoadTask.prototype = Object.create(s);
+		this.Task_initialize(id, callback);
+	};
 	
 	/**
 	*   Start the load
@@ -21199,8 +20709,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	{
 		if (this._isDestroyed) return;
 		
-		s.destroy.call(this);
-
+		this.Task_destroy();
 		this.updateCallback = null;
 		this.url = null;
 		this.data = null;
@@ -21211,8 +20720,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 
@@ -21237,44 +20745,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 		EventDispatcher.call(this);
 
-		/**
-		* Collection of all tasks
-		* 
-		* @property {Array} tasks
-		*/
-		this.tasks = tasks || [];
-		
-		/**
-		* The current tasks
-		* 
-		* @property {Array} _currentTaskes
-		* @private
-		*/
-		this._currentTasks = [];
-		
-		/**
-		* If we're paused and should therefore not automatically proceed to the
-		* next task after each task completes
-		* 
-		* @property {bool} paused
-		*/
-		this.paused = true;
-		
-		/**
-		* The number of tasks that are currently in progress
-		* 
-		* @property {int} _tasksInProgress
-		* @private
-		*/
-		this._tasksInProgress = 0;
-		
-		/**
-		* If the manager is destroyed
-		* 
-		* @property {bool} _isDestroyed
-		* @private
-		*/
-		this._isDestroyed = false;
+		this.initialize(tasks);
 	};
 	
 	var p = TaskManager.prototype = Object.create(EventDispatcher.prototype);
@@ -21286,7 +20757,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	* @static
 	* @final
 	*/
-	TaskManager.VERSION = '0.0.6';
+	TaskManager.VERSION = '0.0.5';
 	
 	/**
 	* Event dispatched when tasks are all done
@@ -21294,6 +20765,45 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	* @event onAllTasksDone
 	*/
 	TaskManager.ALL_TASKS_DONE = "onAllTasksDone";
+	
+	/**
+	* Collection of all tasks
+	* 
+	* @property {Array} tasks
+	*/
+	p.tasks = null;
+	
+	/**
+	* The current tasks
+	* 
+	* @property {Array} _currentTaskes
+	* @private
+	*/
+	p._currentTasks = null;
+	
+	/**
+	* If we're paused and should therefore not automatically proceed to the
+	* next task after each task completes
+	* 
+	* @property {bool} paused
+	*/
+	p.paused = true;
+	
+	/**
+	* The number of tasks that are currently in progress
+	* 
+	* @property {int} _tasksInProgress
+	* @private
+	*/
+	p._tasksInProgress = 0;
+	
+	/**
+	* If the manager is destroyed
+	* 
+	* @property {bool} _isDestroyed
+	* @private
+	*/
+	p._isDestroyed = false;
 	
 	/**
 	*  Convenience method to execute tasks without having to setup the event listener
@@ -21335,6 +20845,18 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			manager.startNext();
 
 		return manager;
+	};
+
+	/**
+	*  Initializes the task manager
+	*  
+	*  @function initialize
+	*  @param {Array} tasks The optional array of tasks, we can also add this later
+	*/
+	p.initialize = function(tasks)
+	{
+		this._currentTasks = [];
+		this.tasks = tasks || [];
 	};
 	
 	/**
@@ -21551,8 +21073,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid').TaskManager = TaskManager;
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -21574,25 +21095,53 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var ListTask = function(id, list, callback)
 	{
-		Task.call(this, id, callback);
+		this.initialize(id, list, callback);
+	};
+	
+	// Reference to the Task prototype
+	var p = ListTask.prototype = new Task();
+	
+	/** Super for the constructor */
+	p.Task_initialize = p.initialize;
+	
+	/** Super for the destroy function */
+	p.Task_destroy = p.destroy;
 
-		/**
-		* The internal task manager
-		* 
-		* @property {TaskManager} _manager
-		* @private
-		*/
-		this._manager = null;
+	/**
+	* The list of other tasks, as an array
+	* 
+	* @property {Array} list
+	*/
+	p.list = null;
+	
+	/**
+	* The internal task manager
+	* 
+	* @property {TaskManager} _manager
+	* @private
+	*/
+	p._manager = null;
+	
+	/**
+	* The load results dictionary
+	* 
+	* @property {Dictionary} _results
+	* @private
+	*/
+	p._results = null;
+	
+	/**
+	*   Make the list task but don't start.
+	*   @function initialize
+	*   @param {String} id ID of the task
+	*   @param {Array} list List of tasks to start or a preloadJS manifest.
+	*   @param {function} callback Callback to to call with the result of the tasks, this
+	*          task, and the TaskManager that loaded it
+	*/
+	p.initialize = function(id, list, callback)
+	{
+		this.Task_initialize(id, callback);
 		
-		/**
-		* The load results dictionary
-		* 
-		* @property {Dictionary} _results
-		* @private
-		*/
-		this._results = null;
-
-		// Turn the list into tasks
 		var tasks = [];
 		for(var i = 0; i < list.length; i++)
 		{
@@ -21619,20 +21168,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 				));
 			}
 		}
-
-		/**
-		* The list of other tasks, as an array
-		* 
-		* @property {Array} list
-		*/
 		this.list = tasks;
 	};
-	
-	// Super prototype
-	var s = Task.prototype;
-
-	// Reference to the inherieted task
-	var p = ListTask.prototype = Object.create(s);
 	
 	/**
 	*   Start the load
@@ -21711,7 +21248,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	{
 		if (this._isDestroyed) return;
 		
-		s.destroy.call(this);
+		this.Task_destroy();
 		
 		this._results = null;
 		
@@ -21732,8 +21269,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 }());
 /**
-*  @module Tasks
-*  @namespace cloudkid
+*  @module cloudkid
 */
 (function(){
 	
@@ -21762,47 +21298,75 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			Application = include('cloudkid.Application');
 		}
 
-		Task.call(this, id, callback);
-		
-		/**
-		*	The optional callback to get updates (to show load progress)
-		*	@property {Function} updateCallback
-		*	@private
-		*/
-		this.updateCallback = updateCallback;
-		
-		/**
-		*	If loaded images should be drawn to a canvas and used from there.
-		*	@property {Boolean} generateCanvas
-		*	@private
-		*/
-		this.generateCanvas = generateCanvasTexture || false;
-		
-		/**
-		*	The AssetLoader used to load all files.
-		*	@property {PIXI.AssetLoader} _assetLoader
-		*	@private
-		*/
-		this._assetLoader = null;
-
+		this.initialize(id, urls, callback, updateCallback, generateCanvasTexture);
+	};
+	
+	var p = PixiTask.prototype = new Task();
+	
+	/**
+	*	Super for the constructor
+	*	@property {Function} Task_initialize
+	*	@private
+	*/
+	p.Task_initialize = p.initialize;
+	
+	/**
+	*	Super for the destroy function
+	*	@property {Function} Task_destroy
+	*	@private
+	*/
+	p.Task_destroy = p.destroy;
+	
+	/**
+	*	The urls of the files to load
+	*	@property {Array} urls
+	*	@private
+	*/
+	p.urls = null;
+	
+	/**
+	*	The optional callback to get updates (to show load progress)
+	*	@property {Function} updateCallback
+	*	@private
+	*/
+	p.updateCallback = null;
+	
+	/**
+	*	If loaded images should be drawn to a canvas and used from there.
+	*	@property {Boolean} generateCanvas
+	*	@private
+	*/
+	p.generateCanvas = false;
+	
+	/**
+	*	The AssetLoader used to load all files.
+	*	@property {PIXI.AssetLoader} _assetLoader
+	*	@private
+	*/
+	p._assetLoader = null;
+	
+	/**
+	*  Construct the load task
+	*  @param {String} id The id of the task
+	*  @param {Array} urls The urls to load using PIXI.AssetLoader
+	*  @param {Function} callback The callback to call when the load is completed
+	*  @param {Function} updateCallback The optional callback to call each time an item finishes loading
+	*  @param {Boolean} generateCanvasTexture=false If loaded images should be drawn to a canvas and used from there.
+	*/
+	p.initialize = function(id, urls, callback, updateCallback, generateCanvasTexture)
+	{
 		var cm = Loader.instance.cacheManager;
-
 		for(var i = 0; i < urls.length; ++i)
 		{
 			urls[i] = cm.prepare(urls[i]);
 		}
-
-		/**
-		*	The urls of the files to load
-		*	@property {Array} urls
-		*	@private
-		*/
 		this.urls = urls;
-	};
-	
-	var s = Task.prototype;
+		this.updateCallback = updateCallback;
+		
+		this.generateCanvas = generateCanvasTexture || false;
 
-	var p = PixiTask.prototype = Object.create(s);
+		this.Task_initialize(id, callback);
+	};
 	
 	/**
 	*   Start the load
@@ -21861,8 +21425,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	{
 		if (this._isDestroyed) return;
 		
-		s.destroy.call(this);
-
+		this.Task_destroy();
 		this.updateCallback = null;
 		this.urls = null;
 		if(this._assetLoader)
@@ -21877,17 +21440,16 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid').PixiTask = PixiTask;
 	
 }());}();
-/*! CloudKidFramework 0.0.6 */
+/*! CloudKidFramework 0.0.5 */
 !function(){"use strict";/**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @modules cloudkid.pixi
 */
 (function(undefined){
 	
 	/**
 	*  Provide a normalized way to get size, position, scale values
 	*  as well as provide reference for different geometry classes.
-	*  @class DisplayAdapter
+	*  @class pixi.DisplayAdapter
 	*/
 	var DisplayAdapter = {};
 
@@ -21953,32 +21515,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  @default true
 	*/
 	DisplayAdapter.useRadians = true;
-
-	/**
-	*  Gets the object's boundaries in its local coordinate space, without any scaling or
-	*  rotation applied.
-	*  @method getLocalBounds
-	*  @static
-	*  @param {PIXI.DisplayObject} object The createjs display object
-	*  @return {PIXI.Rectangle} A rectangle with additional right and bottom properties.
-	*/
-	DisplayAdapter.getLocalBounds = function(object)
-	{
-		var bounds;
-		var width = object.width;
-		var height = object.height;
-		if(width && height)
-		{
-			bounds = new PIXI.Rectangle(-object.pivot.x, -object.pivot.y, width / object.scale.x, height / object.scale.y);
-		}
-		else
-		{
-			bounds = new PIXI.Rectangle();
-		}
-		bounds.right = bounds.x + bounds.width;
-		bounds.bottom = bounds.y + bounds.height;
-		return bounds;
-	};
 
 	/**
 	*  Normalize the object scale
@@ -22115,29 +21651,16 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		};
 	};
 
-	/**
-	*  Remove all children from a display object
-	*  @method removeChildren
-	*  @static
-	*  @param {PIXI.DisplayObjectContainer} container The display object container
-	*/
-	DisplayAdapter.removeChildren = function(container)
-	{
-		container.removeChildren(true);
-	};
-
 	// Assign to namespace
 	namespace('cloudkid.pixi').DisplayAdapter = DisplayAdapter;
 
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function(undefined){
 
-	var AbstractDisplay = include('cloudkid.AbstractDisplay'),
-		Stage = include('PIXI.Stage'),
+	var Stage = include('PIXI.Stage'),
 		CanvasRenderer = include('PIXI.CanvasRenderer'),
 		WebGLRenderer = include('PIXI.WebGLRenderer'),
 		autoDetectRenderer = include('PIXI.autoDetectRenderer');
@@ -22146,8 +21669,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*   PixiDisplay is a display plugin for the CloudKid Framework 
 	*	that uses the Pixi library for rendering.
 	*
-	*   @class PixiDisplay
-	*   @extends cloudkid.AbstractDisplay
+	*   @class pixi.PixiDisplay
 	*	@constructor
 	*	@param {String} id The id of the canvas element on the page to draw to.
 	*	@param {Object} options The setup data for the Pixi stage.
@@ -22164,37 +21686,26 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var PixiDisplay = function(id, options)
 	{
-		AbstractDisplay.call(this, id, options);
-
+		this.id = id;
 		options = options || {};
-
-		/**
-		*  The rendering library's stage element, the root display object
-		*  @property {PIXI.Stage} stage
-		*  @readOnly
-		*  @public
-		*/
+		this.canvas = document.getElementById(id);
+		// prevent mouse down turning into text cursor
+		this.canvas.onmousedown = function(e)
+		{
+			e.preventDefault();
+		};
+		this.width = this.canvas.width;
+		this.height = this.canvas.height;
+		this._visible = this.canvas.style.display != "none";
+		//make stage
 		this.stage = new Stage(options.backgroundColor || 0);
-
-		/**
-		*  The Pixi renderer.
-		*  @property {PIXI.CanvasRenderer|PIXI.WebGLRenderer} renderer
-		*  @readOnly
-		*  @public
-		*/
-		this.renderer = null;
-
 		//make the renderer
 		var preMultAlpha = !!options.preMultAlpha;
 		var transparent = !!options.transparent;
 		var antiAlias = !!options.antiAlias;
 		var preserveDrawingBuffer = !!options.preserveDrawingBuffer;
-		
 		if(transparent && !preMultAlpha)
-		{
 			transparent = "notMultiplied";
-		}	
-
 		if(options.forceContext == "canvas2d")
 		{
 			this.renderer = new CanvasRenderer(
@@ -22226,22 +21737,102 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 				preMultAlpha
 			);
 		}
-
+		this.renderer.clearView = !!options.clearView;
+		this.enabled = true;//enable mouse/touch input
+		this.isWebGL = this.renderer instanceof WebGLRenderer;
+		
 		/**
-		*  If Pixi is being rendered with WebGL.
-		*  @property {Boolean} isWebGL
+		*  The Animator class to use when using this display.
+		*  @property {Animator} Animator
 		*  @readOnly
 		*  @public
 		*/
-		this.isWebGL = this.renderer instanceof WebGLRenderer;
-		
-		// Set the animator and display adapter classes
-		this.animator = include('cloudkid.pixi.Animator');
-		this.adapter = include('cloudkid.pixi.DisplayAdapter');
+		this.Animator = include('cloudkid.pixi.Animator');
+
+		/**
+		*  The DisplayAdapter class to use when providing standard
+		*  ways for accessing properties like position, scale, etc.
+		*  @property {pixi.DisplayAdapter} DisplayAdapter
+		*  @readOnly
+		*  @public
+		*/
+		this.DisplayAdapter = include('cloudkid.pixi.DisplayAdapter');
 	};
 
-	var s = AbstractDisplay.prototype;
-	var p = PixiDisplay.prototype = Object.create(s);
+	var p = PixiDisplay.prototype = {};
+
+	/**
+	*  the canvas managed by this display
+	*  @property {DOMElement} canvas
+	*  @readOnly
+	*  @public
+	*/
+	p.canvas = null;
+
+	/**
+	*  The DOM id for the canvas
+	*  @property {String} id
+	*  @readOnly
+	*  @public
+	*/
+	p.id = null;
+
+	/**
+	*  Convenience method for getting the width of the canvas element
+	*  would be the same thing as canvas.width
+	*  @property {int} width
+	*  @readOnly
+	*  @public
+	*/
+	p.width = 0;
+
+	/**
+	*  Convenience method for getting the height of the canvas element
+	*  would be the same thing as canvas.height
+	*  @property {int} height
+	*  @readOnly
+	*  @public
+	*/
+	p.height = 0;
+
+	/**
+	*  The rendering library's stage element, the root display object
+	*  @property {PIXI.Stage}
+	*  @readOnly
+	*  @public
+	*/
+	p.stage = null;
+
+	/**
+	*  The Pixi renderer.
+	*  @property {PIXI.CanvasRenderer|PIXI.WebGLRenderer}
+	*  @readOnly
+	*  @public
+	*/
+	p.renderer = null;
+
+	/**
+	*  If Pixi is being rendered with WebGL.
+	*  @property {Boolean}
+	*  @readOnly
+	*  @public
+	*/
+	p.isWebGL = null;
+
+	/**
+	*  If rendering is paused on this display only. Pausing all displays can be done
+	*  using Application.paused setter.
+	*  @property {Boolean} paused
+	*  @public
+	*/
+	p.paused = false;
+
+	/**
+	*  If input is enabled on the stage.
+	*  @property {Boolean} _enabled
+	*  @private
+	*/
+	p._enabled = false;
 
 	/**
 	*  If input is enabled on the stage for this display. The default is true.
@@ -22252,19 +21843,39 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		get: function(){ return this._enabled; },
 		set: function(value)
 		{
-			Object.getOwnPropertyDescriptor(s, 'enabled').set.call(this, value);
-
-			var interactionManager = this.stage.interactionManager;
+			this._enabled = value;
 			if(value)
 			{
-				//add events to the interaction manager's target
-				interactionManager.setTargetDomElement(this.canvas);
+				this.stage.setInteractive(true);
 			}
 			else
 			{
-				//remove event listeners
-				interactionManager.removeEvents();
+				this.stage.setInteractive(false);
+				// force an update that disables the whole stage (the stage doesn't 
+				// update the interaction manager if interaction is false)
+				this.stage.forceUpdateInteraction();
 			}
+		}
+	});
+
+	/**
+	*  If the display is visible.
+	*  @property {Boolean} _visible
+	*  @private
+	*/
+	p._visible = false;
+
+	/**
+	*  If the display is visible, using "display: none" css on the canvas. Invisible displays won't render.
+	*  @property {Boolean} visible
+	*  @public
+	*/
+	Object.defineProperty(p, "visible", {
+		get: function(){ return this._visible; },
+		set: function(value)
+		{
+			this._visible = value;
+			this.canvas.style.display = value ? "block" : "none";
 		}
 	});
 
@@ -22277,7 +21888,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.resize = function(width, height)
 	{
-		s.resize.call(this, width, height);
+		this.width = this.canvas.width = width;
+		this.height = this.canvas.height = height;
 		this.renderer.resize(width, height);
 	};
 
@@ -22290,10 +21902,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.render = function(elapsed)
 	{
-		if(!this.paused && this._visible)
-		{
-			this.renderer.render(this.stage);
-		}
+		if(this.paused || !this._visible) return;
+
+		this.renderer.render(this.stage);
 	};
 
 	/**
@@ -22305,12 +21916,12 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.destroy = function()
 	{
-		s.destroy.call(this);
-
+		this.enabled = false;
 		this.stage.removeChildren(true);
 		this.stage.destroy();
 		this.renderer.destroy();
-		this.renderer = this.stage = null;
+		this.canvas.onmousedown = null;
+		this.renderer = this.stage = this.canvas = null;
 	};
 
 	// Assign to the global namespace
@@ -22319,8 +21930,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function(){
 	
@@ -22328,7 +21938,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	 * Internal Animator class for keeping track of animations. AnimatorTimelines are pooled internally,
 	 * so please only keep references to them while they are actively playing an animation.
 	 * 
-	 * @class AnimatorTimeline
+	 * @class pixi.AnimatorTimeline
 	 * @constructor
 	 * @param {PIXI.MovieClip|Pixi.Spine} clip The AnimatorTimeline's clip
 	 * @param {function} callback The function to call when the clip is finished playing
@@ -22482,19 +22092,17 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function() {
 	
 	var Spine = include('PIXI.Spine'),
 		AnimatorTimeline = include('cloudkid.pixi.AnimatorTimeline'),
-		Application = include('cloudkid.Application'),
-		Sound;
+		Application = include('cloudkid.Application');
 
 	/**
 	*  Animator for interacting with Spine animations
-	*  @class Animator
+	*  @class pixi.Animator
 	*  @static
 	*/
 	var Animator = {};
@@ -22523,8 +22131,18 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	_animPool = null;
 	
 	/**
+	* The instance of cloudkid.Sound for playing audio along with animations.
+	* 
+	* @property {Sound} soundLib
+	* @public
+	* @static
+	* @default Sound.instance
+	*/
+	Animator.soundLib = null;
+	
+	/**
 	*  The global captions object to use with animator
-	*  @property {cloudkid.Captions} captions
+	*  @property {Captions} captions
 	*  @public
 	*/
 	Animator.captions = null;
@@ -22538,8 +22156,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	{
 		_animPool = [];
 		_timelines = [];
-
-		Sound = include('cloudkid.Sound', false);
 	};
 	
 	/**
@@ -22567,6 +22183,12 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	Animator.play = function(clip, anim, options, loop, speed, startTime, soundData)
 	{
+		// Default the sound library to Sound if unset
+		if (!Animator.soundLib && include('cloudkid.Sound', false))
+		{
+			Animator.soundLib = cloudkid.Sound.instance;
+		}
+		
 		var callback = null;
 
 		if (options && typeof options == "function")
@@ -22660,7 +22282,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			if (startTime > 0)
 				clip.updateAnim(startTime * t.speed);
 		}
-		if (soundData && Sound)//only do sound if the Sound library is in use
+		if (soundData)
 		{
 			t.playSound = true;
 			if (typeof soundData == "string")
@@ -22677,13 +22299,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 
 			if (t.soundStart === 0)
 			{
-				t.soundInst = Sound.instance.play(t.soundAlias, onSoundDone.bind(this, t), onSoundStarted.bind(this, t));
+				t.soundInst = Animator.soundLib.play(t.soundAlias, onSoundDone.bind(this, t), onSoundStarted.bind(this, t));
 			}
-			else
-			{
-				//start preloading the sound, for less wait time when the animation gets to it
-				Sound.instance.preloadSound(soundData.alias);
-			}
+			else if(Animator.soundLib.preloadSound)//if it can preload sound this way
+				Animator.soundLib.preloadSound(soundData.alias);
 		}
 		t.loop = loop;
 		t.time = startTime > 0 ? startTime : 0;
@@ -22828,14 +22447,15 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 				if (t.playSound && t.time >= t.soundStart)
 				{
 					t.time = t.soundStart;
-					t.soundInst = Sound.instance.play(
+					t.soundInst = Animator.soundLib.play(
 						t.soundAlias, 
 						onSoundDone.bind(this, t), 
 						onSoundStarted.bind(this, t)
 					);
 					if (t.useCaptions)
 					{
-						Animator.captions.play(t.soundAlias);
+						Animator.captions.isSlave = true;
+						Animator.captions.run(t.soundAlias);
 					}
 				}
 			}
@@ -22938,10 +22558,12 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	 */
 	Animator.destroy = function()
 	{
-		Animator.captions = null;
+		captions = null;
+		_instance = null;
 		_animPool = null;
 		_timelines = null;
 		Application.instance.off("update", _update);
+		_boundUpdate = null;
 	};
 
 	//set up the global initialization and destroy
@@ -22952,8 +22574,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid.pixi').Animator = Animator;
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function(undefined) {
 	
@@ -22971,10 +22592,10 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  initialization and callbacks.
 	*  Use releaseCallback and overCallback to know about button clicks and mouse overs, respectively.
 	*  
-	*  @class Button
+	*  @class pixi.Button
 	*  @extends PIXI.DisplayObjectContainer
 	*  @constructor
-	*  @param {Object} imageSettings Information about the art to be used for button states, as well as if the button is selectable or not.
+	*  @param {Object} [imageSettings] Information about the art to be used for button states, as well as if the button is selectable or not.
 	*  @param {Array} [imageSettings.priority=null] The state priority order. If omitted, defaults to ["disabled", "down", "over", "up"].
 	*         Previous versions of Button used a hard coded order: ["highlighted", "disabled", "down", "over", "selected", "up"].
 	*  @param {Object|PIXI.Texture} [imageSettings.up] The texture for the up state of the button. This can be either the texture itself,
@@ -23015,138 +22636,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	var Button = function(imageSettings, label, enabled)
 	{
-		if (!imageSettings && true)
-		{
-			throw "cloudkid.pixi.Button requires image as first parameter";
-		}
-
+		if (!imageSettings) return;
 		DisplayObjectContainer.call(this);
-
-		/*
-		*  The sprite that is the body of the button.
-		*  @public
-		*  @property {PIXI.Sprite} back
-		*  @readOnly
-		*/
-		this.back = new Sprite(imageSettings.up);
-
-		/*
-		*  The text field of the button. The label is centered by both width and height on the button.
-		*  @public
-		*  @property {PIXI.Text|PIXI.BitmapText} label
-		*  @readOnly
-		*/
-		this.label = null;
-
-		/**
-		*  The function that should be called when the button is released.
-		*  @public
-		*  @property {function} releaseCallback
-		*/
-		this.releaseCallback = null;
-
-		/**
-		*  The function that should be called when the button is moused over.
-		*  @public
-		*  @property {function} overCallback
-		*/
-		this.overCallback = null;
-		
-		/**
-		*  The function that should be called when mouse leaves the button.
-		*  @public
-		*  @property {function} outCallback
-		*/
-		this.outCallback = null;
-
-		/**
-		* A dictionary of state booleans, keyed by state name.
-		* @private
-		* @property {Object} _stateFlags
-		*/
-		this._stateFlags = {};
-
-		/**
-		* An array of state names (Strings), in their order of priority.
-		* The standard order previously was ["highlighted", "disabled", "down", "over", "selected", "up"].
-		* @private
-		* @property {Array} _statePriority
-		*/
-		this._statePriority = imageSettings.priority || DEFAULT_PRIORITY;
-		
-		/**
-		* A dictionary of state graphic data, keyed by state name.
-		* Each object contains the sourceRect (src) and optionally 'trim', another Rectangle.
-		* Additionally, each object will contain a 'label' object if the button has a text label.
-		* @private
-		* @property {Object} _stateData
-		*/
-		this._stateData = null;
-
-		/**
-		* The current style for the label, to avoid setting this if it is unchanged.
-		* @private
-		* @property {Object} _currentLabelStyle
-		*/
-		this._currentLabelStyle = null;
-
-		/**
-		* An offset to button positioning, generally used to adjust for a highlight around the button.
-		* @private
-		* @property {PIXI.Point} _offset
-		*/
-		this._offset = new Point();
-		
-		//===callbacks for mouse/touch events
-		/*
-		* Callback for mouse over, bound to this button.
-		* @private
-		* @property {Function} _overCB
-		*/
-		this._overCB = null;
-
-		/*
-		* Callback for mouse out, bound to this button.
-		* @private
-		* @property {Function} _outCB
-		*/
-		this._outCB = null;
-
-		/*
-		* Callback for mouse down, bound to this button.
-		* @private
-		* @property {Function} _downCB
-		*/
-		this._downCB = null;
-
-		/*
-		* Callback for mouse up, bound to this button.
-		* @private
-		* @property {Function} _upCB
-		*/
-		this._upCB = null;
-
-		/**
-		* Callback for mouse up outside, bound to this button.
-		* @private
-		* @property {Function} _upOutCB
-		*/
-		this._upOutCB = null;
-		
-		/*
-		* The width of the button art, independent of the scaling of the button itself.
-		* @private
-		* @property {Number} _width
-		*/
-		this._width = 0;
-
-		/*
-		* The height of the button art, independent of the scaling of the button itself.
-		* @private
-		* @property {Number} _height
-		*/
-		this._height = 0;
-
 		this.initialize(imageSettings, label, enabled);
 	};
 	
@@ -23154,13 +22645,136 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	var p = Button.prototype = Object.create(DisplayObjectContainer.prototype);
 	
 	/*
+	*  The sprite that is the body of the button.
+	*  @public
+	*  @property {PIXI.Sprite} back
+	*  @readOnly
+	*/
+	p.back = null;
+
+	/*
+	*  The text field of the button. The label is centered by both width and height on the button.
+	*  @public
+	*  @property {PIXI.Text|PIXI.BitmapText} label
+	*  @readOnly
+	*/
+	p.label = null;
+
+	/**
+	*  The function that should be called when the button is released.
+	*  @public
+	*  @property {function} releaseCallback
+	*/
+	p.releaseCallback = null;
+
+	/**
+	*  The function that should be called when the button is moused over.
+	*  @public
+	*  @property {function} overCallback
+	*/
+	p.overCallback = null;
+	
+	/**
+	*  The function that should be called when mouse leaves the button.
+	*  @public
+	*  @property {function} outCallback
+	*/
+	p.outCallback = null;
+
+	/**
+	* A dictionary of state booleans, keyed by state name.
+	* @private
+	* @property {Object} _stateFlags
+	*/
+	p._stateFlags = null;
+	/**
+	* An array of state names (Strings), in their order of priority.
+	* The standard order previously was ["highlighted", "disabled", "down", "over", "selected", "up"].
+	* @private
+	* @property {Array} _statePriority
+	*/
+	p._statePriority = null;
+	
+	/**
+	* A dictionary of state graphic data, keyed by state name.
+	* Each object contains the sourceRect (src) and optionally 'trim', another Rectangle.
+	* Additionally, each object will contain a 'label' object if the button has a text label.
+	* @private
+	* @property {Object} _stateData
+	*/
+	p._stateData = null;
+
+	/**
+	* The current style for the label, to avoid setting this if it is unchanged.
+	* @private
+	* @property {Object} _currentLabelStyle
+	*/
+	p._currentLabelStyle = null;
+
+	/**
+	* An offset to button positioning, generally used to adjust for a highlight around the button.
+	* @private
+	* @property {PIXI.Point} _offset
+	*/
+	p._offset = null;
+	
+	//===callbacks for mouse/touch events
+	/*
+	* Callback for mouse over, bound to this button.
+	* @private
+	* @property {Function} _overCB
+	*/
+	p._overCB = null;
+
+	/*
+	* Callback for mouse out, bound to this button.
+	* @private
+	* @property {Function} _outCB
+	*/
+	p._outCB = null;
+
+	/*
+	* Callback for mouse down, bound to this button.
+	* @private
+	* @property {Function} _downCB
+	*/
+	p._downCB = null;
+
+	/*
+	* Callback for mouse up, bound to this button.
+	* @private
+	* @property {Function} _upCB
+	*/
+	p._upCB = null;
+
+	/**
+	* Callback for mouse up outside, bound to this button.
+	* @private
+	* @property {Function} _upOutCB
+	*/
+	p._upOutCB = null;
+	
+	/*
+	* The width of the button art, independent of the scaling of the button itself.
+	* @private
+	* @property {Number} _width
+	*/
+	p._width = 0;
+
+	/*
+	* The height of the button art, independent of the scaling of the button itself.
+	* @private
+	* @property {Number} _height
+	*/
+	p._height = 0;
+
+	/*
 	* A list of state names that should not have properties autogenerated.
 	* @private
 	* @static
 	* @property {Array} RESERVED_STATES
 	*/
 	var RESERVED_STATES = ["disabled", "enabled", "up", "over", "down"];
-
 	/*
 	* A state priority list to use as the default.
 	* @private
@@ -23178,6 +22792,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*/
 	p.initialize = function(imageSettings, label, enabled)
 	{
+		this.back = new Sprite(imageSettings.up);
 		this.addChild(this.back);
 		
 		this._overCB = this._onOver.bind(this);
@@ -23187,6 +22802,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		this._upOutCB = this._onUpOutside.bind(this);
 
 		var _stateData = this._stateData = {};
+		this._stateFlags = {};
+		this._offset = new Point();
 		
 		//a clone of the label data to use as a default value, without changing the original
 		var labelData;
@@ -23217,6 +22834,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			}
 		}
 		
+		this._statePriority = imageSettings.priority || DEFAULT_PRIORITY;
 		for(var i = this._statePriority.length - 1; i >= 0; --i)//start at the end to start at the up state
 		{
 			var state = this._statePriority[i];
@@ -23639,8 +23257,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid.pixi').Button = Button;
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function() {
 	
@@ -23652,7 +23269,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  Drag manager is responsible for handling the dragging of stage elements
 	*  supports click-n-stick and click-n-drag functionality.
 	*
-	*  @class DragManager
+	*  @class pixi.DragManager
 	*  @constructor
 	*  @param {PIXI.Stage} stage The stage that this DragManager is monitoring.
 	*  @param {function} startCallback The callback when when starting
@@ -23667,163 +23284,185 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			Point = include('PIXI.Point');
 		}
 
-		/**
-		* The object that's being dragged
-		* @public
-		* @readOnly
-		* @property {PIXI.DisplayObject} draggedObj
-		*/
-		this.draggedObj = null;
-		
-		/**
-		* The radius in pixel to allow for dragging, or else does sticky click
-		* @public
-		* @property dragStartThreshold
-		* @default 20
-		*/
-		this.dragStartThreshold = 20;
-		
-		/**
-		* The position x, y of the mouse down on the stage
-		* @private
-		* @property {PIXI.Point} mouseDownStagePos
-		*/
-		this.mouseDownStagePos = new Point(0, 0);
-
-		/**
-		* The position x, y of the object when interaction with it started.
-		* @private
-		* @property {PIXI.Point} mouseDownObjPos
-		*/
-		this.mouseDownObjPos = new Point(0, 0);
-		
-		/**
-		* Is the move touch based
-		* @public
-		* @readOnly
-		* @property {Bool} isTouchMove
-		* @default false
-		*/
-		this.isTouchMove = false;
-		
-		/**
-		* Is the drag being held on mouse down (not sticky clicking)
-		* @public
-		* @readOnly
-		* @property {Bool} isHeldDrag
-		* @default false
-		*/
-		this.isHeldDrag = false;
-		
-		/**
-		* Is the drag a sticky clicking (click on a item, then mouse the mouse)
-		* @public
-		* @readOnly
-		* @property {Bool} isStickyClick
-		* @default false
-		*/
-		this.isStickyClick = false;
-		
-		/**
-		* If sticky click dragging is allowed.
-		* @public
-		* @property {Bool} allowStickyClick
-		* @default true
-		*/
-		this.allowStickyClick = true;
-
-		/**
-		* Settings for snapping.
-		*
-		*  Format for snapping to a list of points:
-		*	{
-		*		mode:"points",
-		*		dist:20,//snap when within 20 pixels/units
-		*		points:[
-		*			{ x: 20, y:30 },
-		*			{ x: 50, y:10 }
-		*		]
-		*	}
-		*
-		* @public
-		* @property {Object} snapSettings
-		* @default null
-		*/
-		this.snapSettings = null;
-		
-		/**
-		* Reference to the stage
-		* @private
-		* @property {PIXI.Stage} _theStage
-		*/
-		this._theStage = stage;
-		
-		/**
-		* The local to global position of the drag
-		* @private
-		* @property {PIXI.Point} _dragOffset
-		*/
-		this._dragOffset = null;
-		
-		/**
-		* External callback when we start dragging
-		* @private
-		* @property {Function} _dragStartCallback
-		*/
-		this._dragStartCallback = startCallback;
-		
-		/**
-		* External callback when we are done dragging
-		* @private
-		* @property {Function} _dragEndCallback
-		*/
-		this._dragEndCallback = endCallback;
-		
-		/**
-		* Callback to test for the start a held drag
-		* @private
-		* @property {Function} _triggerHeldDragCallback
-		*/
-		this._triggerHeldDragCallback = this._triggerHeldDrag.bind(this);
-		
-		/**
-		* Callback to start a sticky click drag
-		* @private
-		* @property {Function} _triggerStickyClickCallback
-		*/
-		this._triggerStickyClickCallback = this._triggerStickyClick.bind(this);
-		
-		/**
-		* Callback when we are done with the drag
-		* @private
-		* @property {Function} _stageMouseUpCallback
-		*/
-		this._stageMouseUpCallback = this._stopDrag.bind(this);
-			
-		/**
-		* The function call when the mouse/touch moves
-		* @private
-		* @property {function} _updateCallback 
-		*/
-		this._updateCallback = this._updateObjPosition.bind(this);
-		
-		/**
-		* The collection of draggable objects
-		* @private
-		* @property {Array} _draggableObjects
-		*/
-		this._draggableObjects = [];
-
-		helperPoint = new Point(0, 0);
+		this.initialize(stage, startCallback, endCallback);
 	};
 	
 	/** Reference to the drag manager */
 	var p = DragManager.prototype = {};
 	
+	/**
+	* The object that's being dragged
+	* @public
+	* @readOnly
+	* @property {PIXI.DisplayObject} draggedObj
+	*/
+	p.draggedObj = null;
+	
+	/**
+	* The radius in pixel to allow for dragging, or else does sticky click
+	* @public
+	* @property dragStartThreshold
+	* @default 20
+	*/
+	p.dragStartThreshold = 20;
+	
+	/**
+	* The position x, y of the mouse down on the stage
+	* @private
+	* @property {PIXI.Point} mouseDownStagePos
+	*/
+	p.mouseDownStagePos = null;
+
+	/**
+	* The position x, y of the object when interaction with it started.
+	* @private
+	* @property {PIXI.Point} mouseDownObjPos
+	*/
+	p.mouseDownObjPos = null;
+	
+	/**
+	* Is the move touch based
+	* @public
+	* @readOnly
+	* @property {Bool} isTouchMove
+	* @default false
+	*/
+	p.isTouchMove = false;
+	
+	/**
+	* Is the drag being held on mouse down (not sticky clicking)
+	* @public
+	* @readOnly
+	* @property {Bool} isHeldDrag
+	* @default false
+	*/
+	p.isHeldDrag = false;
+	
+	/**
+	* Is the drag a sticky clicking (click on a item, then mouse the mouse)
+	* @public
+	* @readOnly
+	* @property {Bool} isStickyClick
+	* @default false
+	*/
+	p.isStickyClick = false;
+	
+	/**
+	* If sticky click dragging is allowed.
+	* @public
+	* @property {Bool} allowStickyClick
+	* @default true
+	*/
+	p.allowStickyClick = true;
+
+	/**
+	* Settings for snapping.
+	*
+	*  Format for snapping to a list of points:
+	*	{
+	*		mode:"points",
+	*		dist:20,//snap when within 20 pixels/units
+	*		points:[
+	*			{ x: 20, y:30 },
+	*			{ x: 50, y:10 }
+	*		]
+	*	}
+	*
+	* @public
+	* @property {Object} snapSettings
+	* @default null
+	*/
+	p.snapSettings = null;
+	
+	/**
+	* Reference to the stage
+	* @private
+	* @property {PIXI.Stage} _theStage
+	*/
+	p._theStage = null;
+	
+	/**
+	* The local to global position of the drag
+	* @private
+	* @property {PIXI.Point} _dragOffset
+	*/
+	p._dragOffset = null;
+	
+	/**
+	* External callback when we start dragging
+	* @private
+	* @property {Function} _dragStartCallback
+	*/
+	p._dragStartCallback = null;
+	
+	/**
+	* External callback when we are done dragging
+	* @private
+	* @property {Function} _dragEndCallback
+	*/
+	p._dragEndCallback = null;
+	
+	/**
+	* Callback to test for the start a held drag
+	* @private
+	* @property {Function} _triggerHeldDragCallback
+	*/
+	p._triggerHeldDragCallback = null;
+	
+	/**
+	* Callback to start a sticky click drag
+	* @private
+	* @property {Function} _triggerStickyClickCallback
+	*/
+	p._triggerStickyClickCallback = null;
+	
+	/**
+	* Callback when we are done with the drag
+	* @private
+	* @property {Function} _stageMouseUpCallback
+	*/
+	p._stageMouseUpCallback = null;
+		
+	/**
+	* The function call when the mouse/touch moves
+	* @private
+	* @property {function} _updateCallback 
+	*/
+	p._updateCallback = null;
+	
+	/**
+	* The collection of draggable objects
+	* @private
+	* @property {Array} _draggableObjects
+	*/
+	p._draggableObjects = null;
+	
 	var helperPoint = null;
 	
 	var TYPE_MOUSE = 0;
 	var TYPE_TOUCH = 1;
+	
+	/** 
+	* Constructor 
+	* @method initialize
+	* @param {PIXI.Stage} stage The stage that this DragManager is monitoring.
+	* @param {function} startCallback The callback when when starting
+	* @param {function} endCallback The callback when ending
+	*/
+	p.initialize = function(stage, startCallback, endCallback)
+	{
+		this._updateCallback = this._updateObjPosition.bind(this);
+		this._triggerHeldDragCallback = this._triggerHeldDrag.bind(this);
+		this._triggerStickyClickCallback = this._triggerStickyClick.bind(this);
+		this._stageMouseUpCallback = this._stopDrag.bind(this);
+		this._theStage = stage;
+		this._dragStartCallback = startCallback;
+		this._dragEndCallback = endCallback;
+		this._draggableObjects = [];
+		this.mouseDownStagePos = new Point(0, 0);
+		this.mouseDownObjPos = new Point(0, 0);
+		helperPoint = new Point(0, 0);
+	};
 	
 	/**
 	*	Manually starts dragging an object. If a mouse down event is not supplied as the second argument, it 
@@ -24162,8 +23801,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	namespace('cloudkid.pixi').DragManager = DragManager;
 }());
 /**
-*  @module PIXI Display
-*  @namespace cloudkid.pixi
+*  @module cloudkid.pixi
 */
 (function() {
 	
@@ -24177,7 +23815,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	*  The AssetManager does not load assets itself, or keep track of what is loaded. It merely assists in 
 	*  loading the appropriate assets, as well as easily unloading assets when you are done using them.
 	*
-	*  @class AssetManager
+	*  @class pixi.AssetManager
 	*/
 	var AssetManager = {};
 	
@@ -24681,7 +24319,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			var t, s;
 			var i = (qty * time) | 0;//do a quick floor operation
 			t = (time - (i * oneOverQty)) * qty;
-			s = segments[i] || segments[qty - 1];
+			s = segments[i];
 			return (s.s + t * (2 * (1 - t) * (s.cp - s.s) + t * (s.e - s.s)));
 		};
 		return simpleEase;
@@ -24822,11 +24460,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		*	@property {Number} endSpeed
 		*/
 		this.endSpeed = 0;
-		/**
-		*	Acceleration to apply to the particle.
-		*	@property {PIXI.Point} accleration
-		*/
-		this.acceleration = null;
 		/**
 		*	The scale of the particle at the start of its life.
 		*	@property {Number} startScale
@@ -25011,7 +24644,7 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 			this.scale.x = this.scale.y = scale;
 		}
 		//handle movement
-		if(this._doSpeed || this.startSpeed !== 0 || this.acceleration)
+		if(this._doSpeed || this.startSpeed !== 0)
 		{
 			//interpolate speed
 			if (this._doSpeed)
@@ -25019,11 +24652,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 				var speed = (this.endSpeed - this.startSpeed) * lerp + this.startSpeed;
 				ParticleUtils.normalize(this.velocity);
 				ParticleUtils.scaleBy(this.velocity, speed);
-			}
-			else if(this.acceleration)
-			{
-				this.velocity.x += this.acceleration.x * delta;
-				this.velocity.y += this.acceleration.y * delta;
 			}
 			//adjust position based on velocity
 			this.position.x += this.velocity.x * delta;
@@ -25041,10 +24669,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		if(this.rotationSpeed !== 0)
 		{
 			this.rotation += this.rotationSpeed * delta;
-		}
-		else if(this.acceleration)
-		{
-			this.rotation = Math.atan2(this.velocity.y, this.velocity.x);// + Math.PI / 2;
 		}
 	};
 
@@ -25096,10 +24720,9 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		/**
 		 *	The constructor used to create new particles. The default is
 		 *	the built in particle class.
-		 * 	@property {Function} _particleConstructor
-		 * 	@private
+		 * 	@property {Function} particleConstructor
 		 */
-		this._particleConstructor = Particle;
+		this.particleConstructor = Particle;
 		//properties for individual particles
 		/**
 		*	An array of PIXI Texture objects.
@@ -25131,15 +24754,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		*/
 		this.endSpeed = 0;
 		/**
-		*	Acceleration to apply to particles. Using this disables
-		*	any interpolation of particle speed. If the particles do
-		*	not have a rotation speed, then they will be rotated to
-		*	match the direction of travel.
-		*	@property {PIXI.Point} acceleration
-		*	@default null
-		*/
-		this.acceleration = null;
-		/**
 		*	The starting scale of all particles.
 		*	@property {Number} startScale
 		*	@default 1
@@ -25151,15 +24765,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		*	@default 1
 		*/
 		this.endScale = 1;
-		/**
-		*	A minimum multiplier for the scale of a particle at both start and
-		*	end. A value between minimumScaleMultiplier and 1 is randomly generated
-		*	and multiplied with startScale and endScale to provide the actual
-		*	startScale and endScale for each particle.
-		*	@property {Number} minimumScaleMultiplier
-		*	@default 1
-		*/
-		this.minimumScaleMultiplier = 1;
 		/**
 		*	The starting color of all particles, as red, green, and blue uints from 0-255.
 		*	@property {Array} startColor
@@ -25375,29 +24980,6 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 	
 	var helperPoint = new PIXI.Point();
 
-
-	/**
-	 *	The constructor used to create new particles. The default is
-	 *	the built in Particle class. Setting this will dump any active or
-	 *	pooled particles, if the emitter has already been used.
-	 * 	@property {Function} particleConstructor
-	 */
-	Object.defineProperty(p, "particleConstructor",
-	{
-		get: function() { return this._particleConstructor; },
-		set: function(value)
-		{
-			if(value != this._particleConstructor)
-			{
-				this._particleConstructor = value;
-				if(this._activeParticles.length)
-					this._activeParticles.length = 0;
-				if(this._pool.length)
-					this._pool.length = 0;
-			}
-		}
-	});
-
 	/**
 	*	Sets up the emitter based on the config settings.
 	*	@method init
@@ -25446,23 +25028,14 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 		}
 		else
 			this.startSpeed = this.endSpeed = 0;
-		var acceleration = config.acceleration;
-		if(acceleration && (acceleration.x || acceleration.y))
-		{
-			this.endSpeed = this.startSpeed;
-			this.acceleration = new PIXI.Point(acceleration.x, acceleration.y);
-		}
-		else
-			this.acceleration = null;
 		//set up the scale
 		if (config.scale)
 		{
 			this.startScale = config.scale.start;
 			this.endScale = config.scale.end;
-			this.minimumScaleMultiplier = config.scale.minimumScaleMultiplier || 1;
 		}
 		else
-			this.startScale = this.endScale = this.minimumScaleMultiplier = 1;
+			this.startScale = this.endScale = 1;
 		//set up the color
 		if (config.color)
 		{
@@ -25743,18 +25316,8 @@ Object.defineProperty(PIXI.RGBSplitFilter.prototype, 'angle', {
 						p.endAlpha = this.endAlpha;
 						p.startSpeed = this.startSpeed;
 						p.endSpeed = this.endSpeed;
-						p.acceleration = this.acceleration;
-						if(this.minimumScaleMultiplier != 1)
-						{
-							var rand = Math.random() * (1 - this.minimumScaleMultiplier) + this.minimumScaleMultiplier;
-							p.startScale = this.startScale * rand;
-							p.endScale = this.endScale * rand;
-						}
-						else
-						{
-							p.startScale = this.startScale;
-							p.endScale = this.endScale;
-						}
+						p.startScale = this.startScale;
+						p.endScale = this.endScale;
 						p.startColor = this.startColor;
 						p.endColor = this.endColor;
 						//randomize the rotation speed

@@ -25,7 +25,7 @@
 					<h4 class="modal-title">Select Or Upload</h4>
 				</div>
 				<div class="modal-body">
-					<select id="defaultConfigSelector" class="form-control">
+					<p><select id="defaultConfigSelector" class="form-control">
 						<option selected="selected">-Default Emitters-</option>
 						<option value="trail">Trail</option>
 						<option value="flame">Flame</option>
@@ -46,9 +46,9 @@
 						<option value="pixelTrail">Pixel Trail</option>
 						<option value="snow">Snow</option>
 						<option value="sparks">Sparks</option>
-					</select>
-					<input id="configUpload" type="file" class="form-control" accept='text/json' />
-					<textarea id="configPaste" class="form-control" rows="5"></textarea>
+					</select></p>
+					<p><input id="configUpload" type="file" class="form-control" accept='text/json' /></p>
+					<p><textarea id="configPaste" class="form-control" rows="5"></textarea></p>
 				</div>
 				<div class="modal-footer">
 					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -70,257 +70,273 @@
 			<div class="form-group">
 				<div class="col-xs-12 text-center">
 					<div class="btn-group">
-						<button id="refresh" data-toggle="tooltip" data-placement="bottom" title="Reloads the displayed particles from the settings below" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span> Refresh Display</button>
-						<button id="loadConfig" data-toggle="modal" data-target="#configDialog" data-toggle="tooltip" data-placement="bottom" title="Load a particle settings file to edit" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span> Load</button>
-						<button id="downloadConfig" data-toggle="tooltip" data-placement="bottom" title="Download a JSON file of the particle settings" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> Download</button>
+						<button id="refresh" class="btn btn-default"><span class="glyphicon glyphicon-refresh"></span> Refresh Display</button>
+						<button id="loadConfig" data-toggle="modal" data-target="#configDialog" class="btn btn-default"><span class="glyphicon glyphicon-folder-open"></span> Load</button>
+						<button id="downloadConfig" class="btn btn-default"><span class="glyphicon glyphicon-download-alt"></span> Download</button>
 					</div>
 				</div>
 			</div>
-			<legend>Particle Properties</legend>
-			<div class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Transparency of the particles from 0 (transparent) to 1 (opaque)">Alpha</div>
-				<div class="col-xs-8">
-					<input id="alpha" class="slider" data-slider-id="alphaSlider" type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="[0,1]" />
-				</div>
-			</div>
-			<div id="scale" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Scale of the particles, with a minimum value of 0">Scale</div>
-				<div class="col-xs-4">
-					<input id="scaleStart" data-toggle="tooltip" data-placement="top" title="Starting scale" type="text" class="spinner form-control" />
-				</div>
-				<div class="col-xs-4">
-					<input id="scaleEnd" data-toggle="tooltip" data-placement="top" title="Ending scale" type="text" class=" spinner form-control" />
-				</div>
-			</div>
-			<div id="color" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Color of the particles">Color</div>
-				<div class="col-xs-4">
-					<div class="input-group">
-						<span class="input-group-addon">#</span>
-						<input id="colorStart" data-toggle="tooltip"  data-placement="left" title="Starting Color" type="text" class="colorPicker form-control" />
+			<legend data-toggle="collapse" data-target="#properties">Particle Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
+			<div id="properties" class="collapse in">
+				<div class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Transparency of the particles from 0 (transparent) to 1 (opaque)">Alpha Start</div>
+					<div class="col-xs-8">
+						<input id="alphaStart" class="form-control slider" data-slider-id="alphaStartSlider" type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="1" />
 					</div>
 				</div>
-				<div class="col-xs-4">
-					<div class="input-group">
-						<span class="input-group-addon">#</span>
-						<input id="colorEnd" data-toggle="tooltip"  data-placement="left" title="Ending Color" type="text" class="colorPicker form-control" />
+				<div class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Transparency of the particles from 0 (transparent) to 1 (opaque)">Alpha End</div>
+					<div class="col-xs-8">
+						<input id="alphaEnd" class="form-control slider" data-slider-id="alphaEndSlider" type="text" data-slider-min="0" data-slider-max="1" data-slider-step="0.01" data-slider-value="1" />
 					</div>
 				</div>
-			</div>
-			<div id="speed" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Speed of the particles">Speed</div>
-				<div class="col-xs-4">
-					<input id="speedStart" data-toggle="tooltip" data-placement="top" title="Starting speed" type="text" class="spinner form-control" />
+				<div id="scale" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Scale of the particles, with a minimum value of 0">Scale</div>
+					<div class="col-xs-4">
+						<input id="scaleStart" data-toggle="tooltip" data-placement="top" title="Starting scale" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="scaleEnd" data-toggle="tooltip" data-placement="top" title="Ending scale" type="text" class=" spinner form-control" />
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<input id="speedEnd" data-toggle="tooltip" data-placement="top" title="Ending speed" type="text" class="spinner form-control" />
-				</div>
-			</div>
-			<div id="startRotation" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Angle at which particles are are pointed when emitted in degrees - 0 is to the right, 90 is down. This is ignored in 'arc' and 'burst' emission types">Start Rotation</div>
-				<div class="col-xs-4">
-					<input id="startRotationMin" data-toggle="tooltip" data-placement="top" title="Minimum rotation" type="text" class="spinner form-control" />
-				</div>
-				<div class="col-xs-4">
-					<input id="startRotationMax" data-toggle="tooltip" data-placement="top" title="Maximum rotation" type="text" class="spinner form-control" />
-				</div>
-			</div>
-			<div id="rotationSpeed" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Speed in degrees per second that particles rotate - Positive numbers are clockwise">Rotation Speed</div>
-				<div class="col-xs-4">
-					<input id="rotationSpeedMin" data-toggle="tooltip" data-placement="top" title="Minimum rotation speed" type="text" class="spinner form-control" />
-				</div>
-				<div class="col-xs-4">
-					<input id="rotationSpeedMax" data-toggle="tooltip" data-placement="top" title="Maximum rotation speed" type="text" class="spinner form-control" />
-				</div>
-			</div>
-			<div id="particleLife" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of each particle in seconds">Lifetime</div>
-				<div class="col-xs-4">
-					<input id="lifeMin" data-toggle="tooltip" data-placement="top" title="Minimum lifetime" type="text" class="spinner form-control" />
-				</div>
-				<div class="col-xs-4">
-					<input id="lifeMax" data-toggle="tooltip" data-placement="top" title="Maximum lifetime" type="text" class="spinner form-control" />
-				</div>
-			</div>
-			<div id="blend" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Blend mode of particles. Use of blend modes may harm performance. Older browsers may not support them.">Blend Mode</div>
-				<div class="col-xs-8">
-					<select id="blendMode" class="form-control">
-						<option selected="selected" value="normal">Normal</option>
-						<option value="add">Add</option>
-						<option value="multiply">Multiply</option>
-						<option value="screen">Screen</option>
-						<option value="overlay">Overlay (Canvas2D only)</option>
-						<option value="darken">Darken (Canvas2D only)</option>
-						<option value="lighten">Lighten (Canvas2D only)</option>
-						<option value="color_dodge">Color Dodge (Canvas2D only)</option>
-						<option value="color_burn">Color Burn (Canvas2D only)</option>
-						<option value="hard_light">Hard Light (Canvas2D only)</option>
-						<option value="soft_light">Soft Light (Canvas2D only)</option>
-						<option value="difference">Difference (Canvas2D only)</option>
-						<option value="exclusion">Exclusion (Canvas2D only)</option>
-						<option value="hue">Hue (Canvas2D only)</option>
-						<option value="saturation">Saturation (Canvas2D only)</option>
-						<option value="color">Color (Canvas2D only)</option>
-						<option value="luminosity">Luminosity (Canvas2D only)</option>
-					</select>
-				</div>
-			</div>
-			<div id="ease" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Custom ease, as shown by the array output by greensock.com/customease">Custom Ease</div>
-				<div class="col-xs-8">
-					<textarea id="customEase" class="form-control"></textarea>
-				</div>
-			</div>
-			<div id="images" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Images that each particle will be given randomly when spawned">Particle Images</div>
-				<div class="col-xs-8">
-					<button id="addImage" class="btn btn-default">
-						<span class="ui-icon ui-icon-folder-open"></span>
-					</button>
-					<div id="imageList">
-						<div class="particleImage">
-							<img class="actualImage" src="assets/images/particle.png?v=0.1.0" />
-							<button class="download btn btn-default"><span class="glyphicon glyphicon-download-alt"></button>
-							<button class="remove btn btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+				<div id="color" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Color of the particles">Color</div>
+					<div class="col-xs-4">
+						<div class="input-group">
+							<span class="input-group-addon">#</span>
+							<input id="colorStart" data-toggle="tooltip"  data-placement="top" title="Starting Color" type="text" class="colorPicker form-control" />
+						</div>
+					</div>
+					<div class="col-xs-4">
+						<div class="input-group">
+							<span class="input-group-addon">#</span>
+							<input id="colorEnd" data-toggle="tooltip"  data-placement="top" title="Ending Color" type="text" class="colorPicker form-control" />
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="modal" id="imageDialog" title="Choose an image:">
-				<select id="defaultImageSelector" class="form-control">
-					<option selected="selected">-Default Images-</option>
-					<option value="assets/images/particle.png">particle.png</option>
-					<option value="assets/images/smokeparticle.png">smokeparticle.png</option>
-					<option value="assets/images/HardRain.png">HardRain.png</option>
-					<option value="assets/images/Bubbles50px.png">Bubbles50px.png</option>
-					<option value="assets/images/Bubbles99px.png">Bubbles99px.png</option>
-					<option value="assets/images/CartoonSmoke.png">CartoonSmoke.png</option>
-					<option value="assets/images/Fire.png">Fire.png</option>
-					<option value="assets/images/Pixel100px.png">Pixel100px.png</option>
-					<option value="assets/images/Pixel50px.png">Pixel50px.png</option>
-					<option value="assets/images/Pixel25px.png">Pixel25px.png</option>
-					<option value="assets/images/Snow100px.png">Snow100px.png</option>
-					<option value="assets/images/Snow50px.png">Snow50px.png</option>
-					<option value="assets/images/Sparks.png">Sparks.png</option>
-					<option value="assets/images/HardCircle.png">HardCircle.png</option>
-				</select>
-				<input id="imageUpload" type="file" class="form-control" multiple accept='image/*' />
-			</div>
-			<legend>Emitter Properties</legend>
-			<div id="frequency" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Seconds between each particle being spawned">Spawn Frequency</div>
-				<div class="col-xs-4">
-					<input id="emitFrequency" type="text" class="frequencySpinner spinner form-control" />
+				<div id="speed" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Speed of the particles">Speed</div>
+					<div class="col-xs-4">
+						<input id="speedStart" data-toggle="tooltip" data-placement="top" title="Starting speed" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="speedEnd" data-toggle="tooltip" data-placement="top" title="Ending speed" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="emitLife" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of the emitter in seconds before it disables itself">Emitter Lifetime</div>
-				<div class="col-xs-4">
-					<input id="emitLifetime" type="text" class="positiveSpinner spinner form-control" />
+				<div id="startRotation" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Angle at which particles are are pointed when emitted in degrees - 0 is to the right, 90 is down. This is ignored in 'arc' and 'burst' emission types">Start Rotation</div>
+					<div class="col-xs-4">
+						<input id="startRotationMin" data-toggle="tooltip" data-placement="top" title="Minimum rotation" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="startRotationMax" data-toggle="tooltip" data-placement="top" title="Maximum rotation" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="maxParticles" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Maximum number of particles that can exist at once">Max Particles</div>
-				<div class="col-xs-4">
-					<input id="emitMaxParticles" type="text" class="posIntSpinner spinner form-control" />
+				<div id="rotationSpeed" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Speed in degrees per second that particles rotate - Positive numbers are clockwise">Rotation Speed</div>
+					<div class="col-xs-4">
+						<input id="rotationSpeedMin" data-toggle="tooltip" data-placement="top" title="Minimum rotation speed" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="rotationSpeedMax" data-toggle="tooltip" data-placement="top" title="Maximum rotation speed" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="spawnType" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Settings that control different types of particle spawning">Spawn Type</div>
-				<div class="col-xs-8">
-					<select id="emitSpawnType" class="form-control">
-						<option value="point" selected="selected">Point</option>
-						<option value="rect">Rectangle</option>
-						<option value="circle">Circle</option>
-						<option value="burst">Burst</option>
+				<div id="particleLife" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of each particle in seconds">Lifetime</div>
+					<div class="col-xs-4">
+						<input id="lifeMin" data-toggle="tooltip" data-placement="top" title="Minimum lifetime" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="lifeMax" data-toggle="tooltip" data-placement="top" title="Maximum lifetime" type="text" class="spinner form-control" />
+					</div>
+				</div>
+				<div id="blend" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Blend mode of particles. Use of blend modes may harm performance. Older browsers may not support them.">Blend Mode</div>
+					<div class="col-xs-8">
+						<select id="blendMode" class="form-control">
+							<option selected="selected" value="normal">Normal</option>
+							<option value="add">Add</option>
+							<option value="multiply">Multiply</option>
+							<option value="screen">Screen</option>
+							<option value="overlay">Overlay (Canvas2D only)</option>
+							<option value="darken">Darken (Canvas2D only)</option>
+							<option value="lighten">Lighten (Canvas2D only)</option>
+							<option value="color_dodge">Color Dodge (Canvas2D only)</option>
+							<option value="color_burn">Color Burn (Canvas2D only)</option>
+							<option value="hard_light">Hard Light (Canvas2D only)</option>
+							<option value="soft_light">Soft Light (Canvas2D only)</option>
+							<option value="difference">Difference (Canvas2D only)</option>
+							<option value="exclusion">Exclusion (Canvas2D only)</option>
+							<option value="hue">Hue (Canvas2D only)</option>
+							<option value="saturation">Saturation (Canvas2D only)</option>
+							<option value="color">Color (Canvas2D only)</option>
+							<option value="luminosity">Luminosity (Canvas2D only)</option>
+						</select>
+					</div>
+				</div>
+				<div id="ease" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Custom ease, as shown by the array output by greensock.com/customease">Custom Ease</div>
+					<div class="col-xs-8">
+						<textarea id="customEase" class="form-control"></textarea>
+					</div>
+				</div>
+				<div id="images" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Images that each particle will be given randomly when spawned">Particle Images</div>
+					<div class="col-xs-8">
+						<button id="addImage" class="btn btn-default btn-block">
+							<span class="glyphicon glyphicon-folder-open"></span> Add Image
+						</button>
+					</div>
+				</div>
+				<div class="form-group">
+					<div class="col-xs-8 col-xs-offset-4">
+						<div id="imageList">
+							<div class="particleImage">
+								<img class="actualImage" src="assets/images/particle.png?v=0.1.0" />
+								<button class="download btn btn-sm btn-default"><span class="glyphicon glyphicon-download-alt"></button>
+								<button class="remove btn btn-sm btn-default"><span class="glyphicon glyphicon-remove"></span></button>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="modal" id="imageDialog" title="Choose an image:">
+					<select id="defaultImageSelector" class="form-control">
+						<option selected="selected">-Default Images-</option>
+						<option value="assets/images/particle.png">particle.png</option>
+						<option value="assets/images/smokeparticle.png">smokeparticle.png</option>
+						<option value="assets/images/HardRain.png">HardRain.png</option>
+						<option value="assets/images/Bubbles50px.png">Bubbles50px.png</option>
+						<option value="assets/images/Bubbles99px.png">Bubbles99px.png</option>
+						<option value="assets/images/CartoonSmoke.png">CartoonSmoke.png</option>
+						<option value="assets/images/Fire.png">Fire.png</option>
+						<option value="assets/images/Pixel100px.png">Pixel100px.png</option>
+						<option value="assets/images/Pixel50px.png">Pixel50px.png</option>
+						<option value="assets/images/Pixel25px.png">Pixel25px.png</option>
+						<option value="assets/images/Snow100px.png">Snow100px.png</option>
+						<option value="assets/images/Snow50px.png">Snow50px.png</option>
+						<option value="assets/images/Sparks.png">Sparks.png</option>
+						<option value="assets/images/HardCircle.png">HardCircle.png</option>
 					</select>
+					<input id="imageUpload" type="file" class="form-control" multiple accept='image/*' />
 				</div>
 			</div>
-			<div id="rect" class="form-group settings-rect">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Rectangle relative to the Spawn Position inside which particles are spawned">Emission Rectangle</div>
-				<div class="col-xs-4">
-					<input id="emitRectX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+			<legend data-toggle="collapse" data-target="#emitter">Emitter Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
+			<div id="emitter" class="collapse in">
+				<div id="frequency" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Seconds between each particle being spawned">Spawn Frequency</div>
+					<div class="col-xs-4">
+						<input id="emitFrequency" type="text" class="frequencySpinner spinner form-control" />
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<input id="emitRectY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+				<div id="emitLife" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Lifetime of the emitter in seconds before it disables itself">Emitter Lifetime</div>
+					<div class="col-xs-4">
+						<input id="emitLifetime" type="text" class="positiveSpinner spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div class="form-group settings-rect">
-				<div class="col-xs-4 col-xs-offset-4">
-					<input id="emitRectW" data-toggle="tooltip" data-placement="top" title="Width" type="text" class="spinner form-control" />
+				<div id="maxParticles" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Maximum number of particles that can exist at once">Max Particles</div>
+					<div class="col-xs-4">
+						<input id="emitMaxParticles" type="text" class="posIntSpinner spinner form-control" />
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<input id="emitRectH" data-toggle="tooltip" data-placement="top" title="Height" type="text" class="spinner form-control" />
+				<div id="spawnType" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Settings that control different types of particle spawning">Spawn Type</div>
+					<div class="col-xs-8">
+						<select id="emitSpawnType" class="form-control">
+							<option value="point" selected="selected">Point</option>
+							<option value="rect">Rectangle</option>
+							<option value="circle">Circle</option>
+							<option value="burst">Burst</option>
+						</select>
+					</div>
 				</div>
-			</div>
-			<div id="circle" class="form-group settings-circle">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Circle relative to the Spawn Position inside which particles are spawned">Emission Circle</div>
-				<div class="col-xs-4">
-					<input id="emitCircleX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+				<div id="rect" class="form-group settings-rect">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Rectangle relative to the Spawn Position inside which particles are spawned">Emission Rectangle</div>
+					<div class="col-xs-4">
+						<input id="emitRectX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitRectY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<input id="emitCircleY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+				<div class="form-group settings-rect">
+					<div class="col-xs-4 col-xs-offset-4">
+						<input id="emitRectW" data-toggle="tooltip" data-placement="top" title="Width" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitRectH" data-toggle="tooltip" data-placement="top" title="Height" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div class="form-group settings-circle">
-				<div class="col-xs-4 col-xs-offset-4">
-					<input id="emitCircleR" data-toggle="tooltip" data-placement="top" title="Radius" type="text" class="spinner form-control" />
+				<div id="circle" class="form-group settings-circle">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Circle relative to the Spawn Position inside which particles are spawned">Emission Circle</div>
+					<div class="col-xs-4">
+						<input id="emitCircleX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitCircleY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="particlesPerWave" class="form-group settings-burst">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Number of particles to spawn in each burst wave">Particles per Wave</div>
-				<div class="col-xs-4">
-					<input id="emitParticlesPerWave" type="text" data-toggle="tooltip" data-placement="top" title="Particles Per Wave" class="spinner form-control" />
+				<div class="form-group settings-circle">
+					<div class="col-xs-4 col-xs-offset-4">
+						<input id="emitCircleR" data-toggle="tooltip" data-placement="top" title="Radius" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="particleSpacing" class="form-group settings-burst">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Spacing in degrees between particles within a wave. 0 gives a random angle for each particle">Particle Spacing</div>
-				<div class="col-xs-4">
-					<input id="emitParticleSpacing" data-toggle="tooltip" data-placement="top" title="Particle Spacing" type="text" class="spinner form-control" />
+				<div id="particlesPerWave" class="form-group settings-burst">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Number of particles to spawn in each burst wave">Particles per Wave</div>
+					<div class="col-xs-4">
+						<input id="emitParticlesPerWave" type="text" data-toggle="tooltip" data-placement="top" title="Particles Per Wave" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="angleStart" class="form-group settings-burst">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Angle to start spawning particles at in each wave">Start Angle</div>
-				<div class="col-xs-4">
-					<input id="emitAngleStart" type="text" data-toggle="tooltip" data-placement="top" title="Starting Angle" class="spinner form-control" />
+				<div id="particleSpacing" class="form-group settings-burst">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Spacing in degrees between particles within a wave. 0 gives a random angle for each particle">Particle Spacing</div>
+					<div class="col-xs-4">
+						<input id="emitParticleSpacing" data-toggle="tooltip" data-placement="top" title="Particle Spacing" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="spawnPos" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Position relative to the emitter's owner at which to spawn particles">Spawn Position</div>
-				<div class="col-xs-4">
-					<input id="emitSpawnPosX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+				<div id="angleStart" class="form-group settings-burst">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Angle to start spawning particles at in each wave">Start Angle</div>
+					<div class="col-xs-4">
+						<input id="emitAngleStart" type="text" data-toggle="tooltip" data-placement="top" title="Starting Angle" class="spinner form-control" />
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<input id="emitSpawnPosY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+				<div id="spawnPos" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Position relative to the emitter's owner at which to spawn particles">Spawn Position</div>
+					<div class="col-xs-4">
+						<input id="emitSpawnPosX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitSpawnPosY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+					</div>
 				</div>
-			</div>
-			<div id="addAtBack" class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="If particles should be added to the back of the display list instead of the top">Add At Back</div>
-				<div class="col-xs-8">
-					<input id="emitAddAtBack" type="checkbox" />
-				</div>
-			</div>
-			<legend>Stage Properties</legend>
-			<div class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Background color of the stage">Background</div>
-				<div class="col-xs-8">
-					<div class="input-group">
-						<span class="input-group-addon">#</span>
-						<input id="stageColor" type="text" data-toggle="tooltip"  data-placement="left" title="Stage color" class="colorPicker form-control" value="999999" />
+				<div id="addAtBack" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="If particles should be added to the back of the display list instead of the top">Add At Back</div>
+					<div class="col-xs-8">
+						<input id="emitAddAtBack" type="checkbox" />
 					</div>
 				</div>
 			</div>
-			<div class="form-group">
-				<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Renderer for the stage">Renderer</div>
-				<div class="col-xs-4" id="renderer">
-					<label for="webglRenderer" class="control-label">
-					<input type="radio" name="renderer" id="webglRenderer" value="webgl" checked /> WebGL</label>
+			<legend data-toggle="collapse" data-target="#stage">Stage Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
+			<div id="stage" class="collapse in">
+				<div class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Background color of the stage">Background</div>
+					<div class="col-xs-8">
+						<div class="input-group">
+							<span class="input-group-addon">#</span>
+							<input id="stageColor" type="text" data-toggle="tooltip"  data-placement="left" title="Stage color" class="colorPicker form-control" value="999999" />
+						</div>
+					</div>
 				</div>
-				<div class="col-xs-4">
-					<label for="canvas2dRenderer" class="control-label">
-					<input type="radio" name="renderer" id="canvas2dRenderer" value="canvas2d" /> Canvas2D</label>
+				<div class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Renderer for the stage">Renderer</div>
+					<div class="col-xs-4" id="renderer">
+						<label for="webglRenderer" class="control-label">
+						<input type="radio" name="renderer" id="webglRenderer" value="webgl" checked /> WebGL</label>
+					</div>
+					<div class="col-xs-4">
+						<label for="canvas2dRenderer" class="control-label">
+						<input type="radio" name="renderer" id="canvas2dRenderer" value="canvas2d" /> Canvas2D</label>
+					</div>
 				</div>
 			</div>
 			<footer>&copy; CloudKid 2014, smoke particle image from <a href="http://stemkoski.github.io/Three.js/images/smokeparticle.png">Three.js</a></footer>

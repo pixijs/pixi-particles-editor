@@ -124,7 +124,7 @@
 		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
 
 		// Set the starting stage color
-		//this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
+		this.ui.stageColor.val(SavedData.read('stageColor') || '999999');
 
 		this.ui.on({
 			change : this.loadFromUI,
@@ -529,9 +529,6 @@
 	p.loadSettings = function(images, config)
 	{
 		if (!emitter) return;
-
-		console.log(images);
-		console.log(config);
 		
 		emitter.init(images, config);
 		this._centerEmitter();
