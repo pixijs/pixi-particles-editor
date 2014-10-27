@@ -61,6 +61,7 @@
 			"downloadConfig",
 			"configDialog",
 			"configConfirm",
+			"imageConfirm",
 			"addImage",
 			"stageColor",
 			"content",
@@ -139,74 +140,40 @@
 				});
 			});
 		
-		this.configDialog.on("show.bs.modal", function() { Debug.log("showing modal!"); });
-		this.configDialog.on("hide.bs.modal", function() { Debug.log("hiding modal!"); });
+		this.configDialog.on("show.bs.modal", function()
+			{
+				//reset the dialog before displaying it
+				self.defaultConfigSelector
+					.find("option:contains('-Default Emitters-')")
+					.prop("selected",true);
+				self.configUpload.wrap('<form>').parent('form').trigger('reset');
+				self.configUpload.unwrap();
+				self.configPaste.val("");
+			});
+		//this.configDialog.on("hide.bs.modal", function() { Debug.log("hiding modal!"); });
+		
+		this.imageDialog.on("show.bs.modal", function()
+			{
+				//reset the dialog before displaying it
+				self.defaultImageSelector
+					.find("option:contains('-Default Images-')")
+					.prop("selected",true);
+				self.imageUpload.wrap('<form>').parent('form').trigger('reset');
+				self.imageUpload.unwrap();
+			});
+		
+		//enable the renderer toggle
+		this.renderer.find('input').on("change", function()
+			{
+				self.trigger('renderer', this.value);
+				changed();
+			});
 
-		// this.renderer.buttonset().find('input').change(function(){
-		// 	self.trigger('renderer', this.value);
-		// 	changed();
-		// });
+		//enable blend mode selector
+		this.blendMode.on("change", changed);
 
-		// //enable blend mode selector
-		// this.blendMode.selectmenu().on('selectmenuchange', changed);
-
-		// //listen to custom ease changes
-		// this.customEase.on("input", changed);
-
-		// //enable image upload dialog
-		// this.addImage
-		// 	.button()
-		// 	.click(function(event) {
-		// 		self.defaultImageSelector.find("option:contains('-Default Images-')").prop("selected",true);
-		// 		self.defaultImageSelector.selectmenu("refresh");
-		// 		self.imageUpload.wrap('<form>').parent('form').trigger('reset');
-		// 		self.imageUpload.unwrap();
-		// 		self.imageDialog.dialog("open");
-		// 		event.preventDefault();
-		// 	});
-
-		// this.imageDialog.dialog({
-		// 	autoOpen: false,
-		// 	width: 400,
-		// 	buttons: [
-		// 		{
-		// 			text: "Cancel",
-		// 			click: function() {
-		// 				$(this).dialog( "close" );
-		// 			}
-		// 		}
-		// 	]
-		// });
-
-		// this.defaultImageSelector.selectmenu();
-
-		// //enable config upload dialog
-		// this.loadConfig.click(function(event) {
-		// 	self.defaultConfigSelector
-		// 		.find("option:contains('-Default Emitters-')")
-		// 		.prop("selected",true);
-		// 	self.defaultConfigSelector.selectmenu("refresh");
-		// 	self.configUpload.wrap('<form>').parent('form').trigger('reset');
-		// 	self.configUpload.unwrap();
-		// 	self.configPaste.val("");
-		// 	self.configDialog.dialog("open");
-		// 	event.preventDefault();
-		// });
-
-		// this.configDialog.dialog({
-		// 	autoOpen: false,
-		// 	width: 400,
-		// 	buttons: [
-		// 		{
-		// 			text: "Cancel",
-		// 			click: function() {
-		// 				$(this).dialog( "close" );
-		// 			}
-		// 		}
-		//	]
-		// });
-
-		// this.defaultConfigSelector.selectmenu();
+		//listen to custom ease changes
+		this.customEase.on("input", changed);
 
 		var spawnTypes = this.spawnTypes;
 
@@ -379,7 +346,9 @@
 				//required to be an array, we won't bother checking for the required properties
 				//Honor system, folks!
 				if(val && val instanceof Array)
+				{
 					output.ease = val;
+				}
 			}
 			catch(e)
 			{

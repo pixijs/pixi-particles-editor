@@ -118,8 +118,7 @@
 		this.ui = new EditorInterface(this.config.spawnTypes);
 		this.ui.refresh.click(this.loadFromUI);
 		this.ui.configConfirm.on("click", this.loadConfig.bind(this));
-		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
-		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
+		this.ui.imageConfirm.on("click", this.loadImage.bind(this));
 
 		// Set the starting stage color
 		this.ui.stageColor.val(SavedData.read('stageColor') || '999999');
@@ -422,25 +421,35 @@
 	*  @method loadImage
 	*  @param {String} type Either select or upload
 	*/
-	p.loadImage = function(type, event)
+	p.loadImage = function(event)
 	{
+		var ui = this.ui, type, value, success = false;
+		
+		if(ui.defaultImageSelector.val() != "-Default Images-")
+			type = "default";
+		else if(ui.imageUpload[0].files.length > 0)
+			type = "upload";
+		
 		if (type == "select")
 		{
-			var value = this.ui.defaultImageSelector.val();
-			if(value == "-Default Images-") return;
-			this.addImage(value);
-			this.loadFromUI();
+			value = ui.defaultImageSelector.val();
+			if(value != "-Default Images-")
+			{
+				success = true;
+				this.addImage(value);
+				this.loadFromUI();
+			}
 		}
 		else if (type == "upload")
 		{
-			var files = event.originalEvent.target.files;
-			
 			var onloadend = function(readerObj)
 			{
 				this.addImage(readerObj.result);
 				this.loadFromUI();
 			};
-
+			
+			var files = ui.imageUpload[0].files;
+			
 			for (var i = 0; i < files.length; i++)
 			{
 				var file = files[i];
@@ -448,8 +457,11 @@
 				reader.onloadend = onloadend.bind(this, reader);
 				reader.readAsDataURL(file);
 			}
+			
+			success = true;
 		}
-		this.ui.imageDialog.dialog("close");
+		if(success)
+			ui.imageDialog.modal("hide");
 	};
 
 	/**

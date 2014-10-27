@@ -49,6 +49,40 @@
 			</div>
 		</div>
 	</div>
+	<div class="modal fade" id="imageDialog">
+		<div class="modal-dialog">
+			<div class="modal-content">
+				<div class="modal-header">
+					<button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+					<h4 class="modal-title">Select Or Upload</h4>
+				</div>
+				<div class="modal-body">
+					<select id="defaultImageSelector" class="form-control">
+						<option selected="selected">-Default Images-</option>
+						<option value="assets/images/particle.png">particle.png</option>
+						<option value="assets/images/smokeparticle.png">smokeparticle.png</option>
+						<option value="assets/images/HardRain.png">HardRain.png</option>
+						<option value="assets/images/Bubbles50px.png">Bubbles50px.png</option>
+						<option value="assets/images/Bubbles99px.png">Bubbles99px.png</option>
+						<option value="assets/images/CartoonSmoke.png">CartoonSmoke.png</option>
+						<option value="assets/images/Fire.png">Fire.png</option>
+						<option value="assets/images/Pixel100px.png">Pixel100px.png</option>
+						<option value="assets/images/Pixel50px.png">Pixel50px.png</option>
+						<option value="assets/images/Pixel25px.png">Pixel25px.png</option>
+						<option value="assets/images/Snow100px.png">Snow100px.png</option>
+						<option value="assets/images/Snow50px.png">Snow50px.png</option>
+						<option value="assets/images/Sparks.png">Sparks.png</option>
+						<option value="assets/images/HardCircle.png">HardCircle.png</option>
+					</select>
+					<input id="imageUpload" type="file" class="form-control" multiple accept='image/*' />
+				</div>
+				<div class="modal-footer">
+					<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+					<button type="button" id="imageConfirm" class="btn btn-primary">Open</button>
+				</div>
+			</div>
+		</div>
+	</div>
 	<body class="loading">
 		<div id="content">
 			<div class="stageInfo">
@@ -184,7 +218,7 @@
 				<div id="images" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Images that each particle will be given randomly when spawned">Particle Images</div>
 					<div class="col-xs-8">
-						<button id="addImage" class="btn btn-default btn-block">
+						<button id="addImage" class="btn btn-default btn-block" data-toggle="modal" data-target="#imageDialog">
 							<span class="glyphicon glyphicon-folder-open"></span> Add Image
 						</button>
 					</div>
@@ -199,26 +233,6 @@
 							</div>
 						</div>
 					</div>
-				</div>
-				<div class="modal" id="imageDialog" title="Choose an image:">
-					<select id="defaultImageSelector" class="form-control">
-						<option selected="selected">-Default Images-</option>
-						<option value="assets/images/particle.png">particle.png</option>
-						<option value="assets/images/smokeparticle.png">smokeparticle.png</option>
-						<option value="assets/images/HardRain.png">HardRain.png</option>
-						<option value="assets/images/Bubbles50px.png">Bubbles50px.png</option>
-						<option value="assets/images/Bubbles99px.png">Bubbles99px.png</option>
-						<option value="assets/images/CartoonSmoke.png">CartoonSmoke.png</option>
-						<option value="assets/images/Fire.png">Fire.png</option>
-						<option value="assets/images/Pixel100px.png">Pixel100px.png</option>
-						<option value="assets/images/Pixel50px.png">Pixel50px.png</option>
-						<option value="assets/images/Pixel25px.png">Pixel25px.png</option>
-						<option value="assets/images/Snow100px.png">Snow100px.png</option>
-						<option value="assets/images/Snow50px.png">Snow50px.png</option>
-						<option value="assets/images/Sparks.png">Sparks.png</option>
-						<option value="assets/images/HardCircle.png">HardCircle.png</option>
-					</select>
-					<input id="imageUpload" type="file" class="form-control" multiple accept='image/*' />
 				</div>
 			</div>
 			<legend data-toggle="collapse" data-target="#emitter">Emitter Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
@@ -325,9 +339,9 @@
 						<input id="stageColor" type="text" data-toggle="tooltip"  data-placement="left" title="Stage color" class="colorPicker form-control" value="999999" />
 					</div>
 				</div>
-				<div class="form-group">
+				<div class="form-group" id="renderer">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Renderer for the stage">Renderer</div>
-					<div class="col-xs-4" id="renderer">
+					<div class="col-xs-4">
 						<label for="webglRenderer" class="control-label">
 						<input type="radio" name="renderer" id="webglRenderer" value="webgl" checked /> WebGL</label>
 					</div>
