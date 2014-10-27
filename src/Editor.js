@@ -426,7 +426,7 @@
 		var ui = this.ui, type, value, success = false;
 		
 		if(ui.defaultImageSelector.val() != "-Default Images-")
-			type = "default";
+			type = "select";
 		else if(ui.imageUpload[0].files.length > 0)
 			type = "upload";
 		
