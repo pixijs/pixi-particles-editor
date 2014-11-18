@@ -13,6 +13,7 @@
 		Application = include('cloudkid.Application'),
 		Loader = include('cloudkid.Loader'),
 		SavedData = include('cloudkid.SavedData'),
+		Browser = include('cloudkid.Browser'),
 		EditorInterface = include('pixiparticles.EditorInterface');
 	
 	/**
@@ -236,6 +237,9 @@
 			this.loadSettings(getTexturesFromUrls(images), config);
 			this.setConfig(config);
 
+			if (DEBUG)
+				console.log(images);
+
 			for(var i = 0; i < images.length; ++i)
 			{
 				this.addImage(images[i]);
@@ -315,9 +319,6 @@
 		this.ui.imageList.children().remove();
 
 		var imageUrls = particleDefaultImageUrls[name];
-
-		// Save the current custom images
-		SavedData.write('customImages', imageUrls);
 
 		for(var i = 0; i < imageUrls.length; ++i)
 		{
@@ -482,19 +483,49 @@
 		item.children("img").prop("src", src);
 		this.ui.imageList.append(item);
 
-		item.children(".remove").button(
-			{icons:{primary:"ui-icon-close"}, text:false}
-		).click(removeImage.bind(this));
-
-		item.children(".download").button(
-			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
-		).click(downloadImage);
+		item.children(".remove").click(removeImage.bind(this));
+		item.children(".download").click(downloadImage);
 	};
 
 	var downloadImage = function(event)
 	{
 		var src = $(event.delegateTarget).siblings("img").prop("src");
-		window.open(src);
+
+		if (WEB)
+		{
+			window.open(src);
+		}
+
+		if (APP)
+		{
+			var path = require('path');
+			var fs = require('fs');
+			var isDataPath = /^data:image\/png;base64,/.test(src);
+			var defaultName = "particle.png";
+
+			if (!isDataPath)
+			{
+				defaultName = path.basename(src);
+			}
+
+			Browser.saveAs(function(output){
+
+				// Copy the src to the target
+				if (!isDataPath)
+				{
+					fs.createReadStream(
+						path.resolve(src.replace('file://', ''))
+					)
+					.pipe(fs.createWriteStream(output));
+				}
+				else if (isDataPath)
+				{
+					var base64Data = src.replace(/^data:image\/png;base64,/, "");
+					fs.writeFileSync(output, base64Data, 'base64');
+				}
+
+			}, defaultName);
+		}
 	};
 
 	var removeImage = function(event)
