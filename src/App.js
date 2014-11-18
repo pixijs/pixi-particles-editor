@@ -3,7 +3,8 @@
 	// Import classes
 	var NodeWebkitApp = cloudkid.NodeWebkitApp,
 		Editor = pixiparticles.Editor,
-		Menu = pixiparticles.Menu;
+		Menu = pixiparticles.Menu,
+		Browser = cloudkid.Browser;
 
 	/**
 	*  The main application
@@ -21,7 +22,7 @@
 		*  @property {pixiparticles.Editor} editor
 		*/
 		this.editor = new Editor(options);
-
+		
 		if (APP)
 		{
 			/**

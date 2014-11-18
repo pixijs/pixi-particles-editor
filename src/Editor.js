@@ -13,6 +13,7 @@
 		Application = include('cloudkid.Application'),
 		Loader = include('cloudkid.Loader'),
 		SavedData = include('cloudkid.SavedData'),
+		Browser = include('cloudkid.Browser'),
 		EditorInterface = include('pixiparticles.EditorInterface');
 	
 	/**
@@ -117,14 +118,11 @@
 		this.config = result.content;
 		this.ui = new EditorInterface(this.config.spawnTypes);
 		this.ui.refresh.click(this.loadFromUI);
-		this.ui.defaultImageSelector.on("selectmenuselect", this.loadImage.bind(this, "select"));
-		this.ui.imageUpload.change(this.loadImage.bind(this, "upload"));
-		this.ui.defaultConfigSelector.on("selectmenuselect", this.loadConfig.bind(this, "default"));
-		this.ui.configUpload.change(this.loadConfig.bind(this, "upload"));
-		this.ui.configPaste.on('paste', this.loadConfig.bind(this, "paste"));
+		this.ui.configConfirm.on("click", this.loadConfig.bind(this));
+		this.ui.imageConfirm.on("click", this.loadImage.bind(this));
 
 		// Set the starting stage color
-		this.ui.stageColor.colorpicker('setColor', SavedData.read('stageColor') || '999999');
+		this.ui.stageColor.val(SavedData.read('stageColor') || '999999');
 
 		this.ui.on({
 			change : this.loadFromUI,
@@ -239,6 +237,9 @@
 			this.loadSettings(getTexturesFromUrls(images), config);
 			this.setConfig(config);
 
+			if (DEBUG)
+				console.log(images);
+
 			for(var i = 0; i < images.length; ++i)
 			{
 				this.addImage(images[i]);
@@ -263,8 +264,6 @@
 	p.stageColor = function(color)
 	{
 		SavedData.write('stageColor', color);
-		//this.webgl.stage.setBackgroundColor(parseInt(color, 16));
-		//this.canvas2d.stage.setBackgroundColor(parseInt(color, 16));
 		backgroundSprite.tint = parseInt(color, 16);
 	};
 
@@ -321,9 +320,6 @@
 
 		var imageUrls = particleDefaultImageUrls[name];
 
-		// Save the current custom images
-		SavedData.write('customImages', imageUrls);
-
 		for(var i = 0; i < imageUrls.length; ++i)
 		{
 			this.addImage(imageUrls[i]);
@@ -360,40 +356,48 @@
 	*  @param {String} type Either default, upload or paste
 	*  @param {Event} event Jquery event
 	*/
-	p.loadConfig = function(type, event)
+	p.loadConfig = function(event)
 	{
-		var ui = this.ui;
+		var ui = this.ui, type, value, success = false;
+		
+		if(ui.defaultConfigSelector.val() != "-Default Emitters-")
+			type = "default";
+		else if(ui.configPaste.val())
+			type = "paste";
+		else if(ui.configUpload[0].files.length > 0)
+			type = "upload";
+		
 		if (type == "default")
 		{
-			var value = ui.defaultConfigSelector.val();
-			if(value == "-Default Emitters-")
-				return;
-			this.loadDefault(value);
-			ui.configDialog.dialog("close");
+			value = ui.defaultConfigSelector.val();
+			if(value != "-Default Emitters-")
+			{
+				success = true;
+				this.loadDefault(value);
+			}
 		}
 		else if (type == "paste")
 		{
-			var elem = ui.configPaste;
-			setTimeout(function()
+			value = ui.configPaste.val();
+			try
 			{
-				try	{
-					/* jshint ignore:start */
-					eval("var obj = " + elem.val() + ";");
-					/* jshint ignore:end */
-					this.setConfig(obj);
-					this.loadFromUI();
-				}
-				catch(e){}
-				ui.configDialog.dialog("close");//close the dialog after the delay
-			}.bind(this), 10);
+				/* jshint ignore:start */
+				eval("var obj = " + elem.val() + ";");
+				/* jshint ignore:end */
+				success = true;
+				this.setConfig(obj);
+				this.loadFromUI();
+			}
+			catch(e) {}
 		}
 		else if (type == "upload")
 		{
-			var files = event.originalEvent.target.files;
+			var files = ui.configUpload[0].files;
 			var scope = this;
 			var onloadend = function(readerObj)
 			{
-				try {
+				try
+				{
 					/* jshint ignore:start */
 					eval("var obj = " + readerObj.result + ";");
 					/* jshint ignore:end */
@@ -402,15 +406,15 @@
 				}
 				catch(e){}
 			};
-			for (var i = 0; i < files.length; i++)
-			{
-				var file = files[i];
-				var reader = new FileReader();
-				reader.onloadend = onloadend.bind(this, reader);
-				reader.readAsText(file);
-			}
-			ui.configDialog.dialog("close");
+			var file = files[0];
+			var reader = new FileReader();
+			reader.onloadend = onloadend.bind(this, reader);
+			reader.readAsText(file);
+			
+			success = true;
 		}
+		if(success)
+			ui.configDialog.modal("hide");
 	};
 
 	/**
@@ -418,25 +422,35 @@
 	*  @method loadImage
 	*  @param {String} type Either select or upload
 	*/
-	p.loadImage = function(type, event)
+	p.loadImage = function(event)
 	{
+		var ui = this.ui, type, value, success = false;
+		
+		if(ui.defaultImageSelector.val() != "-Default Images-")
+			type = "select";
+		else if(ui.imageUpload[0].files.length > 0)
+			type = "upload";
+		
 		if (type == "select")
 		{
-			var value = this.ui.defaultImageSelector.val();
-			if(value == "-Default Images-") return;
-			this.addImage(value);
-			this.loadFromUI();
+			value = ui.defaultImageSelector.val();
+			if(value != "-Default Images-")
+			{
+				success = true;
+				this.addImage(value);
+				this.loadFromUI();
+			}
 		}
 		else if (type == "upload")
 		{
-			var files = event.originalEvent.target.files;
-			
 			var onloadend = function(readerObj)
 			{
 				this.addImage(readerObj.result);
 				this.loadFromUI();
 			};
-
+			
+			var files = ui.imageUpload[0].files;
+			
 			for (var i = 0; i < files.length; i++)
 			{
 				var file = files[i];
@@ -444,8 +458,11 @@
 				reader.onloadend = onloadend.bind(this, reader);
 				reader.readAsDataURL(file);
 			}
+			
+			success = true;
 		}
-		this.ui.imageDialog.dialog("close");
+		if(success)
+			ui.imageDialog.modal("hide");
 	};
 
 	/**
@@ -466,19 +483,49 @@
 		item.children("img").prop("src", src);
 		this.ui.imageList.append(item);
 
-		item.children(".remove").button(
-			{icons:{primary:"ui-icon-close"}, text:false}
-		).click(removeImage.bind(this));
-
-		item.children(".download").button(
-			{icons:{primary:"ui-icon-arrowthickstop-1-s"}, text:false}
-		).click(downloadImage);
+		item.children(".remove").click(removeImage.bind(this));
+		item.children(".download").click(downloadImage);
 	};
 
 	var downloadImage = function(event)
 	{
 		var src = $(event.delegateTarget).siblings("img").prop("src");
-		window.open(src);
+
+		if (WEB)
+		{
+			window.open(src);
+		}
+
+		if (APP)
+		{
+			var path = require('path');
+			var fs = require('fs');
+			var isDataPath = /^data:image\/png;base64,/.test(src);
+			var defaultName = "particle.png";
+
+			if (!isDataPath)
+			{
+				defaultName = path.basename(src);
+			}
+
+			Browser.saveAs(function(output){
+
+				// Copy the src to the target
+				if (!isDataPath)
+				{
+					fs.createReadStream(
+						path.resolve(src.replace('file://', ''))
+					)
+					.pipe(fs.createWriteStream(output));
+				}
+				else if (isDataPath)
+				{
+					var base64Data = src.replace(/^data:image\/png;base64,/, "");
+					fs.writeFileSync(output, base64Data, 'base64');
+				}
+
+			}, defaultName);
+		}
 	};
 
 	var removeImage = function(event)
@@ -531,7 +578,7 @@
 	p.loadSettings = function(images, config)
 	{
 		if (!emitter) return;
-
+		
 		emitter.init(images, config);
 		this._centerEmitter();
 		emitterEnableTimer = 0;
