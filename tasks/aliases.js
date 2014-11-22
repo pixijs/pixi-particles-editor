@@ -14,7 +14,7 @@ module.exports = function(grunt)
 	grunt.registerTask('app-debug', 'Build the Application in debug mode', [
 		'clean:main',
 		'jshint:main',
-		'concat_sourcemap:main', 
+		'concat:main', 
 		'replace:app',
 		'clean:css',
 		'less:development',
