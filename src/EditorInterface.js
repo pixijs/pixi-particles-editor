@@ -117,7 +117,7 @@
 		//this also changes the text input, which clamps values in the sliders
 		$(".spinner").change(function()
 			{
-				$(this).val($(this).val().replace(/[^0-9.]/g,''));
+				$(this).val($(this).val().replace(/[^0-9.-]/g,''));
 				changed();
 			});
 		
