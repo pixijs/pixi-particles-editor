@@ -234,6 +234,24 @@
 						</div>
 					</div>
 				</div>
+				<legend data-toggle="collapse" data-target="#advanced" class="collapsed">Advanced Particle Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
+				<div id="advanced" class="collapse">
+					<div id="customClass" class="form-group">
+						<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Subclass of Particle for advanced usage">Particle Class</div>
+						<div class="col-xs-8">
+							<select id="subclass" class="form-control">
+								<option selected="selected" value="default">Default</option>
+								<option value="path">Path Particle</option>
+							</select>
+						</div>
+					</div>
+					<div id="extra" class="form-group">
+						<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Extra data for particle subclasses - *Must be proper JSON*">Extra Data</div>
+						<div class="col-xs-8">
+							<textarea id="extraData" class="form-control"></textarea>
+						</div>
+					</div>
+				</div>
 			</div>
 			<legend data-toggle="collapse" data-target="#emitter">Emitter Properties <span class="glyphicon glyphicon-chevron-up up"></span><span class="glyphicon glyphicon-chevron-down down"></span></legend>
 			<div id="emitter" class="collapse in">

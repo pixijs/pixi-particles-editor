@@ -1,25 +1,25 @@
 (function(){
-		
+
 	// Import library dependencies
 	var Texture = include('PIXI.Texture'),
 		Sprite = include('PIXI.Sprite'),
 		Point = include('PIXI.Point'),
 		Graphics = include('PIXI.Graphics'),
-		PixiTask = include('cloudkid.PixiTask'),
-		LoadTask = include('cloudkid.LoadTask'),
-		PixiDisplay = include('cloudkid.PixiDisplay'),
-		TaskManager = include('cloudkid.TaskManager'),
+		PixiTask = include('springroll.PixiTask'),
+		LoadTask = include('springroll.LoadTask'),
+		PixiDisplay = include('springroll.PixiDisplay'),
+		TaskManager = include('springroll.TaskManager'),
 		Emitter = include('cloudkid.Emitter'),
-		Application = include('cloudkid.Application'),
-		Loader = include('cloudkid.Loader'),
-		SavedData = include('cloudkid.SavedData'),
+		Application = include('springroll.Application'),
+		Loader = include('springroll.Loader'),
+		SavedData = include('springroll.SavedData'),
 		Browser = include('cloudkid.Browser'),
 		EditorInterface = include('pixiparticles.EditorInterface');
-	
+
 	/**
 	*  Main logic of the application
 	*  @class Editor
-	*  @extends cloudkid.Application
+	*  @extends springroll.Application
 	*  @constructor
 	*  @param {object} [options] The application options
 	*/
@@ -27,10 +27,10 @@
 	{
 		Application.call(this, options);
 	};
-	
+
 	// Extend the createjs container
 	var p = Editor.prototype = Object.create(Application.prototype);
-	
+
 	var stage,
 		backgroundSprite,
 		emitter,
@@ -41,7 +41,7 @@
 		particleDefaultImageUrls = {},
 		jqImageDiv = null,
 		particleCountDiv = null;
-		
+
 	p.init = function()
 	{
 		this.onMouseIn = this.onMouseIn.bind(this);
@@ -65,8 +65,7 @@
 
 		var options = {
 			clearView: true,
-			backgroundColor: backgroundColor//,
-			//forceContext: "webgl"
+			backgroundColor: backgroundColor
 		};
 
 		// Add webgl renderer
@@ -154,7 +153,7 @@
 			customImages = SavedData.read('customImages');
 		}
 		catch(err){}
-		
+
 		if (customImages)
 		{
 			for (i = 0; i < customImages.length; i++)
@@ -208,7 +207,7 @@
 			}
 		}
 	};
-	
+
 	/**
 	*  When the initial load has completed
 	*  @method _onCompletedLoad
@@ -359,14 +358,14 @@
 	p.loadConfig = function(event)
 	{
 		var ui = this.ui, type, value, success = false;
-		
+
 		if(ui.defaultConfigSelector.val() != "-Default Emitters-")
 			type = "default";
 		else if(ui.configPaste.val())
 			type = "paste";
 		else if(ui.configUpload[0].files.length > 0)
 			type = "upload";
-		
+
 		if (type == "default")
 		{
 			value = ui.defaultConfigSelector.val();
@@ -410,7 +409,7 @@
 			var reader = new FileReader();
 			reader.onloadend = onloadend.bind(this, reader);
 			reader.readAsText(file);
-			
+
 			success = true;
 		}
 		if(success)
@@ -425,12 +424,12 @@
 	p.loadImage = function(event)
 	{
 		var ui = this.ui, type, value, success = false;
-		
+
 		if(ui.defaultImageSelector.val() != "-Default Images-")
 			type = "select";
 		else if(ui.imageUpload[0].files.length > 0)
 			type = "upload";
-		
+
 		if (type == "select")
 		{
 			value = ui.defaultImageSelector.val();
@@ -448,9 +447,9 @@
 				this.addImage(readerObj.result);
 				this.loadFromUI();
 			};
-			
+
 			var files = ui.imageUpload[0].files;
-			
+
 			for (var i = 0; i < files.length; i++)
 			{
 				var file = files[i];
@@ -458,7 +457,7 @@
 				reader.onloadend = onloadend.bind(this, reader);
 				reader.readAsDataURL(file);
 			}
-			
+
 			success = true;
 		}
 		if(success)
@@ -543,8 +542,23 @@
 		window.location.hash = '';
 		var config = this.ui.get();
 		var images = this.getTexturesFromImageList();
+		var particleClass = this.getParticleClass();
 		SavedData.write('customConfig', config);
-		this.loadSettings(images, config);
+		this.loadSettings(images, config, particleClass);
+	};
+
+	p.getParticleClass = function()
+	{
+		var type = this.ui.getParticleClass();
+		switch(type)
+		{
+			case "path":
+				return cloudkid.PathParticle;
+			case "anim":
+				return cloudkid.AnimatedParticle;
+			default:
+				return cloudkid.Particle;
+		}
 	};
 
 	/**
@@ -574,12 +588,16 @@
 	*  @method loadSettings
 	*  @param {array} images The collection of images
 	*  @param {object} config The emitter configuration
+	*  @param {Function} particleClass The particle class to use for the emitter.
 	*/
-	p.loadSettings = function(images, config)
+	p.loadSettings = function(images, config, particleClass)
 	{
 		if (!emitter) return;
-		
+
 		emitter.init(images, config);
+		if(!particleClass)
+			particleClass = cloudkid.Particle;
+		emitter.particleConstructor = particleClass;
 		this._centerEmitter();
 		emitterEnableTimer = 0;
 	};
@@ -594,7 +612,7 @@
 		if (!emitter) return;
 
 		emitter.update(elapsed * 0.001);
-		
+
 		if(!emitter.emit && emitterEnableTimer <= 0)
 		{
 			emitterEnableTimer = 1000 + emitter.maxLifetime * 1000;
@@ -651,7 +669,7 @@
 
 		emitter.updateOwnerPos(data.global.x, data.global.y);
 	};
-	
+
 	namespace('pixiparticles').Editor = Editor;
-	
+
 }());

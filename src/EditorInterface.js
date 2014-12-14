@@ -1,6 +1,6 @@
 (function($){
 
-	var EventDispatcher = include('cloudkid.EventDispatcher');
+	var EventDispatcher = include('springroll.EventDispatcher');
 
 	/**
 	*  The class for interacting with the interface
@@ -32,6 +32,8 @@
 			"lifeMax",
 			"blendMode",
 			"customEase",
+			"subclass",
+			"extraData",
 			"emitFrequency",
 			"emitLifetime",
 			"emitMaxParticles",
@@ -87,7 +89,7 @@
 	p.init = function()
 	{
 		var self = this;
-		var app = cloudkid.Application.instance;
+		var app = springroll.Application.instance;
 		var changed = this.changed.bind(this);
 
 		//enable tooltips for any element with a title attribute
@@ -120,7 +122,7 @@
 				$(this).val($(this).val().replace(/[^0-9.-]/g,''));
 				changed();
 			});
-		
+
 		//enable color pickers
 		$(".colorPicker").each(function()
 			{
@@ -139,7 +141,7 @@
 					theme: 'bootstrap'
 				});
 			});
-		
+
 		this.configDialog.on("show.bs.modal", function()
 			{
 				//reset the dialog before displaying it
@@ -151,7 +153,7 @@
 				self.configPaste.val("");
 			});
 		//this.configDialog.on("hide.bs.modal", function() { Debug.log("hiding modal!"); });
-		
+
 		this.imageDialog.on("show.bs.modal", function()
 			{
 				//reset the dialog before displaying it
@@ -161,7 +163,7 @@
 				self.imageUpload.wrap('<form>').parent('form').trigger('reset');
 				self.imageUpload.unwrap();
 			});
-		
+
 		//enable the renderer toggle
 		this.renderer.find('input').on("change", function()
 			{
@@ -175,34 +177,41 @@
 		//listen to custom ease changes
 		this.customEase.on("input", changed);
 
+		//enable particle class selector
+		this.subclass.on("change", changed);
+
+		//listen to extra data changes
+		this.extraData.on("input", changed);
+
 		var spawnTypes = this.spawnTypes;
 
 		//enable spawn type stuff
-		this.emitSpawnType.change(function(event){
-
-			var value = self.emitSpawnType.val();
-			for(var i = 0; i < spawnTypes.length; ++i)
+		this.emitSpawnType.change(function(event)
 			{
-				if(spawnTypes[i] == value)
-					$(".settings-" + spawnTypes[i]).show();
-				else
-					$(".settings-" + spawnTypes[i]).hide();
-			}
-		});
+				var value = self.emitSpawnType.val();
+				for(var i = 0; i < spawnTypes.length; ++i)
+				{
+					if(spawnTypes[i] == value)
+						$(".settings-" + spawnTypes[i]).show();
+					else
+						$(".settings-" + spawnTypes[i]).hide();
+				}
+			});
 
 		// // Update the background color
-		this.stageColor.change(function(e){
-			var inputColor = self.stageColor.val();
-			var color = inputColor.replace(/[^abcdef0-9]/ig, '');
-			if (color != inputColor)
+		this.stageColor.change(function(e)
 			{
-				self.stageColor.val(color);
-			}
-			if (color.length == 6)
-			{
-				self.trigger('stageColor', color);
-			}
-		});
+				var inputColor = self.stageColor.val();
+				var color = inputColor.replace(/[^abcdef0-9]/ig, '');
+				if (color != inputColor)
+				{
+					self.stageColor.val(color);
+				}
+				if (color.length == 6)
+				{
+					self.trigger('stageColor', color);
+				}
+			});
 	};
 
 	/**
@@ -231,7 +240,8 @@
 		this.lifeMin.val(config.lifetime ? config.lifetime.min : 1);
 		this.lifeMax.val(config.lifetime ? config.lifetime.max : 1);
 		this.customEase.val(config.ease ? JSON.stringify(config.ease) : "");
-		
+		this.extraData.val(config.extraData ? JSON.stringify(config.extraData, null, "    ") : "");
+
 		var blendMode;
 		// //ensure that the blend mode is valid
 		if(config.blendMode && cloudkid.ParticleUtils.getBlendMode(config.blendMode))
@@ -246,6 +256,9 @@
 			blendMode = "normal";
 		}
 		this.blendMode.find("option[value='" + blendMode + "']").prop("selected",true);
+
+		//reset the particle class each time a file is loaded
+		this.subclass.find("option[value='default']").prop("selected",true);
 
 		//emitter settings
 		this.emitFrequency.val(parseFloat(config.frequency) > 0 ? parseFloat(config.frequency) : 0.5);
@@ -295,7 +308,7 @@
 	p.get = function()
 	{
 		var output = {};
-		
+
 		// particle settings
 		var start = parseFloat(this.alphaStart.data('slider').getValue());
 		var end = parseFloat(this.alphaEnd.data('slider').getValue());
@@ -355,6 +368,27 @@
 				Debug.error("Error evaluating easing data: " + e.message);
 			}
 		}
+		val = this.extraData.val();
+		if(val)
+		{
+			try{
+				//convert the ease value to an object to ensure that is an Array
+				//and so it can be converted into json properly
+				//by using eval, we are a little less strict on syntax.
+				/* jshint ignore:start */
+				eval("val = " + val + ";");
+				/* jshint ignore:end */
+				if(val)
+				{
+					output.extraData = val;
+				}
+			}
+			catch(e)
+			{
+				//don't log stuff, becaus there will be tons of errors while people type stuff
+				//Debug.error("Error evaluating easing data: " + e.message);
+			}
+		}
 
 		//emitter settings
 		var frequency = this.emitFrequency.val();
@@ -397,6 +431,11 @@
 		return output;
 	};
 
+	p.getParticleClass = function()
+	{
+		return this.subclass.val();
+	};
+
 	/**
 	*  Download the interface config
 	*  @method download
@@ -405,7 +444,7 @@
 	{
 		var content = JSON.stringify(this.get(), null, "\t");
 		var type = "data:application/json;charset=utf-8";
-		
+
 		var isFileSaverSupported = false;
 		try {
 			isFileSaverSupported = !!new Blob();
