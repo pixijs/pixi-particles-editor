@@ -1,29 +1,29 @@
 {
-  "name": "PixiParticlesEditor",
-  "description": "Create particle emitters for PixiParticles",
-  "version": "0.1.0",
-  "repository": {
-    "type": "git",
-    "url": "http://github.com/CloudKidStudio/PixiParticlesEditor"
-  },
-  "main": "index.html",
-  "single-instance": true,
-  "window": {
-    "icon": "assets/images/icon512.png",
-    "show": false,
-    "toolbar": false,
-    "frame": true,
-    "position": "center",
-    "width": 800,
-    "height": 600,
-    "min_width": 800,
-    "min_height": 480,
-    "resizable": true
-  },
-  "webkit": {
-    "plugin": true
-  },
-  "dependencies": {
-    "semver": "~4.0.3"
-  }
+	"name": "PixiParticlesEditor",
+	"description": "Create particle emitters for PixiParticles",
+	"version": "0.1.1",
+	"repository": {
+		"type": "git",
+		"url": "http://github.com/CloudKidStudio/PixiParticlesEditor"
+	},
+	"main": "index.html",
+	"single-instance": true,
+	"window": {
+		"icon": "assets/images/icon512.png",
+		"show": false,
+		"toolbar": false,
+		"frame": true,
+		"position": "center",
+		"width": 800,
+		"height": 600,
+		"min_width": 800,
+		"min_height": 480,
+		"resizable": true
+	},
+	"webkit": {
+		"plugin": true
+	},
+	"dependencies": {
+		"semver": "~4.0.3"
+	}
 }
