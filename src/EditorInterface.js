@@ -152,7 +152,6 @@
 				self.configUpload.unwrap();
 				self.configPaste.val("");
 			});
-		//this.configDialog.on("hide.bs.modal", function() { Debug.log("hiding modal!"); });
 
 		this.imageDialog.on("show.bs.modal", function()
 			{

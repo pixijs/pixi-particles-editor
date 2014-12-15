@@ -121,7 +121,7 @@
 		this.ui.imageConfirm.on("click", this.loadImage.bind(this));
 
 		// Set the starting stage color
-		this.ui.stageColor.val(SavedData.read('stageColor') || '999999');
+		this.ui.stageColor.minicolors("value", SavedData.read('stageColor') || '999999');
 
 		this.ui.on({
 			change : this.loadFromUI,
