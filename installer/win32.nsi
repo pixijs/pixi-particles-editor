@@ -15,7 +15,7 @@ Name "${APPNAME}"
 Icon "..\deploy\assets\images\icon.ico"
 
 # define the resulting installer's name:
-OutFile "..\build\${APPNAME}-Setup.exe"
+OutFile "..\build\${APPNAME}-Setup-x32.exe"
 
 # Destintation install directory
 InstallDir "$PROGRAMFILES\${APPNAME}"

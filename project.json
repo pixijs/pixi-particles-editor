@@ -9,8 +9,7 @@
 		"src/EditorInterface.js",
 		"src/Editor.js",
 		"src/App.js",
-		"src/main.js",
-		"src/main.less"
+		"src/App.less"
 	],
 	"libraries": [
 		"components/normalize.css/normalize.css",

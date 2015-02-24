@@ -1,3 +1,3 @@
 module.exports = {
-	installers: ['<%= buildDir %>/<%= build.name %>-Setup.*']
+	installers: ['<%= buildDir %>/<%= project.name %>-Setup-*.*']
 };

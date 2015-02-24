@@ -10,7 +10,7 @@
 	"single-instance": true,
 	"window": {
 		"icon": "assets/images/icon512.png",
-		"show": false,
+		"show": true,
 		"toolbar": false,
 		"frame": true,
 		"position": "center",

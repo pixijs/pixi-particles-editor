@@ -10,6 +10,6 @@ View the editor [here](http://cloudkidstudio.github.io/PixiParticlesEditor/).
 
 ## License
 
-Copyright (c) 2014 CloudKid
+Copyright (c) 2015 CloudKid
 
 Released under the MIT License.

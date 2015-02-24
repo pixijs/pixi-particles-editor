@@ -1,19 +1,17 @@
 (function(){
 
 	// Import classes
-	var NodeWebkitApp = cloudkid.NodeWebkitApp,
-		Editor = pixiparticles.Editor,
-		Menu = pixiparticles.Menu,
-		Browser = cloudkid.Browser;
+	var NodeWebkitApp = include('cloudkid.NodeWebkitApp'),
+		Editor = include('pixiparticles.Editor'),
+		Menu = include('pixiparticles.Menu', false),
+		Browser = include('cloudkid.Browser');
 
 	/**
 	*  The main application
 	*  @class App
 	*  @extends cloudkid.NodeWebkitApp
-	*  @constructor
-	*  @param {object} [options] cloudkid.Application options
 	*/
-	var App = function(options)
+	var App = function()
 	{
 		NodeWebkitApp.apply(this);
 
@@ -21,7 +19,14 @@
 		*  The instance of the editor
 		*  @property {pixiparticles.Editor} editor
 		*/
-		this.editor = new Editor(options);
+		this.editor = new Editor({
+			framerate: "framerate",
+			fps: 60,
+			raf: true,
+			debug: DEBUG,
+			resizeElement: "content",
+			uniformResize: false
+		});
 		
 		if (APP)
 		{
@@ -47,10 +52,13 @@
 	};
 
 	// Extend the prototype
-	var p = App.prototype = Object.create(NodeWebkitApp.prototype);
+	extend(App, NodeWebkitApp);
 
 
 	// Assign to namespace
 	namespace('pixiparticles').App = App;
+
+	// The application
+	window.app = new App();
 
 }());

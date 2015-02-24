@@ -1,7 +1,7 @@
 module.exports = {
 	main: {
 		files: {
-			'<%= jsFolder %>/main.js': '<%= build.js.main %>'
+			'<%= jsFolder %>/main.js': '<%= project.js.main %>'
 		},
 		options: {
 			compress: {
@@ -9,7 +9,7 @@ module.exports = {
 					"DEBUG": false,
 					"RELEASE": true,
 					"WEB": true,
-					"APP": false 
+					"APP": false
 				},
 				dead_code: true,
 				drop_console: true
@@ -24,7 +24,7 @@ module.exports = {
 					"DEBUG": false,
 					"RELEASE": true,
 					"WEB": false,
-					"APP": true 
+					"APP": true
 				},
 				dead_code: true,
 				drop_console: true

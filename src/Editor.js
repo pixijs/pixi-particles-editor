@@ -29,7 +29,7 @@
 	};
 
 	// Extend the createjs container
-	var p = Editor.prototype = Object.create(Application.prototype);
+	var p = extend(Editor, Application);
 
 	var stage,
 		backgroundSprite,

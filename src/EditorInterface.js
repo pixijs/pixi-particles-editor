@@ -79,7 +79,7 @@
 		this.init();
 	};
 
-	var p = EditorInterface.prototype = Object.create(EventDispatcher.prototype);
+	var p = extend(EditorInterface, EventDispatcher);
 
 	p.changed = function()
 	{

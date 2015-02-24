@@ -99,7 +99,6 @@ if (APP)
 
 	// Assign to namespace
 	namespace('pixiparticles').Menu = Menu;
-
 }
 
 }());
