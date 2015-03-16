@@ -48,6 +48,10 @@
 			"emitCircleX",
 			"emitCircleY",
 			"emitCircleR",
+			"emitRingX",
+			"emitRingY",
+			"emitRingR",
+			"emitRingMinR",
 			"emitParticlesPerWave",
 			"emitParticleSpacing",
 			"emitAngleStart",
@@ -294,6 +298,10 @@
 		this.emitCircleX.val(config.spawnCircle ? config.spawnCircle.x : 0);
 		this.emitCircleY.val(config.spawnCircle ? config.spawnCircle.y : 0);
 		this.emitCircleR.val(config.spawnCircle ? config.spawnCircle.r : 0);
+		this.emitRingX.val(config.spawnCircle ? config.spawnCircle.x : 0);
+		this.emitRingY.val(config.spawnCircle ? config.spawnCircle.y : 0);
+		this.emitRingR.val(config.spawnCircle ? config.spawnCircle.r : 0);
+		this.emitRingMinR.val(config.spawnCircle ? config.spawnCircle.minR : 0);
 		this.emitParticlesPerWave.val(config.particlesPerWave > 0 ? config.particlesPerWave : 1);
 		this.emitParticleSpacing.val(config.particleSpacing ? config.particleSpacing : 0);
 		this.emitAngleStart.val(config.angleStart ? config.angleStart : 0);
@@ -419,6 +427,15 @@
 				x: parseFloat(this.emitCircleX.val()) || 0,
 				y: parseFloat(this.emitCircleY.val()) || 0,
 				r: parseFloat(this.emitCircleR.val()) || 0
+			};
+		}
+		else if(spawnType == "ring")
+		{
+			output.spawnCircle = {
+				x: parseFloat(this.emitRingX.val()) || 0,
+				y: parseFloat(this.emitRingY.val()) || 0,
+				r: parseFloat(this.emitRingR.val()) || 0,
+				minR: parseFloat(this.emitRingMinR.val()) || 0
 			};
 		}
 		else if(spawnType == "burst")

@@ -1,6 +1,6 @@
 {
 	"default" : "pixieDust",
-	"spawnTypes" : ["point", "circle", "rect", "burst"],
+	"spawnTypes" : ["point", "circle", "rect", "burst", "ring"],
 	"images" : {
 		"particle" : "assets/images/particle.png",
 		"smokeparticle" : "assets/images/smokeparticle.png",
