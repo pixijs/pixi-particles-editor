@@ -280,11 +280,12 @@
 							<option value="point" selected="selected">Point</option>
 							<option value="rect">Rectangle</option>
 							<option value="circle">Circle</option>
+							<option value="ring">Ring</option>
 							<option value="burst">Burst</option>
 						</select>
 					</div>
 				</div>
-				<div id="rect" class="form-group settings-rect">
+				<div class="form-group settings-rect">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Rectangle relative to the Spawn Position inside which particles are spawned">Emission Rectangle</div>
 					<div class="col-xs-4">
 						<input id="emitRectX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
@@ -301,7 +302,7 @@
 						<input id="emitRectH" data-toggle="tooltip" data-placement="top" title="Height" type="text" class="spinner form-control" />
 					</div>
 				</div>
-				<div id="circle" class="form-group settings-circle">
+				<div class="form-group settings-circle">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Circle relative to the Spawn Position inside which particles are spawned">Emission Circle</div>
 					<div class="col-xs-4">
 						<input id="emitCircleX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
@@ -312,7 +313,24 @@
 				</div>
 				<div class="form-group settings-circle">
 					<div class="col-xs-4 col-xs-offset-4">
-						<input id="emitCircleR" data-toggle="tooltip" data-placement="top" title="Radius" type="text" class="spinner form-control" />
+						<input id="emitCircleR" data-toggle="tooltip" data-min="0" data-placement="top" title="Radius" type="text" class="spinner form-control" />
+					</div>
+				</div>
+				<div class="form-group settings-ring">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Ring relative to the Spawn Position inside which particles are spawned">Emission Ring</div>
+					<div class="col-xs-4">
+						<input id="emitRingX" data-toggle="tooltip" data-placement="top" title="X Position" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitRingY" data-toggle="tooltip" data-placement="top" title="Y Position" type="text" class="spinner form-control" />
+					</div>
+				</div>
+				<div class="form-group settings-ring">
+					<div class="col-xs-4 col-xs-offset-4">
+						<input id="emitRingMinR" data-toggle="tooltip" data-min="0" data-placement="top" title="Minimum Radius" type="text" class="spinner form-control" />
+					</div>
+					<div class="col-xs-4">
+						<input id="emitRingR" data-toggle="tooltip" data-min="0" data-placement="top" title="Maximum Radius" type="text" class="spinner form-control" />
 					</div>
 				</div>
 				<div id="particlesPerWave" class="form-group settings-burst">
