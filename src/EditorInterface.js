@@ -109,10 +109,13 @@
 			{
 				$(this).TouchSpin({
 					verticalbuttons: true,
-					min: parseFloat($(this).attr("data-min")) || -1000000,
-					max: parseFloat($(this).attr("data-max")) || 1000000,
+					min: $(this).attr("data-min") !== undefined ?
+									parseFloat($(this).attr("data-min")) : -1000000,
+					max: $(this).attr("data-max") !== undefined ?
+									parseFloat($(this).attr("data-max")) : 1000000,
 					step: parseFloat($(this).attr("data-step")) || 1,
-					decimals: parseFloat($(this).attr("data-decimals")) || 1,
+					decimals: $(this).attr("data-decimals") !== undefined ?
+									parseFloat($(this).attr("data-decimals")) : 1,
 					forcestepdivisibility: "none"
 				});
 			});
