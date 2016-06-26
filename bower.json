@@ -3,7 +3,7 @@
 	"version": "0.2.1",
 	"dependencies": {
 		"pixi.js": "https://github.com/SpringRoll/pixi.js.git#3.0.9",
-		"filesaver": "https://github.com/eligrey/FileSaver.js.git",
+		"filesaver": "https://github.com/eligrey/FileSaver.js.git#1.3.2",
 		"bootstrap": "~3.2.0",
 		"bootstrap-touchspin": "~3.0.1",
 		"seiyria-bootstrap-slider": "~4.0.8",

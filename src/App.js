@@ -25,7 +25,8 @@
 			raf: true,
 			debug: DEBUG,
 			resizeElement: "content",
-			uniformResize: false
+			uniformResize: false,
+			responsive: true
 		});
 		
 		if (APP)

@@ -14,7 +14,7 @@
 	"libraries": [
 		"components/normalize.css/normalize.css",
 		"components/preloadjs/lib/preloadjs.min.js",
-		"components/pixi.js/bin/pixi.js",
+		"components/pixi.js/bin/pixi.min.js",
 		"components/pixi-particles/dist/pixi-particles.min.js",
 		"components/pixi-particles/dist/modules/path-particle.min.js",
 		"components/pixi-particles/dist/modules/animated-particle.min.js",
@@ -37,7 +37,7 @@
 	"librariesDebug": [
 		"components/normalize.css/normalize.css",
 		"components/preloadjs/lib/preloadjs.min.js",
-		"components/pixi.js/bin/pixi.dev.js",
+		"components/pixi.js/bin/pixi.min.js",
 		"components/pixi-particles/dist/pixi-particles.js",
 		"components/pixi-particles/dist/modules/path-particle.js",
 		"components/pixi-particles/dist/modules/animated-particle.js",
