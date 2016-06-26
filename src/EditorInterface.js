@@ -250,7 +250,7 @@
 
 		var blendMode;
 		// //ensure that the blend mode is valid
-		if(config.blendMode && cloudkid.ParticleUtils.getBlendMode(config.blendMode))
+		if(config.blendMode && PIXI.particles.ParticleUtils.getBlendMode(config.blendMode))
 		{
 			//make sure the blend mode is in the format we want for our values
 			blendMode = config.blendMode.toLowerCase();
@@ -471,10 +471,10 @@
 
 		if (isFileSaverSupported)
 		{
-			window.saveAs(
+			/*window.saveAs(
 				new Blob([content], {type : type}),
 				"emitter.json"
-			);
+			);*/
 		}
 		else
 		{

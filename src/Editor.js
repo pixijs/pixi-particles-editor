@@ -3,15 +3,12 @@
 	// Import library dependencies
 	var Texture = include('PIXI.Texture'),
 		Sprite = include('PIXI.Sprite'),
+		Container = include('PIXI.Container'),
 		Point = include('PIXI.Point'),
 		Graphics = include('PIXI.Graphics'),
-		PixiTask = include('springroll.PixiTask'),
-		LoadTask = include('springroll.LoadTask'),
+		Emitter = include('PIXI.particles.Emitter'),
 		PixiDisplay = include('springroll.PixiDisplay'),
-		TaskManager = include('springroll.TaskManager'),
-		Emitter = include('cloudkid.Emitter'),
 		Application = include('springroll.Application'),
-		Loader = include('springroll.Loader'),
 		SavedData = include('springroll.SavedData'),
 		Browser = include('cloudkid.Browser'),
 		EditorInterface = include('pixiparticles.EditorInterface');
@@ -25,13 +22,25 @@
 	*/
 	var Editor = function(options)
 	{
+		options.configPath = "assets/config/config.json";
+		
 		Application.call(this, options);
+		
+		this.onMouseIn = this.onMouseIn.bind(this);
+		this.onMouseOut = this.onMouseOut.bind(this);
+		this.onMouseMove = this.onMouseMove.bind(this);
+		this.onMouseUp = this.onMouseUp.bind(this);
+		this.loadFromUI = this.loadFromUI.bind(this);
+		
+		this.once('init', init.bind(this));
+		this.once('loaded', this.onInitialized.bind(this));
 	};
 
 	// Extend the createjs container
 	var p = extend(Editor, Application);
 
 	var stage,
+		interaction,
 		backgroundSprite,
 		emitter,
 		emitterContainer,
@@ -42,15 +51,8 @@
 		jqImageDiv = null,
 		particleCountDiv = null;
 
-	p.init = function()
+	function init()
 	{
-		this.onMouseIn = this.onMouseIn.bind(this);
-		this.onMouseOut = this.onMouseOut.bind(this);
-		this.onMouseMove = this.onMouseMove.bind(this);
-		this.onMouseUp = this.onMouseUp.bind(this);
-		this.onTexturesLoaded = this.onTexturesLoaded.bind(this);
-		this.loadFromUI = this.loadFromUI.bind(this);
-
 		jqImageDiv = $(".particleImage");
 		jqImageDiv.remove();
 
@@ -58,10 +60,10 @@
 
 		var backgroundColor = parseInt(SavedData.read('stageColor') || '999999', 16);
 
-		backgroundSprite = new PIXI.Sprite(PIXI.Texture.fromImage("assets/images/bg.png"));
+		backgroundSprite = new Sprite(Texture.fromImage("assets/images/bg.png"));
 		backgroundSprite.tint = backgroundColor;
 
-		emitterContainer = new PIXI.DisplayObjectContainer();
+		emitterContainer = new Container();
 
 		var options = {
 			clearView: true,
@@ -88,16 +90,11 @@
 		// Default is stage
 		this.setRenderer(this.webgl ? "webgl" : "canvas2d");
 
-		Loader.instance.load(
-			"assets/config/config.json",
-			this.onInitialized.bind(this)
-		);
-
 		backgroundSprite.scale.x = 0.1 * this.canvas2d.width;
 		backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
 
 		this.on("resize", this.onResize);
-	};
+	}
 
 	p.onResize = function(w, h)
 	{
@@ -110,11 +107,10 @@
 	*  @method onInitialized
 	*  @param {Loader} result
 	*/
-	p.onInitialized = function(result)
+	p.onInitialized = function()
 	{
 		$("body").removeClass('loading');
 
-		this.config = result.content;
 		this.ui = new EditorInterface(this.config.spawnTypes);
 		this.ui.refresh.click(this.loadFromUI);
 		this.ui.configConfirm.on("click", this.loadConfig.bind(this));
@@ -137,13 +133,23 @@
 		for (var i = 0; i < this.config.emitters.length; i++)
 		{
 			emitterData = this.config.emitters[i];
-			tasks.push(new LoadTask(emitterData.id, emitterData.config, this.onConfigLoaded));
+			tasks.push({
+				id: emitterData.id,
+				src: emitterData.config,
+				complete: this.onConfigLoaded
+			});
 		}
 
 		// Load the images
 		for (var id in this.config.images)
 		{
 			images.push(this.config.images[id]);
+			tasks.push({
+				id: id,
+				type: 'pixi',
+				image: this.config.images[id],
+				cache: true
+			});
 		}
 
 		var customImages;
@@ -158,15 +164,20 @@
 		{
 			for (i = 0; i < customImages.length; i++)
 			{
-				if (images.indexOf(customImages[i]) == -1)
+				if (customImages[i].indexOf('data:') !== 0 && images.indexOf(customImages[i]) == -1)
 				{
 					images.push(customImages[i]);
+					tasks.push({
+						id: customImages[i],
+						type: 'pixi',
+						image: customImages[i],
+						cache: true
+					});
 				}
 			}
 		}
-		tasks.push(new PixiTask("particle", images, this.onTexturesLoaded));
-
-		TaskManager.process(tasks, this._onCompletedLoad.bind(this));
+		
+		this.load(tasks, this._onCompletedLoad.bind(this));
 	};
 
 	/**
@@ -177,22 +188,23 @@
 	*/
 	p.onConfigLoaded = function(result, task)
 	{
-		particleDefaults[task.id] = result.content;
+		particleDefaults[task.id] = result;
 	};
 
 	/**
-	*  Callback when an image is loaded
-	*  @method onTexturesLoaded
+	*  When the initial load has completed
+	*  @method _onCompletedLoad
 	*/
-	p.onTexturesLoaded = function()
+	p._onCompletedLoad = function(result)
 	{
 		// Load the emitters
 		var emitterData,
 			image,
 			id,
-			images = this.config.images;
+			images = this.config.images,
+			i;
 
-		for (var i = 0; i < this.config.emitters.length; i++)
+		for (i = 0; i < this.config.emitters.length; i++)
 		{
 			emitterData = this.config.emitters[i];
 			id = emitterData.id;
@@ -203,22 +215,16 @@
 			{
 				image = emitterData.images[j];
 				particleDefaultImageUrls[id].push(images[image]);
-				particleDefaultImages[id].push(Texture.fromImage(image));
+				particleDefaultImages[id].push(this.getCache(image));
 			}
 		}
-	};
-
-	/**
-	*  When the initial load has completed
-	*  @method _onCompletedLoad
-	*/
-	p._onCompletedLoad = function()
-	{
+		
 		emitter = new Emitter(emitterContainer);
+		window.emitter = emitter;
 
 		var hash = window.location.hash.replace("#", '');
 
-		var config, images;
+		var config;
 
 		try
 		{
@@ -239,7 +245,7 @@
 			if (DEBUG)
 				console.log(images);
 
-			for(var i = 0; i < images.length; ++i)
+			for(i = 0; i < images.length; ++i)
 			{
 				this.addImage(images[i]);
 			}
@@ -282,15 +288,21 @@
 
 		// The selected stage
 		var display = this[type];
-
+		
 		// Remove old mouse listener
-		if (stage)
-			stage.mousemove = null;
+		if (interaction)
+		{
+			interaction.off('stageup', this.onMouseUp);
+			interaction.off('stagein', this.onMouseIn);
+			interaction.off('stageout', this.onMouseOut);
+			interaction.off('stagemove', this.onMouseMove);
+		}
 
 		stage = display.stage;
-		stage.interactionManager.stageIn = this.onMouseIn;
-		stage.interactionManager.stageOut = this.onMouseOut;
-		stage.mouseup = this.onMouseUp;
+		interaction = display.renderer.plugins.interaction;
+		interaction.on('stageup', this.onMouseUp);
+		interaction.on('stagein', this.onMouseIn);
+		interaction.on('stageout', this.onMouseOut);
 		display.enabled = display.visible = true;
 
 		if(backgroundSprite)
@@ -318,7 +330,7 @@
 		this.ui.imageList.children().remove();
 
 		var imageUrls = particleDefaultImageUrls[name];
-
+		
 		for(var i = 0; i < imageUrls.length; ++i)
 		{
 			this.addImage(imageUrls[i]);
@@ -471,13 +483,13 @@
 	*/
 	p.addImage = function(src)
 	{
-		if (!PIXI.Texture.fromFrame(src, true))
+		/*if (!PIXI.Texture.fromFrame(src, true))
 		{
 			TaskManager.process(
 				[new PixiTask("image", [src], this.onTexturesLoaded)],
 				function(){}
 			);
-		}
+		}*/
 		var item = jqImageDiv.clone();
 		item.children("img").prop("src", src);
 		this.ui.imageList.append(item);
@@ -553,11 +565,11 @@
 		switch(type)
 		{
 			case "path":
-				return cloudkid.PathParticle;
+				return PIXI.particles.PathParticle;
 			case "anim":
-				return cloudkid.AnimatedParticle;
+				return PIXI.particles.AnimatedParticle;
 			default:
-				return cloudkid.Particle;
+				return PIXI.particles.Particle;
 		}
 	};
 
@@ -593,10 +605,10 @@
 	p.loadSettings = function(images, config, particleClass)
 	{
 		if (!emitter) return;
-
+		
 		emitter.init(images, config);
 		if(!particleClass)
-			particleClass = cloudkid.Particle;
+			particleClass = PIXI.particles.Particle;
 		emitter.particleConstructor = particleClass;
 		this._centerEmitter();
 		emitterEnableTimer = 0;
@@ -624,7 +636,7 @@
 				emitter.emit = true;
 		}
 
-		particleCountDiv.innerHTML = emitter._activeParticles.length + " Particles";
+		particleCountDiv.innerHTML = emitter.particleCount + " Particles";
 	};
 
 	p.onMouseUp = function()
@@ -640,7 +652,7 @@
 	{
 		if (!emitter) return;
 
-		stage.mousemove = this.onMouseMove;
+		interaction.on('stagemove', this.onMouseMove);
 		emitter.resetPositionTracking();
 	};
 
@@ -658,15 +670,15 @@
 	{
 		if (!emitter) return;
 
-		stage.mousemove = null;
+		interaction.off('stagemove', this.onMouseMove);
 		this._centerEmitter();
 		emitter.resetPositionTracking();
 	};
 
-	p.onMouseMove = function(data)
+	p.onMouseMove = function(event)
 	{
 		if (!emitter) return;
-
+		var data = event.data;
 		emitter.updateOwnerPos(data.global.x, data.global.y);
 	};
 
