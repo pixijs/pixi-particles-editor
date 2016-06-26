@@ -471,10 +471,10 @@
 
 		if (isFileSaverSupported)
 		{
-			/*window.saveAs(
+			window.saveAs(
 				new Blob([content], {type : type}),
 				"emitter.json"
-			);*/
+			);
 		}
 		else
 		{
