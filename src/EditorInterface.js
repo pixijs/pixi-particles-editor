@@ -26,6 +26,7 @@
 			"accelY",
 			"startRotationMin",
 			"startRotationMax",
+			"partNoRotation",
 			"rotationSpeedMin",
 			"rotationSpeedMax",
 			"lifeMin",
@@ -121,6 +122,9 @@
 			});
 
 		$('.bootstrap-touchspin-prefix, bootstrap-touchspin-postfix').remove();
+		
+		//attach listeners to checkboxes
+		$(".checkbox").change(changed);
 
 		//set up all sliders to get changed by their text inputs
 		//this also changes the text input, which clamps values in the sliders
@@ -169,7 +173,7 @@
 				self.imageUpload.wrap('<form>').parent('form').trigger('reset');
 				self.imageUpload.unwrap();
 			});
-
+		
 		//enable the renderer toggle
 		this.renderer.find('input').on("change", function()
 			{
@@ -239,6 +243,7 @@
 		this.speedEnd.val(config.speed ? config.speed.end : 0);
 		this.accelX.val(config.acceleration ? config.acceleration.x : 0);
 		this.accelY.val(config.acceleration ? config.acceleration.y : 0);
+		this.partNoRotation.val(!!config.noRotation);
 		this.startRotationMin.val(config.startRotation ? config.startRotation.min : 0);
 		this.startRotationMax.val(config.startRotation ? config.startRotation.max : 0);
 		this.rotationSpeedMin.val(config.rotationSpeed ? config.rotationSpeed.min : 0);
@@ -347,6 +352,7 @@
 			min: parseFloat(this.startRotationMin.val()) || 0,
 			max: parseFloat(this.startRotationMax.val()) || 0
 		};
+		output.noRotation = this.partNoRotation.prop("checked");
 		output.rotationSpeed = {
 			min: parseFloat(this.rotationSpeedMin.val()) || 0,
 			max: parseFloat(this.rotationSpeedMax.val()) || 0

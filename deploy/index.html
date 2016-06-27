@@ -167,6 +167,12 @@
 						<input id="startRotationMax" data-toggle="tooltip" data-placement="top" title="Maximum rotation" type="text" class="spinner form-control" />
 					</div>
 				</div>
+				<div id="noRotation" class="form-group">
+					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="If particles should never rotate. A non-zero rotation speed will override this.">No Particle Rotation</div>
+					<div class="col-xs-8">
+						<input id="partNoRotation" class="checkbox" type="checkbox" />
+					</div>
+				</div>
 				<div id="rotationSpeed" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="Speed in degrees per second that particles rotate - Positive numbers are clockwise">Rotation Speed</div>
 					<div class="col-xs-4">
@@ -363,7 +369,7 @@
 				<div id="addAtBack" class="form-group">
 					<div class="col-xs-4 form-label" data-toggle="tooltip"  data-placement="left" title="If particles should be added to the back of the display list instead of the top">Add At Back</div>
 					<div class="col-xs-8">
-						<input id="emitAddAtBack" type="checkbox" />
+						<input id="emitAddAtBack" class="checkbox" type="checkbox" />
 					</div>
 				</div>
 			</div>
