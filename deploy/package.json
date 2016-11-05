@@ -1,7 +1,7 @@
 {
 	"name": "PixiParticlesEditor",
 	"description": "Create particle emitters for PixiParticles",
-	"version": "0.2.0",
+	"version": "0.2.2",
 	"repository": {
 		"type": "git",
 		"url": "http://github.com/CloudKidStudio/PixiParticlesEditor"

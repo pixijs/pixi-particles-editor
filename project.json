@@ -1,6 +1,6 @@
 {
 	"name": "PixiParticlesEditor",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"main": [
 		"components/node-webkit-app/src/utils/UpdateChecker.js",
 		"components/node-webkit-app/src/utils/Browser.js",
@@ -21,7 +21,6 @@
 		"components/springroll/dist/core.min.js",
 		"components/springroll/dist/modules/debug.min.js",
 		"components/springroll/dist/modules/pixi-display.min.js",
-		
 		"components/filesaver/FileSaver.js",
 		"components/jquery/dist/jquery.js",
 		"components/bootstrap/dist/js/bootstrap.min.js",

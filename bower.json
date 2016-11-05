@@ -1,6 +1,6 @@
 {
 	"name": "PixiParticlesEditor",
-	"version": "0.2.1",
+	"version": "0.2.2",
 	"dependencies": {
 		"pixi.js": "https://github.com/SpringRoll/pixi.js.git#3.0.9",
 		"filesaver": "https://github.com/eligrey/FileSaver.js.git#1.3.2",
