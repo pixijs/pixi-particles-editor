@@ -8,7 +8,7 @@
 		"bootstrap-touchspin": "~3.0.1",
 		"seiyria-bootstrap-slider": "~4.0.8",
 		"springroll": "~0.4.26",
-		"pixi-particles": "*",
+		"pixi-particles": "1.7.0",
 		"normalize.css": "*",
 		"node-webkit-app": "*",
 		"jquery": "*",

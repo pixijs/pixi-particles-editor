@@ -22,8 +22,10 @@
 			"colorEnd",
 			"speedStart",
 			"speedEnd",
+			"minimumSpeedMultiplier",
 			"accelX",
 			"accelY",
+			"maxSpeed",
 			"startRotationMin",
 			"startRotationMax",
 			"partNoRotation",
@@ -122,7 +124,7 @@
 			});
 
 		$('.bootstrap-touchspin-prefix, bootstrap-touchspin-postfix').remove();
-		
+
 		//attach listeners to checkboxes
 		$(".checkbox").change(changed);
 
@@ -173,7 +175,7 @@
 				self.imageUpload.wrap('<form>').parent('form').trigger('reset');
 				self.imageUpload.unwrap();
 			});
-		
+
 		//enable the renderer toggle
 		this.renderer.find('input').on("change", function()
 			{
@@ -241,8 +243,10 @@
 		this.colorEnd.minicolors("value", config.color ? config.color.end : "FFFFFF");
 		this.speedStart.val(config.speed ? config.speed.start : 0);
 		this.speedEnd.val(config.speed ? config.speed.end : 0);
+		this.minimumSpeedMultiplier.val(config.speed ? (config.speed.minimumSpeedMultiplier || 1) : 1);
 		this.accelX.val(config.acceleration ? config.acceleration.x : 0);
 		this.accelY.val(config.acceleration ? config.acceleration.y : 0);
+		this.maxSpeed.val(config.maxSpeed ? config.maxSpeed : 0);
 		this.partNoRotation.val(!!config.noRotation);
 		this.startRotationMin.val(config.startRotation ? config.startRotation.min : 0);
 		this.startRotationMax.val(config.startRotation ? config.startRotation.max : 0);
@@ -251,7 +255,7 @@
 		this.lifeMin.val(config.lifetime ? config.lifetime.min : 1);
 		this.lifeMax.val(config.lifetime ? config.lifetime.max : 1);
 		this.customEase.val(config.ease ? JSON.stringify(config.ease) : "");
-		this.extraData.val(config.extraData ? JSON.stringify(config.extraData, null, "    ") : "");
+		this.extraData.val(config.extraData ? JSON.stringify(config.extraData, null, "	") : "");
 
 		var blendMode;
 		// //ensure that the blend mode is valid
@@ -342,12 +346,14 @@
 		};
 		output.speed = {
 			start: parseFloat(this.speedStart.val()) || 0,
-			end: parseFloat(this.speedEnd.val()) || 0
+			end: parseFloat(this.speedEnd.val()) || 0,
+			minimumSpeedMultiplier: parseFloat(this.minimumSpeedMultiplier.val()) || 1
 		};
 		output.acceleration = {
 			x: parseFloat(this.accelX.val() || 0),
 			y: parseFloat(this.accelY.val() || 0)
 		};
+		output.maxSpeed = parseFloat(this.maxSpeed.val()) || 0;
 		output.startRotation = {
 			min: parseFloat(this.startRotationMin.val()) || 0,
 			max: parseFloat(this.startRotationMax.val()) || 0
