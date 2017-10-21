@@ -94,6 +94,7 @@
 		backgroundSprite.scale.y = 0.1 * this.canvas2d.height;
 
 		this.on("resize", this.onResize);
+		this.triggerResize();
 	}
 
 	p.onResize = function(w, h)
